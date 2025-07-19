@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationMenuComponent } from '../navigation-menu/navigation-menu.component';
+import { NavigationItem, Team } from '../../../core/models';
 
 @Component({
   selector: 'app-desktop-sidebar',
@@ -8,6 +9,6 @@ import { NavigationMenuComponent } from '../navigation-menu/navigation-menu.comp
   templateUrl: './desktop-sidebar.component.html'
 })
 export class DesktopSidebarComponent {
-  @Input() navigationItems: any[] = [];
-  @Input() teams: any[] = [];
+  @Input() navigationItems: NavigationItem[] = [];
+  @Input() teams: Team[] = [];
 }

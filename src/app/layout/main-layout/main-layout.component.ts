@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { MobileSidebarComponent } from '../components/mobile-sidebar/mobile-sidebar.component';
 import { DesktopSidebarComponent } from '../components/desktop-sidebar/desktop-sidebar.component';
 import { TopNavigationComponent } from '../components/top-navigation/top-navigation.component';
+import { NavigationItem, Team } from '../../core/models';
 
 @Component({
   selector: 'app-main-layout',
@@ -27,7 +28,7 @@ export class MainLayoutComponent {
     this.isUserMenuOpen.update(value => !value);
   }
 
-  navigationItems = [
+  navigationItems: NavigationItem[] = [
     { 
       path: '/dashboard', 
       label: 'Dashboard', 
@@ -66,7 +67,7 @@ export class MainLayoutComponent {
     }
   ];
 
-  teams = [
+  teams: Team[] = [
     { name: 'Heroicons', initial: 'H' },
     { name: 'Tailwind Labs', initial: 'T' },
     { name: 'Workcation', initial: 'W' }

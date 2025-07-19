@@ -1,18 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-
-interface NavigationItem {
-  path: string;
-  label: string;
-  current: boolean;
-  svgPath: string;
-}
-
-interface Team {
-  name: string;
-  initial: string;
-}
+import { NavigationItem, Team } from '../../../core/models';
 
 @Component({
   selector: 'app-navigation-menu',
