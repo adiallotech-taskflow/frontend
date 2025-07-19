@@ -13,3 +13,10 @@ export interface WorkspaceMember {
   role: 'admin' | 'member' | 'viewer';
   joinedAt: Date;
 }
+
+export interface WorkspaceStats {
+  totalTasks: number;
+  completedTasks: number;
+  inProgressTasks: number;
+  totalMembers: number;
+}
