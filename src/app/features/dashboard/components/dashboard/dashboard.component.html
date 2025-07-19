@@ -47,4 +47,10 @@
   @if (!isLoading() && workspaces().length > 0) {
     <app-fab-button (click)="createWorkspace()"></app-fab-button>
   }
+
+  <!-- Workspace Creation Slide-over -->
+  <app-workspace-slide-over 
+    #slideOver
+    (workspaceCreated)="onWorkspaceCreated($event)">
+  </app-workspace-slide-over>
 </div>

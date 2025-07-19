@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Workspace, WorkspaceStats, DashboardStats } from '../../../../core/models';
@@ -8,6 +8,7 @@ import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
 import { WorkspaceSkeletonComponent } from '../workspace-skeleton/workspace-skeleton';
 import { EmptyStateComponent } from '../empty-state/empty-state';
 import { FabButtonComponent } from '../fab-button/fab-button';
+import { WorkspaceSlideOverComponent } from '../../../workspace/workspace-slide-over';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,12 +20,16 @@ import { FabButtonComponent } from '../fab-button/fab-button';
     WorkspaceCardComponent,
     WorkspaceSkeletonComponent,
     EmptyStateComponent,
-    FabButtonComponent
+    FabButtonComponent,
+    WorkspaceSlideOverComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
+  // ViewChild for slide-over component
+  slideOver = viewChild<WorkspaceSlideOverComponent>('slideOver');
+
   // State
   workspaces = signal<Workspace[]>([]);
   isLoading = signal(true);
@@ -109,8 +114,14 @@ export class DashboardComponent implements OnInit {
   }
 
   createWorkspace() {
-    // TODO: Navigate to workspace creation or open modal
-    console.log('Create workspace clicked');
+    this.slideOver()?.open();
+  }
+
+  onWorkspaceCreated(workspace: Workspace) {
+    // Add the newly created workspace to the local state
+    const currentWorkspaces = this.workspaces();
+    this.workspaces.set([...currentWorkspaces, workspace]);
+    console.log('Workspace créé avec succès:', workspace);
   }
 
   getWorkspaceStats(workspace: Workspace): WorkspaceStats {
