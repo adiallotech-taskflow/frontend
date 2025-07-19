@@ -70,7 +70,7 @@
     <div class="flex items-center space-x-2">
       <div class="relative">
         @if (assignedUser?.avatar) {
-          <img [src]="assignedUser.avatar" [alt]="userName" 
+          <img [src]="assignedUser?.avatar" [alt]="userName" 
                class="h-6 w-6 rounded-full border border-gray-200">
         } @else {
           <div class="h-6 w-6 rounded-full bg-indigo-100 border border-gray-200 flex items-center justify-center">
