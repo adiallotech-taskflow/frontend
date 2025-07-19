@@ -6,3 +6,4 @@ export * from './mock/mock.config';
 export * from './mock/mock.module';
 export * from './mock/mock.utils';
 export * from './mock/mock-devtools.component';
+export * from './mock/mock-data.generator';

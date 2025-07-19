@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MockBaseService, PaginationResult } from './mock-base.service';
 import { Task, CreateTaskRequest } from '../../models';
+import { MockDataGenerator } from './mock-data.generator';
 
 @Injectable({
   providedIn: 'root'
@@ -10,43 +11,7 @@ import { Task, CreateTaskRequest } from '../../models';
 export class TaskMockService extends MockBaseService<Task> {
   protected override storageKey = 'taskflow_mock_tasks';
   
-  protected override defaultData: Task[] = [
-    {
-      id: '1',
-      title: 'Design new user interface',
-      description: 'Create mockups and wireframes for the new dashboard',
-      status: 'in-progress',
-      priority: 'high',
-      assigneeId: 'user1',
-      workspaceId: '1',
-      dueDate: new Date('2024-12-25'),
-      createdAt: new Date('2024-01-15'),
-      updatedAt: new Date()
-    },
-    {
-      id: '2',
-      title: 'Implement authentication system',
-      description: 'Set up JWT tokens and user sessions',
-      status: 'todo',
-      priority: 'medium',
-      assigneeId: 'user2',
-      workspaceId: '1',
-      dueDate: new Date('2024-12-30'),
-      createdAt: new Date('2024-01-16'),
-      updatedAt: new Date()
-    },
-    {
-      id: '3',
-      title: 'Write unit tests',
-      description: 'Add comprehensive test coverage for core components',
-      status: 'done',
-      priority: 'low',
-      assigneeId: 'user1',
-      workspaceId: '2',
-      createdAt: new Date('2024-01-10'),
-      updatedAt: new Date()
-    }
-  ];
+  protected override defaultData: Task[] = this.generateDefaultTasks();
 
   /**
    * Récupère toutes les tâches avec pagination optionnelle
@@ -174,5 +139,49 @@ export class TaskMockService extends MockBaseService<Task> {
    */
   updateTaskPriority(id: string, priority: Task['priority']): Observable<Task> {
     return this.updateTask(id, { priority });
+  }
+
+  /**
+   * Generate default realistic tasks using the generator
+   */
+  private generateDefaultTasks(): Task[] {
+    return MockDataGenerator.generateCohesiveDataset({
+      userCount: 5,
+      workspaceCount: 2,
+      taskCount: 12,
+      seed: 42 // Fixed seed for consistent default data
+    }).tasks;
+  }
+
+  /**
+   * Generate additional realistic tasks
+   */
+  generateRealisticTasks(count: number = 10): Task[] {
+    const dataset = MockDataGenerator.generateCohesiveDataset({
+      userCount: 8,
+      workspaceCount: 3,
+      taskCount: count,
+      seed: Date.now() // Random seed for variety
+    });
+    return dataset.tasks;
+  }
+
+  /**
+   * Load realistic demo data
+   */
+  loadRealisticDemoData(): void {
+    const demoData = MockDataGenerator.generateCohesiveDataset({
+      userCount: 15,
+      workspaceCount: 4,
+      taskCount: 30,
+      seed: 123456
+    });
+    
+    this.loadTestData(demoData.tasks);
+    this.configService.logAction('Loaded realistic demo data', {
+      tasks: demoData.tasks.length,
+      users: demoData.users.length,
+      workspaces: demoData.workspaces.length
+    });
   }
 }

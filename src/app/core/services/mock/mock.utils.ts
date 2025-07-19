@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MockConfigService } from './mock.config';
 import { TaskMockService } from './task-mock.service';
 import { Task } from '../../models';
+import { MockDataGenerator } from './mock-data.generator';
 
 /**
  * Demo data for seeding mock services
@@ -38,18 +39,31 @@ export class MockUtilsService {
   }
 
   /**
-   * Seed all services with demo data
+   * Seed all services with realistic demo data
    */
   seedWithDemoData(): void {
-    this.configService.logAction('Seeding with demo data');
+    this.configService.logAction('Seeding with realistic demo data');
     
-    const demoData = this.generateDemoData();
+    // Use the new generator for realistic data
+    this.taskMockService.loadRealisticDemoData();
+    // Add other services here
+    
+    this.configService.logAction('Realistic demo data seeding complete');
+  }
+
+  /**
+   * Seed with lightweight demo data
+   */
+  seedWithLightDemoData(): void {
+    this.configService.logAction('Seeding with lightweight demo data');
+    
+    const demoData = this.generateLightDemoData();
     
     // Seed individual services
     this.taskMockService.loadTestData(demoData.tasks);
     // Add other services here
     
-    this.configService.logAction('Demo data seeding complete', {
+    this.configService.logAction('Light demo data seeding complete', {
       tasks: demoData.tasks.length
     });
   }
@@ -164,9 +178,9 @@ export class MockUtilsService {
   }
 
   /**
-   * Generate comprehensive demo data
+   * Generate lightweight demo data (using old format for backward compatibility)
    */
-  private generateDemoData(): DemoData {
+  private generateLightDemoData(): DemoData {
     const now = new Date();
     const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
