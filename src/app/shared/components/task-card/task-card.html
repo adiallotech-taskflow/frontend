@@ -1,0 +1,117 @@
+<div class="bg-white rounded-lg border-2 border-l-4 shadow-sm hover:shadow-md transition-all duration-200 p-4 relative group"
+     [class]="priorityConfig.borderColor"
+     (mouseleave)="closeMenu()">
+  
+  <!-- Header -->
+  <div class="flex items-start justify-between mb-3">
+    <div class="flex-1 min-w-0">
+      <h3 class="text-sm font-semibold text-gray-900 truncate group-hover:text-indigo-600 transition-colors duration-200">
+        {{ task.title }}
+      </h3>
+      @if (task.description) {
+        <p class="text-xs text-gray-600 mt-1 line-clamp-2">{{ task.description }}</p>
+      }
+    </div>
+    
+    <!-- Menu Button -->
+    <div class="relative ml-2">
+      <button 
+        (click)="toggleMenu()"
+        class="p-1 text-gray-400 hover:text-gray-600 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+        </svg>
+      </button>
+      
+      <!-- Dropdown Menu -->
+      @if (showMenu) {
+        <div class="absolute right-0 top-8 w-32 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+          <div class="py-1">
+            <button 
+              (click)="onAction('edit')"
+              class="flex items-center w-full px-3 py-2 text-xs text-gray-700 hover:bg-gray-100">
+              <svg class="h-3 w-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              Edit
+            </button>
+            <button 
+              (click)="onAction('delete')"
+              class="flex items-center w-full px-3 py-2 text-xs text-red-700 hover:bg-red-50">
+              <svg class="h-3 w-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Priority Indicator -->
+  <div class="flex items-center justify-between mb-3">
+    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+          [class]="priorityConfig.bgColor + ' ' + priorityConfig.textColor">
+      <span class="w-1.5 h-1.5 rounded-full mr-1"
+            [class]="'bg-' + priorityConfig.color + '-500'"></span>
+      {{ task.priority | titlecase }} Priority
+    </span>
+
+    <!-- Status Badge -->
+    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium"
+          [class]="statusConfig.bgColor + ' ' + statusConfig.textColor">
+      {{ statusConfig.label }}
+    </span>
+  </div>
+
+  <!-- Assignee Avatar -->
+  <div class="flex items-center justify-between">
+    <div class="flex items-center space-x-2">
+      <div class="relative">
+        @if (assignedUser?.avatar) {
+          <img [src]="assignedUser.avatar" [alt]="userName" 
+               class="h-6 w-6 rounded-full border border-gray-200">
+        } @else {
+          <div class="h-6 w-6 rounded-full bg-indigo-100 border border-gray-200 flex items-center justify-center">
+            <span class="text-xs font-medium text-indigo-600">{{ userInitials }}</span>
+          </div>
+        }
+        @if (assignedUser?.role === 'admin') {
+          <div class="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full border border-white flex items-center justify-center">
+            <svg class="h-2 w-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        }
+      </div>
+      <span class="text-xs text-gray-600 truncate max-w-20">{{ userName }}</span>
+    </div>
+
+    <!-- Due Date -->
+    @if (task.dueDate) {
+      <div class="flex items-center text-xs"
+           [class]="isOverdue ? 'text-red-600' : 'text-gray-500'">
+        <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span [class]="isOverdue ? 'font-medium' : ''">
+          {{ task.dueDate | date:'MMM d' }}
+        </span>
+        @if (isOverdue) {
+          <span class="ml-1 text-red-500 font-medium">!</span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Overdue Warning -->
+  @if (isOverdue) {
+    <div class="mt-2 text-xs text-red-600 bg-red-50 px-2 py-1 rounded flex items-center">
+      <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.728-.833-2.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+      </svg>
+      Overdue
+    </div>
+  }
+</div>

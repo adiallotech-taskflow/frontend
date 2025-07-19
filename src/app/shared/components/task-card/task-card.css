@@ -1,0 +1,74 @@
+/* Smooth hover animations */
+.task-card-hover {
+  @apply transform transition-all duration-200 ease-in-out;
+}
+
+.task-card-hover:hover {
+  @apply scale-105 shadow-lg;
+}
+
+/* Priority border animations */
+.priority-high {
+  @apply border-l-red-500;
+}
+
+.priority-medium {
+  @apply border-l-yellow-500;
+}
+
+.priority-low {
+  @apply border-l-green-500;
+}
+
+/* Menu animations */
+.menu-enter {
+  animation: slideDown 150ms ease-out;
+}
+
+.menu-leave {
+  animation: slideUp 150ms ease-in;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Overdue pulse animation */
+@keyframes pulse-red {
+  0%, 100% {
+    background-color: rgb(254 242 242);
+  }
+  50% {
+    background-color: rgb(254 226 226);
+  }
+}
+
+.overdue-pulse {
+  animation: pulse-red 2s infinite;
+}
+
+/* Line clamp utility for description */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
