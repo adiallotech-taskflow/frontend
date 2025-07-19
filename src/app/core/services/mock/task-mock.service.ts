@@ -52,7 +52,7 @@ export class TaskMockService extends MockBaseService<Task> {
    * Récupère toutes les tâches avec pagination optionnelle
    */
   getTasks(page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
-    return this.simulateError<Task[] | PaginationResult<Task>>(0.05).pipe(
+    return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
       switchMap(() => this.getAllFromMockData(page, limit))
     );
   }
@@ -61,7 +61,7 @@ export class TaskMockService extends MockBaseService<Task> {
    * Récupère une tâche par ID
    */
   getTaskById(id: string): Observable<Task> {
-    return this.simulateError<Task>(0.05).pipe(
+    return this.simulateError<Task>().pipe(
       switchMap(() => this.getByIdFromMockData(id))
     );
   }
@@ -77,7 +77,7 @@ export class TaskMockService extends MockBaseService<Task> {
       updatedAt: new Date()
     };
 
-    return this.simulateError<Task>(0.05).pipe(
+    return this.simulateError<Task>().pipe(
       switchMap(() => this.addToMockData(newTask as Task))
     );
   }
@@ -91,7 +91,7 @@ export class TaskMockService extends MockBaseService<Task> {
       updatedAt: new Date()
     };
 
-    return this.simulateError<Task>(0.05).pipe(
+    return this.simulateError<Task>().pipe(
       switchMap(() => this.updateInMockData(id, taskUpdates))
     );
   }
@@ -100,7 +100,7 @@ export class TaskMockService extends MockBaseService<Task> {
    * Supprime une tâche
    */
   deleteTask(id: string): Observable<boolean> {
-    return this.simulateError<boolean>(0.05).pipe(
+    return this.simulateError<boolean>().pipe(
       switchMap(() => this.deleteFromMockData(id))
     );
   }
@@ -113,7 +113,7 @@ export class TaskMockService extends MockBaseService<Task> {
     page?: number, 
     limit?: number
   ): Observable<Task[] | PaginationResult<Task>> {
-    return this.simulateError<Task[] | PaginationResult<Task>>(0.05).pipe(
+    return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
       switchMap(() => this.searchInMockData(searchTerm, ['title', 'description'], page, limit))
     );
   }

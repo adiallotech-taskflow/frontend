@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "mock:reset": "node scripts/mock-reset.js reset",
+    "mock:seed": "node scripts/mock-reset.js seed",
+    "mock:help": "node scripts/mock-reset.js help"
   },
   "prettier": {
     "overrides": [
