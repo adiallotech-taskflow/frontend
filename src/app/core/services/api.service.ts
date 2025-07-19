@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, timer } from 'rxjs';
-import { catchError, map, finalize, retryWhen, mergeMap, take } from 'rxjs/operators';
+import { catchError, map, finalize, retryWhen, mergeMap } from 'rxjs/operators';
 
 export interface ApiResponse<T> {
   data: T;
@@ -21,7 +21,7 @@ export interface ApiError {
 export class ApiService {
   private readonly baseUrl = 'http://localhost:3000/api';
   private loadingSubject = new BehaviorSubject<boolean>(false);
-  
+
   public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -140,7 +140,7 @@ export class ApiService {
     if (response && typeof response === 'object' && 'data' in response) {
       return response.data;
     }
-    
+
     // Return response as-is if it's already the expected format
     return response;
   }
