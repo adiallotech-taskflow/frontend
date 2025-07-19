@@ -1,0 +1,23 @@
+<div class="relative">
+  <button id="user-menu-button" type="button" aria-expanded="false" aria-haspopup="true" 
+          class="relative flex items-center" (click)="onToggle()">
+    <span class="absolute -inset-1.5"></span>
+    <span class="sr-only">Open user menu</span>
+    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+         alt="" class="size-8 rounded-full bg-gray-50" />
+    <span class="hidden lg:flex lg:items-center">
+      <span aria-hidden="true" class="ml-4 text-sm/6 font-semibold text-gray-900">{{ userName }}</span>
+      <svg viewBox="0 0 20 20" fill="currentColor" class="ml-2 size-5 text-gray-400">
+        <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+      </svg>
+    </span>
+  </button>
+
+  @if (isOpen) {
+    <div role="menu" tabindex="-1" aria-labelledby="user-menu-button" aria-orientation="vertical" 
+         class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+      <a id="user-menu-item-0" role="menuitem" href="#" tabindex="-1" class="block px-3 py-1 text-sm/6 text-gray-900">Your profile</a>
+      <a id="user-menu-item-1" role="menuitem" href="#" tabindex="-1" class="block px-3 py-1 text-sm/6 text-gray-900">Sign out</a>
+    </div>
+  }
+</div>

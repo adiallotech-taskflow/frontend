@@ -1,10 +1,13 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { MobileSidebarComponent } from '../components/mobile-sidebar/mobile-sidebar.component';
+import { DesktopSidebarComponent } from '../components/desktop-sidebar/desktop-sidebar.component';
+import { TopNavigationComponent } from '../components/top-navigation/top-navigation.component';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, MobileSidebarComponent, DesktopSidebarComponent, TopNavigationComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })

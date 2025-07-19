@@ -1,0 +1,25 @@
+@if (isOpen) {
+  <div role="dialog" aria-modal="true" class="relative z-50 lg:hidden">
+    <div aria-hidden="true" class="fixed inset-0 bg-gray-900/80" (click)="onClose()"></div>
+
+    <div class="fixed inset-0 flex">
+      <div class="relative mr-16 flex w-full max-w-xs flex-1">
+        <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
+          <button type="button" class="-m-2.5 p-2.5" (click)="onClose()">
+            <span class="sr-only">Close sidebar</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6 text-white">
+              <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
+          <div class="flex h-16 shrink-0 items-center">
+            <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" class="h-8 w-auto" />
+          </div>
+          <app-navigation-menu [navigationItems]="navigationItems" [teams]="teams"></app-navigation-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+}
