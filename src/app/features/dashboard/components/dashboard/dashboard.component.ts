@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Workspace, WorkspaceStats, DashboardStats } from '../../../../core/models';
+import { WorkspaceService } from '../../../../core/services';
 import { SearchBarComponent } from '../search-bar/search-bar';
 import { StatsOverviewComponent } from '../stats-overview/stats-overview';
 import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
@@ -35,6 +36,8 @@ export class DashboardComponent implements OnInit {
   isLoading = signal(true);
   searchTerm = signal('');
 
+  constructor(private workspaceService: WorkspaceService) {}
+
   // Computed values
   filteredWorkspaces = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -61,52 +64,16 @@ export class DashboardComponent implements OnInit {
   loadWorkspaces() {
     this.isLoading.set(true);
 
-    // Simulate API call with mock data
-    setTimeout(() => {
-      const mockWorkspaces: Workspace[] = [
-        {
-          id: '1',
-          name: 'Marketing Campaign',
-          description: 'Q1 2024 marketing initiatives and campaigns',
-          ownerId: 'user1',
-          members: [
-            { userId: 'user1', role: 'admin', joinedAt: new Date() },
-            { userId: 'user2', role: 'member', joinedAt: new Date() },
-            { userId: 'user3', role: 'member', joinedAt: new Date() }
-          ],
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date()
-        },
-        {
-          id: '2',
-          name: 'Product Development',
-          description: 'New feature development and bug fixes',
-          ownerId: 'user1',
-          members: [
-            { userId: 'user1', role: 'admin', joinedAt: new Date() },
-            { userId: 'user4', role: 'member', joinedAt: new Date() },
-            { userId: 'user5', role: 'viewer', joinedAt: new Date() }
-          ],
-          createdAt: new Date('2024-02-01'),
-          updatedAt: new Date()
-        },
-        {
-          id: '3',
-          name: 'Design System',
-          description: 'Building and maintaining the design system',
-          ownerId: 'user2',
-          members: [
-            { userId: 'user2', role: 'admin', joinedAt: new Date() },
-            { userId: 'user6', role: 'member', joinedAt: new Date() }
-          ],
-          createdAt: new Date('2024-01-20'),
-          updatedAt: new Date()
-        }
-      ];
-
-      this.workspaces.set(mockWorkspaces);
-      this.isLoading.set(false);
-    }, 1500); // Simulate loading time
+    this.workspaceService.list().subscribe({
+      next: (workspaces) => {
+        this.workspaces.set(workspaces);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading workspaces:', error);
+        this.isLoading.set(false);
+      }
+    });
   }
 
   onSearchChange(searchTerm: string) {

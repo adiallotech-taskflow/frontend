@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
+import { WorkspaceMockService } from './mock/workspace-mock.service';
 import { Workspace, WorkspaceMember, WorkspaceStats } from '../models';
+import { environment } from '../../../environments/environment';
 
 export interface CreateWorkspaceRequest {
   name: string;
@@ -28,13 +30,27 @@ export class WorkspaceService {
   public workspaces$ = this.workspacesSubject.asObservable();
   public currentWorkspace$ = this.currentWorkspaceSubject.asObservable();
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private mockService: WorkspaceMockService
+  ) {}
+
+  /**
+   * Determines whether to use mock service based on environment
+   */
+  private get useMockService(): boolean {
+    return !environment.production;
+  }
 
   /**
    * Create a new workspace
    */
   create(workspaceData: CreateWorkspaceRequest): Observable<Workspace> {
-    return this.apiService.post<Workspace>('/workspaces', workspaceData).pipe(
+    const request$ = this.useMockService 
+      ? this.mockService.createWorkspace(workspaceData)
+      : this.apiService.post<Workspace>('/workspaces', workspaceData);
+
+    return request$.pipe(
       tap(newWorkspace => {
         const currentWorkspaces = this.workspacesSubject.value;
         this.workspacesSubject.next([...currentWorkspaces, newWorkspace]);
@@ -47,7 +63,12 @@ export class WorkspaceService {
    * Get all workspaces for the current user
    */
   list(): Observable<Workspace[]> {
-    return this.apiService.get<Workspace[]>('/workspaces').pipe(
+    const request$ = this.useMockService 
+      ? this.mockService.getWorkspaces()
+      : this.apiService.get<Workspace[]>('/workspaces');
+
+    return request$.pipe(
+      map(result => Array.isArray(result) ? result : result.items), // Handle pagination result
       tap(workspaces => this.workspacesSubject.next(workspaces)),
       catchError(error => throwError(() => error))
     );
