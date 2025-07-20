@@ -1,8 +1,8 @@
 import { Component, OnInit, signal, computed, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Workspace, WorkspaceStats, DashboardStats } from '../../../../core/models';
-import { WorkspaceService } from '../../../../core/services';
+import { Workspace, WorkspaceStats, DashboardStats, Task } from '../../../../core/models';
+import { WorkspaceService, TaskMockService } from '../../../../core/services';
 import { SearchBarComponent } from '../search-bar/search-bar';
 import { StatsOverviewComponent } from '../stats-overview/stats-overview';
 import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
@@ -10,6 +10,7 @@ import { WorkspaceSkeletonComponent } from '../workspace-skeleton/workspace-skel
 import { EmptyStateComponent } from '../empty-state/empty-state';
 import { FabButtonComponent } from '../fab-button/fab-button';
 import { WorkspaceSlideOverComponent } from '../../../workspace/workspace-slide-over';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,10 +34,14 @@ export class DashboardComponent implements OnInit {
 
   // State
   workspaces = signal<Workspace[]>([]);
+  allTasks = signal<Task[]>([]);
   isLoading = signal(true);
   searchTerm = signal('');
 
-  constructor(private workspaceService: WorkspaceService) {}
+  constructor(
+    private workspaceService: WorkspaceService,
+    private taskService: TaskMockService
+  ) {}
 
   // Computed values
   filteredWorkspaces = computed(() => {
@@ -49,31 +54,45 @@ export class DashboardComponent implements OnInit {
 
   totalStats = computed((): DashboardStats => {
     const workspaces = this.workspaces();
+    const tasks = this.allTasks();
+    const inProgressTasks = tasks.filter(task => task.status === 'in-progress').length;
+    
     return {
       totalWorkspaces: workspaces.length,
       totalMembers: workspaces.reduce((sum, ws) => sum + ws.members.length, 0),
-      totalTasks: this.getMockTaskCount(),
-      inProgressTasks: Math.floor(this.getMockTaskCount() * 0.4)
+      totalTasks: tasks.length,
+      inProgressTasks: inProgressTasks
     };
   });
 
   ngOnInit() {
-    this.loadWorkspaces();
+    this.loadData();
   }
 
-  loadWorkspaces() {
+  loadData() {
     this.isLoading.set(true);
 
-    this.workspaceService.list().subscribe({
-      next: (workspaces) => {
-        this.workspaces.set(workspaces);
+    // Load workspaces and tasks in parallel
+    forkJoin({
+      workspaces: this.workspaceService.list(),
+      tasks: this.taskService.getTasks()
+    }).subscribe({
+      next: (data) => {
+        this.workspaces.set(data.workspaces);
+        // getTasks returns either Task[] or PaginationResult<Task>
+        const tasks = Array.isArray(data.tasks) ? data.tasks : data.tasks.items;
+        this.allTasks.set(tasks);
         this.isLoading.set(false);
       },
       error: (error) => {
-        console.error('Error loading workspaces:', error);
+        console.error('Error loading data:', error);
         this.isLoading.set(false);
       }
     });
+  }
+
+  loadWorkspaces() {
+    this.loadData();
   }
 
   onSearchChange(searchTerm: string) {
@@ -92,18 +111,16 @@ export class DashboardComponent implements OnInit {
   }
 
   getWorkspaceStats(workspace: Workspace): WorkspaceStats {
-    const taskCount = Math.floor(Math.random() * 20) + 5;
-    const completedRatio = Math.random() * 0.8 + 0.1;
+    const tasks = this.allTasks();
+    const workspaceTasks = tasks.filter(task => task.workspaceId === workspace.id);
+    const completedTasks = workspaceTasks.filter(task => task.status === 'done').length;
+    const inProgressTasks = workspaceTasks.filter(task => task.status === 'in-progress').length;
 
     return {
-      totalTasks: taskCount,
-      completedTasks: Math.floor(taskCount * completedRatio),
-      inProgressTasks: Math.floor(taskCount * (1 - completedRatio)),
+      totalTasks: workspaceTasks.length,
+      completedTasks: completedTasks,
+      inProgressTasks: inProgressTasks,
       totalMembers: workspace.members.length
     };
-  }
-
-  private getMockTaskCount(): number {
-    return this.workspaces().length * 8; // Mock: 8 tasks per workspace on average
   }
 }
