@@ -20,7 +20,7 @@ export class TopNavigationComponent {
   // Observables et computed values pour l'authentification
   currentUser$ = this.authService.currentUser$;
   isAuthenticated$ = this.authService.isAuthenticated$;
-  
+
   // Computed values pour l'affichage
   userName = computed(() => {
     const user = this.authService.getCurrentUser();
@@ -37,14 +37,6 @@ export class TopNavigationComponent {
   });
 
   constructor() {
-    // Debug: Observer l'état d'authentification dans TopNav
-    this.authService.currentUser$.subscribe(user => {
-      console.log('👤 Current user changed in TopNavigation:', user);
-    });
-    
-    this.authService.isAuthenticated$.subscribe(isAuth => {
-      console.log('🔐 Authentication state in TopNavigation:', isAuth);
-    });
   }
 
   onToggleMobileSidenav() {

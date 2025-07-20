@@ -15,10 +15,7 @@ export class AuthService {
   public currentUser$ = this.authMockService.currentUser$;
   public isAuthenticated$ = this.authMockService.isAuthenticated$;
 
-  constructor() {
-    // Log pour indiquer qu'on utilise le service mock
-    console.log('AuthService initialized with mock implementation');
-  }
+  constructor() {}
 
   /**
    * Connexion utilisateur
@@ -96,10 +93,10 @@ export class AuthService {
   getUserInitials(): string {
     const user = this.getCurrentUser();
     if (!user) return '';
-    
+
     const firstInitial = user.firstName?.charAt(0)?.toUpperCase() || '';
     const lastInitial = user.lastName?.charAt(0)?.toUpperCase() || '';
-    
+
     return firstInitial + lastInitial;
   }
 
@@ -109,7 +106,7 @@ export class AuthService {
   getUserFullName(): string {
     const user = this.getCurrentUser();
     if (!user) return '';
-    
+
     return `${user.firstName} ${user.lastName}`.trim();
   }
 

@@ -33,13 +33,33 @@ export class TaskCardComponent {
   get statusConfig() {
     switch (this.task.status) {
       case 'todo':
-        return { bgColor: 'bg-gray-100', textColor: 'text-gray-800', label: 'To Do' };
+        return { 
+          bgColor: 'bg-gray-50', 
+          textColor: 'text-gray-700', 
+          ringColor: 'ring-gray-600/20',
+          label: 'To Do' 
+        };
       case 'in-progress':
-        return { bgColor: 'bg-blue-100', textColor: 'text-blue-800', label: 'In Progress' };
+        return { 
+          bgColor: 'bg-blue-50', 
+          textColor: 'text-blue-700', 
+          ringColor: 'ring-blue-600/20',
+          label: 'In Progress' 
+        };
       case 'done':
-        return { bgColor: 'bg-green-100', textColor: 'text-green-800', label: 'Done' };
+        return { 
+          bgColor: 'bg-green-50', 
+          textColor: 'text-green-700', 
+          ringColor: 'ring-green-600/20',
+          label: 'Done' 
+        };
       default:
-        return { bgColor: 'bg-gray-100', textColor: 'text-gray-800', label: 'Unknown' };
+        return { 
+          bgColor: 'bg-gray-50', 
+          textColor: 'text-gray-700', 
+          ringColor: 'ring-gray-600/20',
+          label: 'Unknown' 
+        };
     }
   }
 

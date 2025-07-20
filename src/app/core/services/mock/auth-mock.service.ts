@@ -35,7 +35,7 @@ export interface AuthSession {
 export class AuthMockService extends MockBaseService<User> {
   private readonly SESSION_KEY = 'taskflow_auth_session';
   private readonly TOKEN_EXPIRY_HOURS = 24;
-  
+
   // BehaviorSubject pour l'utilisateur courant
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -83,20 +83,15 @@ export class AuthMockService extends MockBaseService<User> {
 
   constructor() {
     super();
-    
+
     // Forcer l'initialisation des utilisateurs de test si ils n'existent pas
     const existingUsers = this.getStoredData();
     if (!existingUsers || existingUsers.length === 0) {
       console.log('🔍 No users found in storage, initializing with default data');
       this.saveToStorage(this.defaultData);
     }
-    
+
     this.initializeAuth();
-    
-    // Debug: Vérifier les données au démarrage
-    const users = this.getStoredData();
-    console.log('🔍 AuthMockService initialized - Users in storage:', users);
-    console.log('🔍 Default data available:', this.defaultData);
   }
 
   /**
@@ -140,7 +135,7 @@ export class AuthMockService extends MockBaseService<User> {
         const users = this.getStoredData() || [];
         console.log('🔍 Login attempt - Users from storage:', users);
         console.log('🔍 Looking for email:', email);
-        
+
         const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
         console.log('🔍 Found user:', user);
 
@@ -166,7 +161,7 @@ export class AuthMockService extends MockBaseService<User> {
 
         // Générer la réponse d'authentification
         const authResponse = this.generateAuthResponse(user);
-        
+
         // Stocker la session
         this.storeSession({
           user,
@@ -210,15 +205,15 @@ export class AuthMockService extends MockBaseService<User> {
     return this.simulateDelay().pipe(
       switchMap(() => {
         const users = this.getStoredData() || [];
-        
+
         // Vérifier si l'email existe déjà
-        const existingUser = users.find(u => 
+        const existingUser = users.find(u =>
           u.email.toLowerCase() === registerData.email.toLowerCase()
         );
 
         if (existingUser) {
-          this.configService.logAction('Registration failed - email exists', { 
-            email: registerData.email 
+          this.configService.logAction('Registration failed - email exists', {
+            email: registerData.email
           });
           return throwError(() => ({
             message: 'Cet email est déjà utilisé',
@@ -245,7 +240,7 @@ export class AuthMockService extends MockBaseService<User> {
 
         // Générer la réponse d'authentification
         const authResponse = this.generateAuthResponse(newUser);
-        
+
         // Stocker la session
         this.storeSession({
           user: newUser,
@@ -280,7 +275,7 @@ export class AuthMockService extends MockBaseService<User> {
       map(() => {
         this.clearSession();
         this.currentUserSubject.next(null);
-        
+
         this.configService.logAction('Logout successful', {});
         return true;
       })
@@ -292,7 +287,7 @@ export class AuthMockService extends MockBaseService<User> {
    */
   refreshToken(): Observable<AuthResponse> {
     const session = this.getStoredSession();
-    
+
     if (!session || !this.isSessionValid(session)) {
       return throwError(() => ({
         message: 'Session invalide ou expirée',
@@ -304,7 +299,7 @@ export class AuthMockService extends MockBaseService<User> {
     return this.simulateDelay().pipe(
       map(() => {
         const authResponse = this.generateAuthResponse(session.user);
-        
+
         // Mettre à jour la session
         this.storeSession({
           user: session.user,
@@ -489,7 +484,7 @@ export class AuthMockService extends MockBaseService<User> {
   public forceLogin(userId: string): Observable<AuthResponse> {
     const users = this.getStoredData() || [];
     const user = users.find(u => u.id === userId);
-    
+
     if (!user) {
       return throwError(() => new Error('User not found'));
     }
@@ -500,7 +495,7 @@ export class AuthMockService extends MockBaseService<User> {
       token: authResponse.token,
       expiresAt: authResponse.expiresAt
     });
-    
+
     this.currentUserSubject.next(user);
     return of(authResponse);
   }

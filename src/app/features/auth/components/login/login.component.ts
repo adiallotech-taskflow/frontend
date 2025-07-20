@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services';
-import { AuthDebugComponent } from '../auth-debug/auth-debug.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthDebugComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -29,11 +28,6 @@ export class LoginComponent {
       rememberMe: [false]
     });
 
-    // Debug: Observer l'état d'authentification
-    this.authService.currentUser$.subscribe(user => {
-      console.log('👤 Current user changed in LoginComponent:', user);
-    });
-    
     this.authService.isAuthenticated$.subscribe(isAuth => {
       console.log('🔐 Authentication state in LoginComponent:', isAuth);
     });

@@ -27,7 +27,7 @@ export abstract class MockBaseService<T> {
   protected defaultData: T[] = [];
   protected updateSubject = new Subject<T[]>();
   protected configService = inject(MockConfigService);
-  
+
   // Observable pour écouter les changements en temps réel
   public updates$ = this.updateSubject.asObservable();
 
@@ -41,6 +41,7 @@ export abstract class MockBaseService<T> {
   protected initializeStorage(): void {
     const config = this.configService.getConfig();
     if (config.persistToLocalStorage && !this.getStoredData()) {
+    console.log('config', JSON.stringify(this.getStoredData()));
       this.saveToStorage(this.defaultData);
       this.configService.logAction(`Initialized ${this.storageKey} with default data`, {
         count: this.defaultData.length
@@ -60,11 +61,11 @@ export abstract class MockBaseService<T> {
    * Simule une erreur basée sur la configuration
    */
   protected simulateError<R>(
-    customRate?: number, 
+    customRate?: number,
     options: MockErrorOptions = {}
   ): Observable<R> {
     const errorRate = customRate ?? this.configService.getConfig().errorRate;
-    
+
     if (this.configService.shouldSimulateError()) {
       const error = {
         message: options.message || 'Mock API Error - This is a simulated error for testing',
@@ -72,7 +73,7 @@ export abstract class MockBaseService<T> {
         status: options.status || 500,
         timestamp: new Date().toISOString()
       };
-      
+
       this.configService.logAction('Simulated error', { error, rate: errorRate });
       return throwError(() => error);
     }
@@ -90,8 +91,8 @@ export abstract class MockBaseService<T> {
    * Pagine un tableau de résultats
    */
   protected paginateResults<R>(
-    items: R[], 
-    page: number = 1, 
+    items: R[],
+    page: number = 1,
     limit: number = 10
   ): PaginationResult<R> {
     const startIndex = (page - 1) * limit;
@@ -115,7 +116,7 @@ export abstract class MockBaseService<T> {
    */
   protected saveToStorage(data: T[]): void {
     const config = this.configService.getConfig();
-    
+
     if (!config.persistToLocalStorage) {
       this.emitUpdate(data);
       return;
@@ -136,7 +137,7 @@ export abstract class MockBaseService<T> {
    */
   public getStoredData(): T[] | null {
     const config = this.configService.getConfig();
-    
+
     if (!config.persistToLocalStorage) {
       return this.defaultData;
     }
@@ -175,7 +176,7 @@ export abstract class MockBaseService<T> {
       map(() => {
         const currentData = this.getStoredData() || [];
         const index = currentData.findIndex((item: any) => item.id === id);
-        
+
         if (index === -1) {
           throw new Error(`Item with id ${id} not found`);
         }
@@ -197,7 +198,7 @@ export abstract class MockBaseService<T> {
       map(() => {
         const currentData = this.getStoredData() || [];
         const filteredData = currentData.filter((item: any) => item.id !== id);
-        
+
         if (filteredData.length === currentData.length) {
           throw new Error(`Item with id ${id} not found`);
         }
@@ -216,11 +217,11 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const data = this.getStoredData() || [];
-        
+
         if (page && limit) {
           return this.paginateResults(data, page, limit);
         }
-        
+
         return data;
       })
     );
@@ -234,11 +235,11 @@ export abstract class MockBaseService<T> {
       map(() => {
         const data = this.getStoredData() || [];
         const item = data.find((item: any) => item.id === id);
-        
+
         if (!item) {
           throw new Error(`Item with id ${id} not found`);
         }
-        
+
         return item;
       })
     );
@@ -248,7 +249,7 @@ export abstract class MockBaseService<T> {
    * Recherche dans les données mockées
    */
   protected searchInMockData(
-    searchTerm: string, 
+    searchTerm: string,
     searchFields: (keyof T)[],
     page?: number,
     limit?: number
@@ -256,8 +257,8 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const data = this.getStoredData() || [];
-        const filteredData = data.filter((item: any) => 
-          searchFields.some(field => 
+        const filteredData = data.filter((item: any) =>
+          searchFields.some(field =>
             item[field]?.toString().toLowerCase().includes(searchTerm.toLowerCase())
           )
         );
@@ -276,8 +277,8 @@ export abstract class MockBaseService<T> {
    */
   public resetMockData(): void {
     this.saveToStorage(this.defaultData);
-    this.configService.logAction(`Reset ${this.storageKey} to default data`, { 
-      count: this.defaultData.length 
+    this.configService.logAction(`Reset ${this.storageKey} to default data`, {
+      count: this.defaultData.length
     });
   }
 
@@ -286,8 +287,8 @@ export abstract class MockBaseService<T> {
    */
   public loadTestData(testData: T[]): void {
     this.saveToStorage(testData);
-    this.configService.logAction(`Loaded test data to ${this.storageKey}`, { 
-      count: testData.length 
+    this.configService.logAction(`Loaded test data to ${this.storageKey}`, {
+      count: testData.length
     });
   }
 
