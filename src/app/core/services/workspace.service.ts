@@ -78,7 +78,11 @@ export class WorkspaceService {
    * Get a specific workspace by ID
    */
   getById(workspaceId: string): Observable<Workspace> {
-    return this.apiService.get<Workspace>(`/workspaces/${workspaceId}`).pipe(
+    const request$ = this.useMockService 
+      ? this.mockService.getWorkspaceById(workspaceId)
+      : this.apiService.get<Workspace>(`/workspaces/${workspaceId}`);
+
+    return request$.pipe(
       tap(workspace => {
         const currentWorkspaces = this.workspacesSubject.value;
         const index = currentWorkspaces.findIndex(w => w.id === workspaceId);
