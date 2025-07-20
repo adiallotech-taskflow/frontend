@@ -66,9 +66,7 @@ export class TaskSlideOverComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.mode().type === 'edit' && this.mode().task) {
-      this.populateForm(this.mode().task!);
-    }
+    // Component initialization logic if needed
   }
 
   @HostListener('document:keydown.escape')
@@ -82,18 +80,20 @@ export class TaskSlideOverComponent implements OnInit {
     this.isOpen.set(true);
     this.error.set(null);
 
-    if (this.mode().type === 'create') {
-      this.form.reset({
-        title: '',
-        description: '',
-        status: 'todo',
-        priority: 'medium',
-        assigneeId: '',
-        dueDate: ''
-      });
-    } else if (this.mode().task) {
-      this.populateForm(this.mode().task!);
-    }
+    setTimeout(() => {
+      if (this.mode().type === 'create') {
+        this.form.reset({
+          title: '',
+          description: '',
+          status: 'todo',
+          priority: 'medium',
+          assigneeId: '',
+          dueDate: ''
+        });
+      } else if (this.mode().type === 'edit' && this.mode().task) {
+        this.populateForm(this.mode().task!);
+      }
+    }, 0);
   }
 
   close() {

@@ -1,0 +1,50 @@
+/* Confirmation dialog animations */
+
+/* Slide in from right on mobile, slide down on desktop */
+@media (max-width: 640px) {
+  .transform {
+    animation: slideInRight 0.3s ease-out;
+  }
+}
+
+@media (min-width: 641px) {
+  .transform {
+    animation: slideInDown 0.3s ease-out;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Fade out animation */
+.fade-out {
+  animation: fadeOut 0.1s ease-in;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

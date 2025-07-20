@@ -122,4 +122,12 @@
     (taskUpdated)="onTaskUpdated($event)"
     (closed)="onTaskSlideOverClosed()">
   </app-task-slide-over>
+
+  <!-- Confirmation Dialog -->
+  <app-confirmation-dialog
+    #confirmationDialog
+    [data]="confirmationData"
+    (confirmed)="onDeleteConfirmed()"
+    (cancelled)="onDeleteCancelled()">
+  </app-confirmation-dialog>
 </div>

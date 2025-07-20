@@ -15,7 +15,6 @@ export class TaskCardComponent {
   @Input() assignedUser?: User;
   @Output() taskAction = new EventEmitter<{ action: TaskAction; task: Task }>();
 
-  showMenu = false;
 
   get priorityConfig() {
     switch (this.task.priority) {
@@ -78,16 +77,7 @@ export class TaskCardComponent {
     return new Date(this.task.dueDate) < new Date() && this.task.status !== 'done';
   }
 
-  toggleMenu() {
-    this.showMenu = !this.showMenu;
-  }
-
   onAction(action: TaskAction) {
     this.taskAction.emit({ action, task: this.task });
-    this.showMenu = false;
-  }
-
-  closeMenu() {
-    this.showMenu = false;
   }
 }
