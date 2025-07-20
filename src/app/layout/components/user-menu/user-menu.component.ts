@@ -45,11 +45,11 @@ export class UserMenuComponent {
       case 'admin':
         return 'Admin';
       case 'member':
-        return 'Membre';
+        return 'Member';
       case 'viewer':
-        return 'Invité';
+        return 'Viewer';
       default:
-        return 'Utilisateur';
+        return 'User';
     }
   }
 }
