@@ -130,4 +130,9 @@
     (confirmed)="onDeleteConfirmed()"
     (cancelled)="onDeleteCancelled()">
   </app-confirmation-dialog>
+
+  <!-- Floating Action Button -->
+  @if (!isLoading && !hasError && !isEmpty && !taskSlideOver.isOpen()) {
+    <app-fab-button (click)="openCreateTaskSlideOver()"></app-fab-button>
+  }
 </div>

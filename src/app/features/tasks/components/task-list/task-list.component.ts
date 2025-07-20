@@ -5,6 +5,7 @@ import { trigger, transition, style, animate, stagger, query } from '@angular/an
 import { TaskCardComponent } from '../../../../shared';
 import { TaskSlideOverComponent, TaskSlideOverMode } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
 import { TaskMockService } from '../../../../core/services';
 import { Task, User } from '../../../../core/models';
 
@@ -20,7 +21,7 @@ interface TaskGroup {
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, TaskCardComponent, TaskSlideOverComponent, ConfirmationDialogComponent],
+  imports: [CommonModule, TaskCardComponent, TaskSlideOverComponent, ConfirmationDialogComponent, FabButtonComponent],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
   animations: [
