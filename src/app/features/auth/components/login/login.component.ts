@@ -1,17 +1,106 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services';
+import { AuthDebugComponent } from '../auth-debug/auth-debug.component';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule],
-  template: `
-    <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to TaskFlow
-        </h2>
-      </div>
-    </div>
-  `
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AuthDebugComponent],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
-export class LoginComponent {}
+export class LoginComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
+
+  loginForm: FormGroup;
+  isLoading = signal(false);
+  errorMessage = signal<string | null>(null);
+  showPassword = signal(false);
+
+  constructor() {
+    this.loginForm = this.fb.group({
+      email: ['admin@test.com', [Validators.required, Validators.email]],
+      password: ['password123', [Validators.required, Validators.minLength(6)]],
+      rememberMe: [false]
+    });
+
+    // Debug: Observer l'état d'authentification
+    this.authService.currentUser$.subscribe(user => {
+      console.log('👤 Current user changed in LoginComponent:', user);
+    });
+    
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      console.log('🔐 Authentication state in LoginComponent:', isAuth);
+    });
+  }
+
+  get emailControl() {
+    return this.loginForm.get('email');
+  }
+
+  get passwordControl() {
+    return this.loginForm.get('password');
+  }
+
+  get isFormValid() {
+    return this.loginForm.valid;
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword.update(value => !value);
+  }
+
+  onSubmit() {
+    if (this.loginForm.invalid || this.isLoading()) {
+      this.markFormGroupTouched();
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
+
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
+      next: (response) => {
+        console.log('Login successful:', response);
+        this.isLoading.set(false);
+        // Redirection vers le dashboard
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        this.isLoading.set(false);
+        this.errorMessage.set(error.message || 'Une erreur est survenue lors de la connexion');
+      }
+    });
+  }
+
+  private markFormGroupTouched() {
+    Object.keys(this.loginForm.controls).forEach(key => {
+      const control = this.loginForm.get(key);
+      control?.markAsTouched();
+    });
+  }
+
+  // Méthode pour tester avec différents utilisateurs
+  loginAs(userType: 'admin' | 'user' | 'demo') {
+    const credentials = {
+      admin: { email: 'admin@test.com', password: 'password123' },
+      user: { email: 'user@test.com', password: 'password123' },
+      demo: { email: 'demo@test.com', password: 'password123' }
+    };
+
+    const cred = credentials[userType];
+    this.loginForm.patchValue({
+      email: cred.email,
+      password: cred.password
+    });
+    this.onSubmit();
+  }
+}
