@@ -11,7 +11,7 @@
           <div class="h-5 w-8 bg-gray-200 rounded-full animate-pulse"></div>
         </div>
       </div>
-      
+
       <!-- Skeleton Cards -->
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         @for (_ of getSkeletonArray(2); track $index) {
@@ -37,12 +37,12 @@
   @if (hasError && !isLoading) {
     <div class="text-center py-12 px-4 bg-red-50 rounded-lg border border-red-200">
     <svg class="mx-auto h-12 w-12 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
     </svg>
     <h3 class="text-lg font-medium text-red-900 mb-2">Error Loading Tasks</h3>
     <p class="text-red-700">{{ errorMessage }}</p>
-    <button (click)="loadTasks()" 
+    <button (click)="loadTasks()"
             class="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
       Try Again
     </button>
@@ -53,12 +53,12 @@
   @if (isEmpty && !hasError) {
     <div class="text-center py-16 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
     <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
     </svg>
     <h3 class="text-lg font-medium text-gray-900 mb-2">No tasks yet</h3>
     <p class="text-gray-500 mb-4">Get started by creating your first task in this workspace.</p>
-    <button 
+    <button
       (click)="openCreateTaskSlideOver()"
       class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
       Create Task
@@ -66,11 +66,21 @@
     </div>
   }
 
+  <!-- Task Filters -->
+  @if (!isLoading && !hasError && !isEmpty) {
+    <app-task-filters
+      [resultsCount]="filteredTasksCount()"
+      [currentUserId]="currentUserId"
+      (filtersChanged)="onFiltersChanged($event)">
+    </app-task-filters>
+  }
+
   <!-- Task Groups -->
   @if (!isLoading && !hasError && !isEmpty) {
     <div class="space-y-8">
     @for (group of taskGroups; track group.status) {
-      <div class="space-y-4">
+      @if (group.tasks.length > 0) {
+        <div class="space-y-4">
       <!-- Group Header -->
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
@@ -81,8 +91,7 @@
         </div>
       </div>
 
-      <!-- Task Cards -->
-      @if (group.tasks.length > 0) {
+        <!-- Task Cards -->
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         @for (task of group.tasks; track task.id) {
           <app-task-card
@@ -93,15 +102,8 @@
           </app-task-card>
         }
         </div>
-      }
-
-      <!-- Empty Group State -->
-      @if (group.tasks.length === 0) {
-        <div class="text-center py-8 px-4 {{ group.bgColor }} rounded-lg border border-dashed border-gray-300">
-        <p class="{{ group.textColor }} text-sm">No {{ group.label.toLowerCase() }} tasks</p>
         </div>
       }
-      </div>
     }
     </div>
   }

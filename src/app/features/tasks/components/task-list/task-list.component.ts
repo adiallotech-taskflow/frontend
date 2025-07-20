@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
-import { TaskCardComponent } from '../../../../shared';
+import { TaskCardComponent, TaskFiltersComponent, TaskFilters } from '../../../../shared';
 import { TaskSlideOverComponent, TaskSlideOverMode } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
@@ -21,7 +21,7 @@ interface TaskGroup {
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, TaskCardComponent, TaskSlideOverComponent, ConfirmationDialogComponent, FabButtonComponent],
+  imports: [CommonModule, TaskCardComponent, TaskFiltersComponent, TaskSlideOverComponent, ConfirmationDialogComponent, FabButtonComponent],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css'],
   animations: [
@@ -46,6 +46,7 @@ interface TaskGroup {
 export class TaskListComponent implements OnInit, OnDestroy {
   @Input() workspaceId?: string;
   @Input() users: User[] = [];
+  @Input() currentUserId?: string;
 
   taskGroups: TaskGroup[] = [];
   isLoading = true;
@@ -60,6 +61,63 @@ export class TaskListComponent implements OnInit, OnDestroy {
     cancelText: 'Cancel',
     type: 'danger'
   };
+
+  // Filters state
+  currentFilters = signal<TaskFilters>({
+    myTasks: false,
+    status: [],
+    priority: [],
+    thisWeek: false,
+    overdue: false
+  });
+
+  // Computed filtered tasks
+  filteredTasks = computed(() => {
+    let tasks = this.allTasks;
+    const filters = this.currentFilters();
+
+    // My tasks filter
+    if (filters.myTasks && this.currentUserId) {
+      tasks = tasks.filter(task => task.assigneeId === this.currentUserId);
+    }
+
+    // Status filter
+    if (filters.status.length > 0) {
+      tasks = tasks.filter(task => filters.status.includes(task.status));
+    }
+
+    // Priority filter
+    if (filters.priority.length > 0) {
+      tasks = tasks.filter(task => filters.priority.includes(task.priority));
+    }
+
+    // This week filter
+    if (filters.thisWeek) {
+      const now = new Date();
+      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
+      
+      tasks = tasks.filter(task => {
+        if (!task.dueDate) return false;
+        const dueDate = new Date(task.dueDate);
+        return dueDate >= startOfWeek && dueDate <= endOfWeek;
+      });
+    }
+
+    // Overdue filter
+    if (filters.overdue) {
+      const now = new Date();
+      tasks = tasks.filter(task => {
+        if (!task.dueDate) return false;
+        return new Date(task.dueDate) < now && task.status !== 'done';
+      });
+    }
+
+    return tasks;
+  });
+
+  // Computed results count
+  filteredTasksCount = computed(() => this.filteredTasks().length);
 
   @ViewChild('taskSlideOver') taskSlideOver!: TaskSlideOverComponent;
   @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
@@ -132,7 +190,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
       }
     ];
 
-    this.allTasks.forEach(task => {
+    // Use filtered tasks instead of all tasks
+    const tasksToGroup = this.filteredTasks();
+    
+    tasksToGroup.forEach(task => {
       const group = groups.find(g => g.status === task.status);
       if (group) {
         group.tasks.push(task);
@@ -158,7 +219,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   get totalTaskCount(): number {
-    return this.allTasks.length;
+    return this.filteredTasks().length;
   }
 
   getSkeletonArray(count: number): number[] {
@@ -246,5 +307,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onDeleteCancelled() {
     this.taskToDelete = null;
+  }
+
+  onFiltersChanged(filters: TaskFilters) {
+    this.currentFilters.set(filters);
+    this.groupTasksByStatus();
   }
 }
