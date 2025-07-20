@@ -1,4 +1,4 @@
-<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer"
+<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer h-full flex flex-col"
      [routerLink]="['/workspaces', workspace.id]">
   <!-- Workspace Header -->
   <div class="flex items-center justify-between mb-4">
@@ -11,9 +11,13 @@
   </div>
 
   <!-- Description -->
-  @if (workspace.description) {
-    <p class="text-sm text-gray-600 mb-4 line-clamp-2">{{ workspace.description }}</p>
-  }
+  <div class="mb-4 min-h-[2.5rem]">
+    @if (workspace.description) {
+      <p class="text-sm text-gray-600 line-clamp-2">{{ workspace.description }}</p>
+    } @else {
+      <p class="text-sm text-gray-400 italic">No description</p>
+    }
+  </div>
 
   <!-- Stats -->
   <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
@@ -46,7 +50,7 @@
   </div>
 
   <!-- Members Avatars -->
-  <div class="flex -space-x-2 mt-4">
+  <div class="flex -space-x-2 mt-auto pt-4">
     @for (member of workspace.members.slice(0, 3); track member.userId) {
       <div class="relative">
         <div class="h-8 w-8 rounded-full bg-gray-300 border-2 border-white flex items-center justify-center text-xs font-medium text-gray-600">

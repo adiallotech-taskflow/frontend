@@ -1,7 +1,7 @@
-<div class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200">
-  
+<div class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
+
   <!-- Main content -->
-  <div class="flex w-full items-center justify-between space-x-6 p-6">
+  <div class="flex w-full items-center justify-between space-x-6 p-6 flex-1">
     <div class="flex-1 truncate">
       <div class="flex items-center space-x-3">
         <h3 class="truncate text-sm font-medium text-gray-900">{{ task.title }}</h3>
@@ -11,10 +11,14 @@
           {{ statusConfig.label }}
         </span>
       </div>
-      @if (task.description) {
-        <p class="mt-1 truncate text-sm text-gray-500">{{ task.description }}</p>
-      }
-      
+      <div class="mt-1 h-5">
+        @if (task.description) {
+          <p class="truncate text-sm text-gray-500">{{ task.description }}</p>
+        } @else {
+          <p class="text-sm text-gray-400 italic">No description</p>
+        }
+      </div>
+
       <!-- Priority and Due Date -->
       <div class="mt-2 flex items-center space-x-3">
         <!-- Priority Badge -->
@@ -24,25 +28,27 @@
                 [class]="'bg-' + priorityConfig.color + '-500'"></span>
           {{ task.priority | titlecase }}
         </span>
-        
+
         <!-- Due Date -->
-        @if (task.dueDate) {
-          <div class="flex items-center text-xs"
-               [class]="isOverdue ? 'text-red-600' : 'text-gray-500'">
-            <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span [class]="isOverdue ? 'font-medium' : ''">
-              {{ task.dueDate | date:'MMM d' }}
-            </span>
-            @if (isOverdue) {
-              <span class="ml-1 text-red-500 font-medium">!</span>
-            }
-          </div>
-        }
+        <div class="flex items-center">
+          @if (task.dueDate) {
+            <div class="flex items-center text-xs"
+                 [class]="isOverdue ? 'text-red-600' : 'text-gray-500'">
+              <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span [class]="isOverdue ? 'font-medium' : ''">
+                {{ task.dueDate | date:'MMM d' }}
+              </span>
+              @if (isOverdue) {
+                <span class="ml-1 text-red-500 font-medium">!</span>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
-    
+
     <!-- Assignee Avatar -->
     <div class="relative">
       @if (assignedUser?.avatar) {
@@ -62,7 +68,7 @@
       }
     </div>
   </div>
-  
+
   <!-- Overdue Warning -->
   @if (isOverdue) {
     <div class="px-6 pb-4">
@@ -74,7 +80,7 @@
       </div>
     </div>
   }
-  
+
   <!-- Action buttons -->
   <div>
     <div class="-mt-px flex divide-x divide-gray-200">
