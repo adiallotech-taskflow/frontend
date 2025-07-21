@@ -4,9 +4,11 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, forkJoin, of } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 
-import { Workspace, User, WorkspaceMember } from '../../../../core/models';
+import { Workspace, User, WorkspaceMember, Task } from '../../../../core/models';
 import { WorkspaceService } from '../../../../core/services/workspace.service';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
+import { WorkspaceStatsComponent } from '../../components/workspace-stats/workspace-stats.component';
+import { TaskMockService } from '../../../../core/services/mock/task-mock.service';
 
 // Extended interface for members with user details
 interface WorkspaceMemberWithUser extends WorkspaceMember {
@@ -16,7 +18,7 @@ interface WorkspaceMemberWithUser extends WorkspaceMember {
 @Component({
   selector: 'app-workspace-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskListComponent, TitleCasePipe],
+  imports: [CommonModule, RouterModule, TaskListComponent, WorkspaceStatsComponent, TitleCasePipe],
   templateUrl: './workspace-detail.component.html',
   styleUrls: ['./workspace-detail.component.css']
 })
@@ -34,6 +36,9 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   
   // Members with user details
   membersWithUsers = signal<WorkspaceMemberWithUser[]>([]);
+  
+  // Tasks for the workspace
+  tasks = signal<Task[]>([]);
 
   // Computed values
   canEdit = computed(() => {
@@ -43,15 +48,20 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   });
 
   taskStats = computed(() => {
-    // For now, we'll use mock stats since tasks are not part of workspace model
-    // In a real app, this would come from a task service or workspace stats
-    return { todo: 5, inProgress: 3, done: 12, total: 20 };
+    const allTasks = this.tasks();
+    return {
+      todo: allTasks.filter(t => t.status === 'todo').length,
+      inProgress: allTasks.filter(t => t.status === 'in-progress').length,
+      done: allTasks.filter(t => t.status === 'done').length,
+      total: allTasks.length
+    };
   });
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private taskService: TaskMockService
   ) {}
 
   ngOnInit() {
@@ -70,6 +80,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     if (resolvedWorkspace) {
       this.workspace.set(resolvedWorkspace);
       this.loadMembersWithUserDetails(resolvedWorkspace);
+      this.loadWorkspaceTasks(resolvedWorkspace.id);
       this.isLoading.set(false);
       return;
     }
@@ -90,6 +101,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
         next: (workspace) => {
           this.workspace.set(workspace);
           this.loadMembersWithUserDetails(workspace);
+          this.loadWorkspaceTasks(workspace.id);
           this.isLoading.set(false);
         },
         error: (error) => {
@@ -117,6 +129,19 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     }));
     
     this.membersWithUsers.set(membersWithUsers);
+  }
+
+  private loadWorkspaceTasks(workspaceId: string) {
+    this.taskService.getByWorkspace(workspaceId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (tasks: Task[]) => {
+          this.tasks.set(tasks);
+        },
+        error: (error: any) => {
+          console.error('Error loading workspace tasks:', error);
+        }
+      });
   }
 
   setActiveTab(tab: 'tasks' | 'members' | 'settings') {

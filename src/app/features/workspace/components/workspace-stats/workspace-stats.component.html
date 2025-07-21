@@ -1,0 +1,63 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  @for (stat of stats(); track stat.title; let i = $index) {
+    <div class="rounded-lg border p-6 hover:shadow-md transition-shadow duration-200"
+         [ngClass]="getColorClasses(stat.color).bg">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600">{{ stat.title }}</p>
+          <div class="mt-2 flex items-baseline gap-2">
+            <p class="text-3xl font-bold" [ngClass]="getColorClasses(stat.color).text">
+              {{ getAnimatedValue(i) }}
+              @if (stat.suffix) {
+                <span class="text-2xl">{{ stat.suffix }}</span>
+              }
+            </p>
+            @if (stat.percentage !== undefined) {
+              <span class="text-sm font-medium text-gray-500">
+                ({{ stat.percentage }}%)
+              </span>
+            }
+          </div>
+        </div>
+        <div class="p-3 rounded-full" [ngClass]="getColorClasses(stat.color).bg">
+          <svg class="w-6 h-6" [ngClass]="getColorClasses(stat.color).icon" 
+               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="stat.icon"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="rounded-lg border p-6 bg-gray-50">
+  <h3 class="text-sm font-medium text-gray-600 mb-4">Task Completion Trend (Last 7 Days)</h3>
+  <div class="relative h-16">
+    @if (progressData().length > 0) {
+      <svg class="w-full h-full" viewBox="0 0 100 30" preserveAspectRatio="none">
+        <polyline
+          [attr.points]="getSparklinePoints()"
+          fill="none"
+          stroke="rgb(59, 130, 246)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <polyline
+          [attr.points]="getSparklinePoints() + ' 100,30 0,30'"
+          fill="rgba(59, 130, 246, 0.1)"
+          stroke="none"
+        />
+      </svg>
+      <div class="absolute inset-0 flex items-end justify-between text-xs text-gray-500 px-1">
+        @for (value of progressData(); track $index) {
+          <span class="opacity-0 hover:opacity-100 transition-opacity">{{ value }}</span>
+        }
+      </div>
+    } @else {
+      <div class="flex items-center justify-center h-full text-gray-400">
+        <p class="text-sm">No data available</p>
+      </div>
+    }
+  </div>
+</div>

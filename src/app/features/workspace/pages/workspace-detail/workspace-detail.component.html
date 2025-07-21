@@ -158,51 +158,12 @@
       <!-- Tasks Tab -->
       @if (activeTab() === 'tasks') {
         <div class="space-y-6">
-          <!-- Task Stats -->
-          @if (taskStats().total > 0) {
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center">
-                      <span class="text-white text-sm font-medium">{{ taskStats().todo }}</span>
-                    </div>
-                  </div>
-                  <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-900">To Do</p>
-                    <p class="text-xs text-gray-500">{{ taskStats().todo }} task{{ taskStats().todo === 1 ? '' : 's' }}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="bg-blue-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span class="text-white text-sm font-medium">{{ taskStats().inProgress }}</span>
-                    </div>
-                  </div>
-                  <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-900">In Progress</p>
-                    <p class="text-xs text-gray-500">{{ taskStats().inProgress }} task{{ taskStats().inProgress === 1 ? '' : 's' }}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="bg-green-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                      <span class="text-white text-sm font-medium">{{ taskStats().done }}</span>
-                    </div>
-                  </div>
-                  <div class="ml-4">
-                    <p class="text-sm font-medium text-gray-900">Done</p>
-                    <p class="text-xs text-gray-500">{{ taskStats().done }} task{{ taskStats().done === 1 ? '' : 's' }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <!-- Workspace Stats Component -->
+          @if (workspace() && tasks().length > 0) {
+            <app-workspace-stats 
+              [workspace]="workspace()!" 
+              [tasks]="tasks()">
+            </app-workspace-stats>
           }
           
           <!-- Task List Component -->
