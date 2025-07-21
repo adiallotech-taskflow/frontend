@@ -21,6 +21,10 @@ export const routes: Routes = [
       {
         path: 'tasks',
         loadChildren: () => import('./features/tasks/tasks.routes').then(r => r.tasksRoutes)
+      },
+      {
+        path: 'board',
+        loadComponent: () => import('./features/tasks/components/kanban-board/kanban-board').then(c => c.KanbanBoardComponent)
       }
     ]
   },

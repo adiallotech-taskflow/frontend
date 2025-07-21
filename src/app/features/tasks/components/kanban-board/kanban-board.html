@@ -1,0 +1,95 @@
+<div class="h-full p-6" cdkDropListGroup>
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="flex items-center justify-center h-full">
+      <div class="text-center">
+        <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10" stroke-width="4" class="opacity-25"></circle>
+          <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="text-gray-500">Chargement des tâches...</p>
+      </div>
+    </div>
+  }
+  
+  @if (!isLoading()) {
+  <!-- Board Container -->
+  <div class="h-full overflow-x-auto">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-max md:min-w-0">
+      <!-- Kanban Columns -->
+      @for (column of columns; track column.id) {
+        <div class="flex flex-col h-full min-w-[320px] md:min-w-0">
+          <!-- Column Header -->
+          <div [class]="column.bgColor + ' ' + column.borderColor + ' border-2 rounded-t-lg px-4 py-3'">
+            <div class="flex items-center justify-between">
+              <h3 [class]="column.color + ' font-semibold text-sm uppercase tracking-wider'">
+                {{ column.title }}
+              </h3>
+              <span [class]="column.color + ' text-sm font-medium bg-white bg-opacity-70 px-2 py-1 rounded-full'">
+                {{ getTasksByStatus(column.id).length }}
+              </span>
+            </div>
+          </div>
+          
+          <!-- Column Body -->
+          <div 
+            class="flex-1 bg-gray-50 border-x-2 border-b-2 rounded-b-lg p-4 overflow-y-auto"
+            [class.border-gray-200]="column.id === 'todo'"
+            [class.border-yellow-200]="column.id === 'in-progress'"
+            [class.border-green-200]="column.id === 'done'"
+            cdkDropList
+            [cdkDropListData]="getTasksByStatus(column.id)"
+            [id]="column.id"
+            (cdkDropListDropped)="drop($event, column.id)">
+            
+            <div class="space-y-3 min-h-[100px]">
+              @for (task of getTasksByStatus(column.id); track task.id) {
+                <div 
+                  class="cursor-move transition-all duration-200"
+                  cdkDrag
+                  [cdkDragData]="task">
+                  <!-- Drag Preview -->
+                  <div *cdkDragPlaceholder class="bg-gray-200 rounded-lg h-32 border-2 border-dashed border-gray-400"></div>
+                  
+                  <!-- Task Card -->
+                  <app-task-card
+                    [task]="task"
+                    [assignedUser]="getAssignedUser(task.assigneeId)"
+                    (taskAction)="onTaskAction($event)"
+                    class="block hover:shadow-lg transition-shadow duration-200">
+                  </app-task-card>
+                </div>
+              }
+              
+              <!-- Empty State -->
+              @if (getTasksByStatus(column.id).length === 0) {
+                <div class="text-center py-8 text-gray-400">
+                  <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+                    </path>
+                  </svg>
+                  <p class="text-sm">Aucune tâche</p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  
+  <!-- Error Message -->
+  @if (error()) {
+    <div class="fixed bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-lg">
+      <div class="flex items-center">
+        <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+          </path>
+        </svg>
+        {{ error() }}
+      </div>
+    </div>
+  }
+}
