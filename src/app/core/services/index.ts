@@ -1,5 +1,6 @@
 export * from './api.service';
 export * from './auth.service';
+export * from './task.service';
 export * from './workspace.service';
 export * from './mock/mock-base.service';
 export * from './mock/auth-mock.service';

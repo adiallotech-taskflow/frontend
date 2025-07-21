@@ -7,7 +7,7 @@ import { TaskCardComponent, TaskFiltersComponent, TaskFilters } from '../../../.
 import { TaskSlideOverComponent, TaskSlideOverMode } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent, ConfirmationDialogData } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
-import { TaskMockService, WorkspaceService } from '../../../../core/services';
+import { TaskService, WorkspaceService } from '../../../../core/services';
 import { Task, User, Workspace } from '../../../../core/models';
 
 interface TaskGroup {
@@ -129,7 +129,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private taskService: TaskMockService,
+    private taskService: TaskService,
     private workspaceService: WorkspaceService
   ) {}
 
@@ -165,14 +165,14 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.hasError = false;
 
     const taskObservable = this.workspaceId
-      ? this.taskService.filterTasks({ workspaceId: this.workspaceId })
-      : this.taskService.getTasks();
+      ? this.taskService.list({ workspaceId: this.workspaceId })
+      : this.taskService.list();
 
     taskObservable
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
-          this.allTasks = Array.isArray(response) ? response : response.items;
+        next: (tasks: Task[]) => {
+          this.allTasks = tasks;
           this.groupTasksByStatus();
           this.isLoading = false;
         },
@@ -314,7 +314,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onDeleteConfirmed() {
     if (this.taskToDelete) {
-      this.taskService.deleteTask(this.taskToDelete.id).subscribe({
+      this.taskService.delete(this.taskToDelete.id).subscribe({
         next: () => {
           this.allTasks = this.allTasks.filter(t => t.id !== this.taskToDelete!.id);
           this.groupTasksByStatus();
