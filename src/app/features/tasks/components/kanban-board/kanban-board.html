@@ -40,23 +40,35 @@
             cdkDropList
             [cdkDropListData]="getTasksByStatus(column.id)"
             [id]="column.id"
-            (cdkDropListDropped)="drop($event, column.id)">
+            [cdkDropListConnectedTo]="getConnectedLists(column.id)"
+            (cdkDropListDropped)="drop($event, column.id)"
+            [cdkDropListAutoScrollDisabled]="false"
+            [cdkDropListAutoScrollStep]="5">
             
             <div class="space-y-3 min-h-[100px]">
               @for (task of getTasksByStatus(column.id); track task.id) {
                 <div 
-                  class="cursor-move transition-all duration-200"
+                  class="task-card-drag"
                   cdkDrag
                   [cdkDragData]="task">
-                  <!-- Drag Preview -->
-                  <div *cdkDragPlaceholder class="bg-gray-200 rounded-lg h-32 border-2 border-dashed border-gray-400"></div>
+                  <!-- Drag Preview Template -->
+                  <div *cdkDragPreview class="shadow-2xl opacity-90">
+                    <app-task-card
+                      [task]="task"
+                      [assignedUser]="getAssignedUser(task.assigneeId)"
+                      (taskAction)="onTaskAction($event)">
+                    </app-task-card>
+                  </div>
+                  
+                  <!-- Drag Placeholder -->
+                  <div *cdkDragPlaceholder class="task-placeholder"></div>
                   
                   <!-- Task Card -->
                   <app-task-card
                     [task]="task"
                     [assignedUser]="getAssignedUser(task.assigneeId)"
                     (taskAction)="onTaskAction($event)"
-                    class="block hover:shadow-lg transition-shadow duration-200">
+                    class="block">
                   </app-task-card>
                 </div>
               }

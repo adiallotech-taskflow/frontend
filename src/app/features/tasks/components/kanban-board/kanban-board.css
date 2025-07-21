@@ -6,21 +6,39 @@
 
 /* Drag and Drop Animations */
 .cdk-drag-preview {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
-  transform: rotate(2deg);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  opacity: 0.95;
+  transform: rotate(3deg) scale(1.05);
+  border-radius: 0.5rem;
+  transition: box-shadow 200ms ease;
 }
 
 .cdk-drag-placeholder {
-  opacity: 0;
+  opacity: 0.3;
+  background: #e5e7eb;
+  border: 2px dashed #9ca3af;
+  border-radius: 0.5rem;
 }
 
 .cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-.cdk-drop-list-dragging .cdk-drag {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+/* Smooth transitions for all cards */
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Active dragging state */
+.cdk-drop-list-dragging {
+  cursor: grabbing;
+}
+
+/* Card hover state when not dragging */
+.cdk-drag:not(.cdk-drag-disabled):hover {
+  cursor: grab;
+  transform: translateY(-2px);
+  transition: transform 150ms ease;
 }
 
 /* Column styling */
@@ -67,4 +85,38 @@
 
 .overflow-y-auto::-webkit-scrollbar-thumb:hover {
   background-color: #d1d5db;
+}
+
+/* Task card specific styles */
+.task-card-drag {
+  cursor: grab;
+  transition: all 150ms ease;
+}
+
+.task-card-drag:active {
+  cursor: grabbing;
+}
+
+.task-placeholder {
+  background: #f3f4f6;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  height: 160px;
+  transition: all 200ms ease;
+}
+
+/* Disable pointer events on task card content during drag */
+.cdk-drag-preview app-task-card {
+  pointer-events: none;
+}
+
+/* Smooth list reordering */
+.cdk-drop-list {
+  transition: background-color 200ms ease;
+}
+
+/* Highlight drop zone on hover */
+.cdk-drop-list.cdk-drop-list-dragging:not(.cdk-drop-list-disabled) {
+  background-color: rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.2);
 }
