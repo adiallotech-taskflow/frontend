@@ -8,7 +8,7 @@
             <div class="flex-shrink-0">
               <div class="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center">
                 <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                   </path>
                 </svg>
@@ -22,22 +22,22 @@
             </div>
           </div>
           <div class="flex items-center space-x-3">
-            <a [routerLink]="['/workspaces', workspace.id]" 
+            <a [routerLink]="['/workspaces', workspace.id]"
                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
                 </path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
                 </path>
               </svg>
               Workspace Settings
             </a>
-            <a [routerLink]="['/workspaces']" 
+            <a [routerLink]="['/workspaces']"
                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
               <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4">
                 </path>
               </svg>
@@ -48,43 +48,103 @@
       </div>
     </div>
   }
-  
+
   <!-- All Tasks View Banner (when no workspace selected) -->
   @if (!workspace && !workspaceId && !isLoading) {
-    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm rounded-lg overflow-hidden">
+    <!-- Option 1: Minimal Clean Design -->
+    <div class="bg-white border border-gray-200 shadow-sm rounded-lg">
       <div class="px-6 py-4">
         <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <div class="flex-shrink-0">
-              <div class="h-12 w-12 rounded-lg bg-white/20 flex items-center justify-center">
-                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                  </path>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h1 class="text-xl font-semibold text-white">All Tasks</h1>
-              <p class="text-sm text-white/80">
-                Viewing tasks from all workspaces • {{ totalTaskCount }} total tasks
-              </p>
-            </div>
-          </div>
           <div>
-            <a [routerLink]="['/workspaces']" 
-               class="inline-flex items-center px-3 py-1.5 border border-white/30 text-sm font-medium rounded-md text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/50">
-              <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+            <h1 class="text-2xl font-semibold text-gray-900">All Tasks</h1>
+            <p class="mt-1 text-sm text-gray-500">
+              {{ totalTaskCount }} {{ totalTaskCount === 1 ? 'task' : 'tasks' }} across all workspaces
+            </p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+              <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+              All Workspaces
+            </span>
+            <a [routerLink]="['/workspaces']"
+               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                 </path>
               </svg>
-              Select Workspace
+              Browse Workspaces
             </a>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Option 2: Card Style with Stats -->
+    <!--
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-6 py-5 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-5">
+            <div class="flex-shrink-0">
+              <div class="h-14 w-14 rounded-full bg-indigo-100 flex items-center justify-center">
+                <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-900">All Tasks Overview</h1>
+              <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                <span class="flex items-center">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                  </svg>
+                  Multiple workspaces
+                </span>
+                <span>•</span>
+                <span>{{ totalTaskCount }} total tasks</span>
+              </div>
+            </div>
+          </div>
+          <a [routerLink]="['/workspaces']"
+             class="inline-flex items-center px-4 py-2 border border-indigo-600 text-sm font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Select Workspace
+          </a>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <!-- Option 3: Subtle Background -->
+    <!--
+    <div class="bg-gray-50 border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="py-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+              <nav class="flex items-center text-sm">
+                <a href="#" class="text-gray-400 hover:text-gray-500">Tasks</a>
+                <svg class="flex-shrink-0 mx-2 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span class="text-gray-900 font-medium">All Workspaces</span>
+              </nav>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-sm text-gray-500">{{ totalTaskCount }} tasks total</span>
+              <a [routerLink]="['/workspaces']"
+                 class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                Filter by workspace
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
   }
 
   <!-- Loading State -->
