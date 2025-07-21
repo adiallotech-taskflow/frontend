@@ -1,6 +1,15 @@
-<div class="h-full p-6" cdkDropListGroup>
-  <!-- Loading State -->
-  @if (isLoading()) {
+<div class="min-h-full">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">Kanban Board</h1>
+    </div>
+    <p class="text-gray-500 mt-1">Drag and drop tasks to update their status</p>
+  </div>
+  
+  <div cdkDropListGroup>
+    <!-- Loading State -->
+    @if (isLoading()) {
     <div class="flex items-center justify-center h-full">
       <div class="text-center">
         <svg class="animate-spin h-12 w-12 text-indigo-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,4 +113,6 @@
       </div>
     </div>
   }
-}
+  }
+  </div>
+</div>

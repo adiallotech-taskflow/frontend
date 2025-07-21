@@ -1,4 +1,4 @@
-<div class="space-y-6">
+<div class="min-h-full">
   <!-- Workspace Context Banner -->
   @if (workspace && !isLoading) {
     <div class="bg-white shadow-sm border-b border-gray-200 rounded-lg overflow-hidden">
@@ -51,17 +51,10 @@
 
   <!-- All Tasks View Banner (when no workspace selected) -->
   @if (!workspace && !workspaceId && !isLoading) {
-    <!-- Option 1: Minimal Clean Design -->
-    <div class="bg-white border border-gray-200 shadow-sm rounded-lg">
-      <div class="px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h1 class="text-2xl font-semibold text-gray-900">All Tasks</h1>
-            <p class="mt-1 text-sm text-gray-500">
-              {{ totalTaskCount }} {{ totalTaskCount === 1 ? 'task' : 'tasks' }} across all workspaces
-            </p>
-          </div>
-          <div class="flex items-center space-x-3">
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Tasks</h1>
+        <div class="flex items-center space-x-3">
             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
               <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -77,9 +70,9 @@
               </svg>
               Browse Workspaces
             </a>
-          </div>
         </div>
       </div>
+      <p class="text-gray-500 mt-1">{{ totalTaskCount }} {{ totalTaskCount === 1 ? 'task' : 'tasks' }} across all workspaces</p>
     </div>
 
     <!-- Option 2: Card Style with Stats -->
