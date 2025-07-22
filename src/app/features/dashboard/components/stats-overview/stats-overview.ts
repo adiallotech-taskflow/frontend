@@ -6,7 +6,7 @@ import { DashboardStats } from '../../../../core/models';
   selector: 'app-stats-overview',
   imports: [CommonModule],
   templateUrl: './stats-overview.html',
-  styleUrl: './stats-overview.css'
+  styleUrl: './stats-overview.css',
 })
 export class StatsOverviewComponent {
   @Input() stats!: DashboardStats;

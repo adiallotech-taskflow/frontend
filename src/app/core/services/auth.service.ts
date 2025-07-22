@@ -4,16 +4,13 @@ import { AuthMockService, RegisterRequest, AuthResponse } from './mock/auth-mock
 import { User } from '../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private authMockService = inject(AuthMockService);
 
-
   public currentUser$ = this.authMockService.currentUser$;
   public isAuthenticated$ = this.authMockService.isAuthenticated$;
-
-  constructor() {}
 
   login(email: string, password: string): Observable<AuthResponse> {
     return this.authMockService.login(email, password);
@@ -33,7 +30,9 @@ export class AuthService {
 
   getUserInitials(): string {
     const user = this.getCurrentUser();
-    if (!user) return '';
+    if (!user) {
+      return '';
+    }
 
     const firstInitial = user.firstName?.charAt(0)?.toUpperCase() || '';
     const lastInitial = user.lastName?.charAt(0)?.toUpperCase() || '';
@@ -43,7 +42,9 @@ export class AuthService {
 
   getUserFullName(): string {
     const user = this.getCurrentUser();
-    if (!user) return '';
+    if (!user) {
+      return '';
+    }
 
     return `${user.firstName} ${user.lastName}`.trim();
   }

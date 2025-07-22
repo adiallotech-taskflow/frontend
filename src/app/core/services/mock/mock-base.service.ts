@@ -20,7 +20,7 @@ export interface MockErrorOptions {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export abstract class MockBaseService<T> {
   protected storageKey!: string;
@@ -28,63 +28,43 @@ export abstract class MockBaseService<T> {
   protected updateSubject = new Subject<T[]>();
   protected configService = inject(MockConfigService);
 
-  
   public updates$ = this.updateSubject.asObservable();
 
   constructor() {
     this.initializeStorage();
   }
 
-  
   protected initializeStorage(): void {
     const config = this.configService.getConfig();
     if (config.persistToLocalStorage && !this.getStoredData()) {
-    console.log('config', JSON.stringify(this.getStoredData()));
       this.saveToStorage(this.defaultData);
-      this.configService.logAction(`Initialized ${this.storageKey} with default data`, {
-        count: this.defaultData.length
-      });
     }
   }
 
-  
   protected simulateDelay(): Observable<void> {
     const delayMs = this.configService.getRandomDelay();
     return of(void 0).pipe(delay(delayMs));
   }
 
-  
-  protected simulateError<R>(
-    customRate?: number,
-    options: MockErrorOptions = {}
-  ): Observable<R> {
-    const errorRate = customRate ?? this.configService.getConfig().errorRate;
-
+  protected simulateError<R>(options: MockErrorOptions = {}): Observable<R> {
     if (this.configService.shouldSimulateError()) {
       const error = {
         message: options.message || 'Mock API Error - This is a simulated error for testing',
         code: options.code || 'MOCK_ERROR',
         status: options.status || 500,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
 
-      this.configService.logAction('Simulated error', { error, rate: errorRate });
       return throwError(() => error);
     }
     return of(null as any);
   }
 
-  
   protected generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  
-  protected paginateResults<R>(
-    items: R[],
-    page: number = 1,
-    limit: number = 10
-  ): PaginationResult<R> {
+  protected paginateResults<R>(items: R[], page: number = 1, limit: number = 10): PaginationResult<R> {
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedItems = items.slice(startIndex, endIndex);
@@ -97,11 +77,10 @@ export abstract class MockBaseService<T> {
       limit,
       totalPages,
       hasNext: page < totalPages,
-      hasPrev: page > 1
+      hasPrev: page > 1,
     };
   }
 
-  
   protected saveToStorage(data: T[]): void {
     const config = this.configService.getConfig();
 
@@ -113,14 +92,11 @@ export abstract class MockBaseService<T> {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(data));
       this.emitUpdate(data);
-      this.configService.logAction(`Saved to ${this.storageKey}`, { count: data.length });
     } catch (error) {
       console.warn('Failed to save to localStorage:', error);
-      this.configService.logAction('Failed to save to localStorage', { error, storageKey: this.storageKey });
     }
   }
 
-  
   public getStoredData(): T[] | null {
     const config = this.configService.getConfig();
 
@@ -133,12 +109,10 @@ export abstract class MockBaseService<T> {
       return stored ? JSON.parse(stored) : null;
     } catch (error) {
       console.warn('Failed to load from localStorage:', error);
-      this.configService.logAction('Failed to load from localStorage', { error, storageKey: this.storageKey });
       return null;
     }
   }
 
-  
   protected addToMockData(item: T): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -146,13 +120,11 @@ export abstract class MockBaseService<T> {
         const newItem = { ...item, id: this.generateId() } as T;
         const updatedData = [...currentData, newItem];
         this.saveToStorage(updatedData);
-        this.configService.logAction(`Added item to ${this.storageKey}`, { id: (newItem as any).id });
         return newItem;
       })
     );
   }
 
-  
   protected updateInMockData(id: string, updates: Partial<T>): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -166,13 +138,11 @@ export abstract class MockBaseService<T> {
         const updatedItem = { ...currentData[index], ...updates } as T;
         currentData[index] = updatedItem;
         this.saveToStorage(currentData);
-        this.configService.logAction(`Updated item in ${this.storageKey}`, { id, updates });
         return updatedItem;
       })
     );
   }
 
-  
   protected deleteFromMockData(id: string): Observable<boolean> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -184,13 +154,11 @@ export abstract class MockBaseService<T> {
         }
 
         this.saveToStorage(filteredData);
-        this.configService.logAction(`Deleted item from ${this.storageKey}`, { id });
         return true;
       })
     );
   }
 
-  
   protected getAllFromMockData(page?: number, limit?: number): Observable<T[] | PaginationResult<T>> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -205,7 +173,6 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  
   protected getByIdFromMockData(id: string): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -221,7 +188,6 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  
   protected searchInMockData(
     searchTerm: string,
     searchFields: (keyof T)[],
@@ -232,9 +198,7 @@ export abstract class MockBaseService<T> {
       map(() => {
         const data = this.getStoredData() || [];
         const filteredData = data.filter((item: any) =>
-          searchFields.some(field =>
-            item[field]?.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
+          searchFields.some((field) => item[field]?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
         );
 
         if (page && limit) {
@@ -246,36 +210,18 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  
   public resetMockData(): void {
     this.saveToStorage(this.defaultData);
-    this.configService.logAction(`Reset ${this.storageKey} to default data`, {
-      count: this.defaultData.length
-    });
   }
 
-  
   public loadTestData(testData: T[]): void {
     this.saveToStorage(testData);
-    this.configService.logAction(`Loaded test data to ${this.storageKey}`, {
-      count: testData.length
-    });
   }
 
-  
-  public getMockDataStats(): Observable<{ total: number; lastModified: Date }> {
-    return of({
-      total: (this.getStoredData() || []).length,
-      lastModified: new Date()
-    });
-  }
-
-  
   private emitUpdate(data: T[]): void {
     this.updateSubject.next(data);
   }
 
-  
   public cleanup(): void {
     this.updateSubject.complete();
   }

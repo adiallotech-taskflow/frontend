@@ -8,7 +8,7 @@ import { Workspace } from '../../../../core/models';
   selector: 'app-workspace-list',
   imports: [CommonModule, RouterLink],
   templateUrl: './workspace-list.component.html',
-  styleUrls: ['./workspace-list.component.css']
+  styleUrls: ['./workspace-list.component.css'],
 })
 export class WorkspaceListComponent implements OnInit {
   workspaces$ = signal<Workspace[]>([]);
@@ -34,7 +34,7 @@ export class WorkspaceListComponent implements OnInit {
       error: () => {
         this.error.set('Failed to load workspaces. Please try again.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -44,7 +44,7 @@ export class WorkspaceListComponent implements OnInit {
 
   getUserRole(workspace: Workspace): string {
     const currentUserId = 'current-user-id';
-    const member = workspace.members?.find(m => m.userId === currentUserId);
+    const member = workspace.members?.find((m) => m.userId === currentUserId);
     return member?.role || 'viewer';
   }
 
@@ -60,7 +60,7 @@ export class WorkspaceListComponent implements OnInit {
         },
         error: () => {
           alert('Failed to delete workspace. Please try again.');
-        }
+        },
       });
     }
   }

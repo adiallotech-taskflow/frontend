@@ -9,7 +9,7 @@ import { AuthService, RegisterRequest } from '../../../../core/services';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.css'
+  styleUrl: './register.component.css',
 })
 export class RegisterComponent {
   private authService = inject(AuthService);
@@ -23,27 +23,29 @@ export class RegisterComponent {
   showConfirmPassword = signal(false);
 
   constructor() {
-    this.registerForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      acceptTerms: [false, [Validators.requiredTrue]]
-    }, {
-      validators: [this.passwordMatchValidator]
-    });
+    this.registerForm = this.fb.group(
+      {
+        firstName: ['', [Validators.required, Validators.minLength(2)]],
+        lastName: ['', [Validators.required, Validators.minLength(2)]],
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required]],
+        acceptTerms: [false, [Validators.requiredTrue]],
+      },
+      {
+        validators: [this.passwordMatchValidator],
+      }
+    );
   }
 
-  
   passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
-    
+
     if (!password || !confirmPassword) {
       return null;
     }
-    
+
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
@@ -80,11 +82,11 @@ export class RegisterComponent {
   }
 
   togglePasswordVisibility() {
-    this.showPassword.update(value => !value);
+    this.showPassword.update((value) => !value);
   }
 
   toggleConfirmPasswordVisibility() {
-    this.showConfirmPassword.update(value => !value);
+    this.showConfirmPassword.update((value) => !value);
   }
 
   onSubmit() {
@@ -97,37 +99,35 @@ export class RegisterComponent {
     this.errorMessage.set(null);
 
     const { firstName, lastName, email, password } = this.registerForm.value;
-    
+
     const registerData: RegisterRequest = {
       firstName,
       lastName,
       email,
-      password
+      password,
     };
 
     this.authService.register(registerData).subscribe({
-      next: (response) => {
-        console.log('Registration successful:', response);
+      next: () => {
         this.isLoading.set(false);
-        
+
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Registration error:', error);
         this.isLoading.set(false);
         this.errorMessage.set(error.message || 'An error occurred during registration');
-      }
+      },
     });
   }
 
   private markFormGroupTouched() {
-    Object.keys(this.registerForm.controls).forEach(key => {
+    Object.keys(this.registerForm.controls).forEach((key) => {
       const control = this.registerForm.get(key);
       control?.markAsTouched();
     });
   }
 
-  
   fillTestData() {
     this.registerForm.patchValue({
       firstName: 'Jean',
@@ -135,7 +135,7 @@ export class RegisterComponent {
       email: 'jean.dupont@test.com',
       password: 'password123',
       confirmPassword: 'password123',
-      acceptTerms: true
+      acceptTerms: true,
     });
   }
 }

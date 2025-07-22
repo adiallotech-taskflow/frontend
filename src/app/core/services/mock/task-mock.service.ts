@@ -18,13 +18,12 @@ export interface TaskFilters {
 export type TaskStatus = Task['status'];
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskMockService extends MockBaseService<Task> {
   protected override storageKey = 'taskflow_mock_tasks';
 
   protected override defaultData: Task[] = this.generateDefaultTasks();
-
 
   getTasks(page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
@@ -32,67 +31,45 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-
   getTaskById(id: string): Observable<Task> {
-    return this.simulateError<Task>().pipe(
-      switchMap(() => this.getByIdFromMockData(id))
-    );
+    return this.simulateError<Task>().pipe(switchMap(() => this.getByIdFromMockData(id)));
   }
-
 
   createTask(taskData: CreateTaskRequest): Observable<Task> {
     const newTask: Omit<Task, 'id'> = {
       ...taskData,
       status: 'todo',
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
-    return this.simulateError<Task>().pipe(
-      switchMap(() => this.addToMockData(newTask as Task))
-    );
+    return this.simulateError<Task>().pipe(switchMap(() => this.addToMockData(newTask as Task)));
   }
-
 
   updateTask(id: string, updates: Partial<Task>): Observable<Task> {
     const taskUpdates = {
       ...updates,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     };
 
-    return this.simulateError<Task>().pipe(
-      switchMap(() => this.updateInMockData(id, taskUpdates))
-    );
+    return this.simulateError<Task>().pipe(switchMap(() => this.updateInMockData(id, taskUpdates)));
   }
-
 
   deleteTask(id: string): Observable<boolean> {
-    return this.simulateError<boolean>().pipe(
-      switchMap(() => this.deleteFromMockData(id))
-    );
+    return this.simulateError<boolean>().pipe(switchMap(() => this.deleteFromMockData(id)));
   }
 
-
-  searchTasks(
-    searchTerm: string,
-    page?: number,
-    limit?: number
-  ): Observable<Task[] | PaginationResult<Task>> {
+  searchTasks(searchTerm: string, page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
       switchMap(() => this.searchInMockData(searchTerm, ['title', 'description'], page, limit))
     );
   }
 
-
-  getTasksByWorkspace(
-    workspaceId: string,
-    page?: number,
-    limit?: number
-  ): Observable<Task[] | PaginationResult<Task>> {
+  getTasksByWorkspace(workspaceId: string, page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateDelay().pipe(
       switchMap(() => {
         const data = this.getStoredData() || [];
-        const filteredData = data.filter(task => task.workspaceId === workspaceId);
+        const filteredData = data.filter((task) => task.workspaceId === workspaceId);
 
         if (page && limit) {
           return [this.paginateResults(filteredData, page, limit)];
@@ -102,27 +79,21 @@ export class TaskMockService extends MockBaseService<Task> {
       })
     );
   }
-
 
   getByWorkspace(workspaceId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
         const tasks = this.getStoredData() || [];
-        return tasks.filter(task => task.workspaceId === workspaceId);
+        return tasks.filter((task) => task.workspaceId === workspaceId);
       })
     );
   }
 
-
-  getTasksByAssignee(
-    assigneeId: string,
-    page?: number,
-    limit?: number
-  ): Observable<Task[] | PaginationResult<Task>> {
+  getTasksByAssignee(assigneeId: string, page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateDelay().pipe(
       switchMap(() => {
         const data = this.getStoredData() || [];
-        const filteredData = data.filter(task => task.assigneeId === assigneeId);
+        const filteredData = data.filter((task) => task.assigneeId === assigneeId);
 
         if (page && limit) {
           return [this.paginateResults(filteredData, page, limit)];
@@ -133,31 +104,26 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-
   getMyTasks(userId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
         const tasks = this.getStoredData() || [];
-        return tasks.filter(task => task.assigneeId === userId);
+        return tasks.filter((task) => task.assigneeId === userId);
       })
     );
   }
-
 
   updateTaskStatus(id: string, status: Task['status']): Observable<Task> {
     return this.updateTask(id, { status });
   }
 
-
   updateStatus(taskId: string, status: TaskStatus): Observable<Task> {
     return this.updateTask(taskId, { status });
   }
 
-
   updateTaskPriority(id: string, priority: Task['priority']): Observable<Task> {
     return this.updateTask(id, { priority });
   }
-
 
   filterTasks(filters: TaskFilters): Observable<Task[]> {
     return this.simulateDelay().pipe(
@@ -165,41 +131,38 @@ export class TaskMockService extends MockBaseService<Task> {
         let tasks = this.getStoredData() || [];
 
         if (filters.status) {
-          tasks = tasks.filter(task => task.status === filters.status);
+          tasks = tasks.filter((task) => task.status === filters.status);
         }
 
         if (filters.priority) {
-          tasks = tasks.filter(task => task.priority === filters.priority);
+          tasks = tasks.filter((task) => task.priority === filters.priority);
         }
 
         if (filters.assigneeId) {
-          tasks = tasks.filter(task => task.assigneeId === filters.assigneeId);
+          tasks = tasks.filter((task) => task.assigneeId === filters.assigneeId);
         }
 
         if (filters.workspaceId) {
-          tasks = tasks.filter(task => task.workspaceId === filters.workspaceId);
+          tasks = tasks.filter((task) => task.workspaceId === filters.workspaceId);
         }
 
         if (filters.hasDueDate !== undefined) {
-          tasks = tasks.filter(task =>
+          tasks = tasks.filter((task) =>
             filters.hasDueDate ? task.dueDate !== undefined : task.dueDate === undefined
           );
         }
 
         if (filters.isOverdue) {
           const now = new Date();
-          tasks = tasks.filter(task =>
-            task.dueDate &&
-            new Date(task.dueDate) < now &&
-            task.status !== 'done'
-          );
+          tasks = tasks.filter((task) => task.dueDate && new Date(task.dueDate) < now && task.status !== 'done');
         }
 
         if (filters.search) {
           const searchLower = filters.search.toLowerCase();
-          tasks = tasks.filter(task =>
-            task.title.toLowerCase().includes(searchLower) ||
-            (task.description && task.description.toLowerCase().includes(searchLower))
+          tasks = tasks.filter(
+            (task) =>
+              task.title.toLowerCase().includes(searchLower) ||
+              (task.description && task.description.toLowerCase().includes(searchLower))
           );
         }
 
@@ -208,13 +171,12 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-
   private generateDefaultTasks(): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 10,
       workspaceCount: 5,
       taskCount: 30,
-      seed: 12345
+      seed: 12345,
     });
 
     const rng = MockGeneratorUtils.getRng();
@@ -250,29 +212,25 @@ export class TaskMockService extends MockBaseService<Task> {
       'Configure Kubernetes cluster',
       'Implement GraphQL API',
       'Setup automated backups',
-      'Create admin dashboard'
+      'Create admin dashboard',
     ];
 
     taskTitles.forEach((title, index) => {
       const workspace = rng.pick(dataset.workspaces);
       const hasAssignee = rng.next() < 0.75;
-      const assigneeId = hasAssignee && workspace.members.length > 0
-        ? rng.pick(workspace.members).userId
-        : undefined;
+      const assigneeId = hasAssignee && workspace.members.length > 0 ? rng.pick(workspace.members).userId : undefined;
 
       const statusDistribution = [
         { item: 'todo' as const, weight: 40 },
         { item: 'in-progress' as const, weight: 35 },
-        { item: 'done' as const, weight: 25 }
+        { item: 'done' as const, weight: 25 },
       ];
 
       const status = MockGeneratorUtils.randomEnum(statusDistribution);
       const priority = MockGeneratorUtils.randomEnum(MockDataLists.TASK_PRIORITIES);
 
       const createdAt = MockGeneratorUtils.generateCreationDate();
-      const updatedAt = status !== 'todo'
-        ? MockGeneratorUtils.generateUpdateDate(createdAt)
-        : createdAt;
+      const updatedAt = status !== 'todo' ? MockGeneratorUtils.generateUpdateDate(createdAt) : createdAt;
 
       const hasDueDate = rng.next() < 0.3;
       let dueDate: Date | undefined;
@@ -297,7 +255,7 @@ export class TaskMockService extends MockBaseService<Task> {
         `Critical task: ${title}. Team coordination and client validation required.`,
         `${title} - Progressive implementation with testing environment deployment.`,
         `Implementation of ${title} with focus on performance and scalability.`,
-        `${title} ensuring security compliance and code quality standards.`
+        `${title} ensuring security compliance and code quality standards.`,
       ];
 
       const task: Task = {
@@ -310,7 +268,7 @@ export class TaskMockService extends MockBaseService<Task> {
         workspaceId: workspace.id,
         dueDate,
         createdAt,
-        updatedAt
+        updatedAt,
       };
 
       tasks.push(task);
@@ -319,31 +277,24 @@ export class TaskMockService extends MockBaseService<Task> {
     return tasks;
   }
 
-
   generateRealisticTasks(count: number = 10): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 8,
       workspaceCount: 3,
       taskCount: count,
-      seed: Date.now()
+      seed: Date.now(),
     });
     return dataset.tasks;
   }
-
 
   loadRealisticDemoData(): void {
     const demoData = MockDataGenerator.generateCohesiveDataset({
       userCount: 15,
       workspaceCount: 4,
       taskCount: 30,
-      seed: 123456
+      seed: 123456,
     });
 
     this.loadTestData(demoData.tasks);
-    this.configService.logAction('Loaded realistic demo data', {
-      tasks: demoData.tasks.length,
-      users: demoData.users.length,
-      workspaces: demoData.workspaces.length
-    });
   }
 }

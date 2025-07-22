@@ -7,7 +7,7 @@ import { AuthService } from '../../../core/services';
 @Component({
   selector: 'app-top-navigation',
   imports: [CommonModule, UserMenuComponent],
-  templateUrl: './top-navigation.component.html'
+  templateUrl: './top-navigation.component.html',
 })
 export class TopNavigationComponent {
   private authService = inject(AuthService);
@@ -17,11 +17,9 @@ export class TopNavigationComponent {
   @Output() toggleMobileSidenav = new EventEmitter<void>();
   @Output() toggleUserMenu = new EventEmitter<void>();
 
-  
   currentUser$ = this.authService.currentUser$;
   isAuthenticated$ = this.authService.isAuthenticated$;
 
-  
   userName = computed(() => {
     const user = this.authService.getCurrentUser();
     return user ? this.authService.getUserFullName() : 'User';
@@ -36,9 +34,6 @@ export class TopNavigationComponent {
     return user?.role || 'member';
   });
 
-  constructor() {
-  }
-
   onToggleMobileSidenav() {
     this.toggleMobileSidenav.emit();
   }
@@ -50,23 +45,17 @@ export class TopNavigationComponent {
   onLogout() {
     this.authService.logout().subscribe({
       next: () => {
-        console.log('Logout successful');
         this.router.navigate(['/auth/login']);
       },
       error: (error) => {
         console.error('Logout error:', error);
-        
+
         this.router.navigate(['/auth/login']);
-      }
+      },
     });
   }
 
   navigateToLogin() {
     this.router.navigate(['/auth/login']);
-  }
-
-  navigateToProfile() {
-    
-    console.log('Navigate to profile - not implemented yet');
   }
 }

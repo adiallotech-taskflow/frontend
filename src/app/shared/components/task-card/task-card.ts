@@ -8,22 +8,31 @@ export type TaskAction = 'edit' | 'delete';
   selector: 'app-task-card',
   imports: [CommonModule],
   templateUrl: './task-card.html',
-  styleUrl: './task-card.css'
+  styleUrl: './task-card.css',
 })
 export class TaskCardComponent {
   @Input() task!: Task;
   @Input() assignedUser?: User;
   @Output() taskAction = new EventEmitter<{ action: TaskAction; task: Task }>();
 
-
   get priorityConfig() {
     switch (this.task.priority) {
       case 'high':
         return { color: 'red', bgColor: 'bg-red-100', textColor: 'text-red-800', borderColor: 'border-red-500' };
       case 'medium':
-        return { color: 'yellow', bgColor: 'bg-yellow-100', textColor: 'text-yellow-800', borderColor: 'border-yellow-500' };
+        return {
+          color: 'yellow',
+          bgColor: 'bg-yellow-100',
+          textColor: 'text-yellow-800',
+          borderColor: 'border-yellow-500',
+        };
       case 'low':
-        return { color: 'green', bgColor: 'bg-green-100', textColor: 'text-green-800', borderColor: 'border-green-500' };
+        return {
+          color: 'green',
+          bgColor: 'bg-green-100',
+          textColor: 'text-green-800',
+          borderColor: 'border-green-500',
+        };
       default:
         return { color: 'gray', bgColor: 'bg-gray-100', textColor: 'text-gray-800', borderColor: 'border-gray-500' };
     }
@@ -32,48 +41,54 @@ export class TaskCardComponent {
   get statusConfig() {
     switch (this.task.status) {
       case 'todo':
-        return { 
-          bgColor: 'bg-gray-50', 
-          textColor: 'text-gray-700', 
+        return {
+          bgColor: 'bg-gray-50',
+          textColor: 'text-gray-700',
           ringColor: 'ring-gray-600/20',
-          label: 'To Do' 
+          label: 'To Do',
         };
       case 'in-progress':
-        return { 
-          bgColor: 'bg-blue-50', 
-          textColor: 'text-blue-700', 
+        return {
+          bgColor: 'bg-blue-50',
+          textColor: 'text-blue-700',
           ringColor: 'ring-blue-600/20',
-          label: 'In Progress' 
+          label: 'In Progress',
         };
       case 'done':
-        return { 
-          bgColor: 'bg-green-50', 
-          textColor: 'text-green-700', 
+        return {
+          bgColor: 'bg-green-50',
+          textColor: 'text-green-700',
           ringColor: 'ring-green-600/20',
-          label: 'Done' 
+          label: 'Done',
         };
       default:
-        return { 
-          bgColor: 'bg-gray-50', 
-          textColor: 'text-gray-700', 
+        return {
+          bgColor: 'bg-gray-50',
+          textColor: 'text-gray-700',
           ringColor: 'ring-gray-600/20',
-          label: 'Unknown' 
+          label: 'Unknown',
         };
     }
   }
 
   get userInitials(): string {
-    if (!this.assignedUser) return '?';
+    if (!this.assignedUser) {
+      return '?';
+    }
     return `${this.assignedUser.firstName.charAt(0)}${this.assignedUser.lastName.charAt(0)}`.toUpperCase();
   }
 
   get userName(): string {
-    if (!this.assignedUser) return 'Unassigned';
+    if (!this.assignedUser) {
+      return 'Unassigned';
+    }
     return `${this.assignedUser.firstName} ${this.assignedUser.lastName}`;
   }
 
   get isOverdue(): boolean {
-    if (!this.task.dueDate) return false;
+    if (!this.task.dueDate) {
+      return false;
+    }
     return new Date(this.task.dueDate) < new Date() && this.task.status !== 'done';
   }
 

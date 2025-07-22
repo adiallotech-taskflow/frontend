@@ -11,7 +11,7 @@
 
     <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
       <form action="#" method="GET" class="grid flex-1 grid-cols-1">
-        <input type="search" name="search" placeholder="Search" aria-label="Search" 
+        <input type="search" name="search" placeholder="Search" aria-label="Search"
                class="col-start-1 row-start-1 block size-full bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 sm:text-sm/6" />
         <svg viewBox="0 0 20 20" fill="currentColor" class="pointer-events-none col-start-1 row-start-1 size-5 self-center text-gray-400">
           <path d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z" clip-rule="evenodd" fill-rule="evenodd" />
@@ -27,20 +27,19 @@
 
         <div aria-hidden="true" class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"></div>
 
-        
+
         @if (isAuthenticated$ | async) {
-          <app-user-menu 
-            [isOpen]="isUserMenuOpen" 
-            [userName]="userName()" 
+          <app-user-menu
+            [isOpen]="isUserMenuOpen"
+            [userName]="userName()"
             [userInitials]="userInitials()"
             [userRole]="userRole()"
             (toggle)="onToggleUserMenu()"
-            (logout)="onLogout()"
-            (profile)="navigateToProfile()">
+            (logout)="onLogout()">
           </app-user-menu>
         } @else {
-          
-          <button 
+
+          <button
             type="button"
             (click)="navigateToLogin()"
             class="inline-flex items-center gap-2 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors">

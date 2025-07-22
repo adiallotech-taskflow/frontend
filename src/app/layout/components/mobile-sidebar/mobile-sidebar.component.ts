@@ -6,7 +6,7 @@ import { NavigationItem, Team } from '../../../core/models';
 @Component({
   selector: 'app-mobile-sidebar',
   imports: [CommonModule, NavigationMenuComponent],
-  templateUrl: './mobile-sidebar.component.html'
+  templateUrl: './mobile-sidebar.component.html',
 })
 export class MobileSidebarComponent {
   @Input() isOpen = false;

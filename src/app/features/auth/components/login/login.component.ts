@@ -9,7 +9,7 @@ import { AuthService } from '../../../../core/services';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   private authService = inject(AuthService);
@@ -25,11 +25,7 @@ export class LoginComponent {
     this.loginForm = this.fb.group({
       email: ['admin@test.com', [Validators.required, Validators.email]],
       password: ['password123', [Validators.required, Validators.minLength(6)]],
-      rememberMe: [false]
-    });
-
-    this.authService.isAuthenticated$.subscribe(isAuth => {
-      console.log('🔐 Authentication state in LoginComponent:', isAuth);
+      rememberMe: [false],
     });
   }
 
@@ -46,7 +42,7 @@ export class LoginComponent {
   }
 
   togglePasswordVisibility() {
-    this.showPassword.update(value => !value);
+    this.showPassword.update((value) => !value);
   }
 
   onSubmit() {
@@ -61,39 +57,36 @@ export class LoginComponent {
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response) => {
-        console.log('Login successful:', response);
+      next: () => {
         this.isLoading.set(false);
-        
+
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
-        console.error('Login error:', error);
         this.isLoading.set(false);
         this.errorMessage.set(error.message || 'An error occurred during login');
-      }
+      },
     });
   }
 
   private markFormGroupTouched() {
-    Object.keys(this.loginForm.controls).forEach(key => {
+    Object.keys(this.loginForm.controls).forEach((key) => {
       const control = this.loginForm.get(key);
       control?.markAsTouched();
     });
   }
 
-  
   loginAs(userType: 'admin' | 'user' | 'demo') {
     const credentials = {
       admin: { email: 'admin@test.com', password: 'password123' },
       user: { email: 'user@test.com', password: 'password123' },
-      demo: { email: 'demo@test.com', password: 'password123' }
+      demo: { email: 'demo@test.com', password: 'password123' },
     };
 
     const cred = credentials[userType];
     this.loginForm.patchValue({
       email: cred.email,
-      password: cred.password
+      password: cred.password,
     });
     this.onSubmit();
   }

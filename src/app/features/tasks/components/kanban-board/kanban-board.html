@@ -1,14 +1,14 @@
 <div class="min-h-full">
-  
+
   <div class="mb-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Kanban Board</h1>
     </div>
     <p class="text-gray-500 mt-1">Drag and drop tasks to update their status</p>
   </div>
-  
+
   <div cdkDropListGroup>
-    
+
     @if (isLoading()) {
     <div class="flex items-center justify-center h-full">
       <div class="text-center">
@@ -20,15 +20,15 @@
       </div>
     </div>
   }
-  
+
   @if (!isLoading()) {
-  
+
   <div class="h-full overflow-x-auto">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 min-w-max md:min-w-0">
-      
+
       @for (column of columns; track column.id) {
         <div class="flex flex-col h-full min-w-[320px] md:min-w-0">
-          
+
           <div [class]="column.bgColor + ' ' + column.borderColor + ' border-2 rounded-t-lg px-4 py-3'">
             <div class="flex items-center justify-between">
               <h3 [class]="column.color + ' font-semibold text-sm uppercase tracking-wider'">
@@ -39,9 +39,9 @@
               </span>
             </div>
           </div>
-          
-          
-          <div 
+
+
+          <div
             class="flex-1 bg-gray-50 border-x-2 border-b-2 rounded-b-lg p-4 overflow-y-auto"
             [class.border-gray-200]="column.id === 'todo'"
             [class.border-yellow-200]="column.id === 'in-progress'"
@@ -53,40 +53,38 @@
             (cdkDropListDropped)="drop($event, column.id)"
             [cdkDropListAutoScrollDisabled]="false"
             [cdkDropListAutoScrollStep]="5">
-            
+
             <div class="space-y-3 min-h-[100px]">
               @for (task of getTasksByStatus(column.id); track task.id) {
-                <div 
+                <div
                   class="task-card-drag"
                   cdkDrag
                   [cdkDragData]="task">
-                  
+
                   <div *cdkDragPreview class="shadow-2xl opacity-90">
                     <app-task-card
                       [task]="task"
-                      [assignedUser]="getAssignedUser(task.assigneeId)"
-                      (taskAction)="onTaskAction($event)">
+                      [assignedUser]="getAssignedUser(task.assigneeId)">
                     </app-task-card>
                   </div>
-                  
-                  
+
+
                   <div *cdkDragPlaceholder class="task-placeholder"></div>
-                  
-                  
+
+
                   <app-task-card
                     [task]="task"
                     [assignedUser]="getAssignedUser(task.assigneeId)"
-                    (taskAction)="onTaskAction($event)"
                     class="block">
                   </app-task-card>
                 </div>
               }
-              
-              
+
+
               @if (getTasksByStatus(column.id).length === 0) {
                 <div class="text-center py-8 text-gray-400">
                   <svg class="mx-auto h-12 w-12 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
                     </path>
                   </svg>
@@ -99,13 +97,13 @@
       }
     </div>
   </div>
-  
-  
+
+
   @if (error()) {
     <div class="fixed bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-lg">
       <div class="flex items-center">
         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
           </path>
         </svg>

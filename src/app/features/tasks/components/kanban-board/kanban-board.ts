@@ -1,6 +1,15 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CdkDragDrop, CdkDropList, CdkDrag, CdkDropListGroup, CdkDragPlaceholder, CdkDragPreview, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  CdkDropList,
+  CdkDrag,
+  CdkDropListGroup,
+  CdkDragPlaceholder,
+  CdkDragPreview,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { Task, TaskStatus, User } from '../../../../core/models';
 import { TaskService } from '../../../../core/services';
 import { TaskCardComponent } from '../../../../shared';
@@ -23,10 +32,10 @@ interface KanbanColumn {
     CdkDrag,
     CdkDragPlaceholder,
     CdkDragPreview,
-    TaskCardComponent
+    TaskCardComponent,
   ],
   templateUrl: './kanban-board.html',
-  styleUrl: './kanban-board.css'
+  styleUrl: './kanban-board.css',
 })
 export class KanbanBoardComponent implements OnInit {
   private taskService = inject(TaskService);
@@ -43,27 +52,27 @@ export class KanbanBoardComponent implements OnInit {
       title: 'Todo',
       color: 'text-blue-700',
       bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200'
+      borderColor: 'border-blue-200',
     },
     {
       id: 'in-progress',
       title: 'In Progress',
       color: 'text-yellow-700',
       bgColor: 'bg-yellow-50',
-      borderColor: 'border-yellow-200'
+      borderColor: 'border-yellow-200',
     },
     {
       id: 'done',
       title: 'Done',
       color: 'text-green-700',
       bgColor: 'bg-green-50',
-      borderColor: 'border-green-200'
-    }
+      borderColor: 'border-green-200',
+    },
   ];
 
-  todoTasks = computed(() => this.tasks().filter(t => t.status === 'todo'));
-  inProgressTasks = computed(() => this.tasks().filter(t => t.status === 'in-progress'));
-  doneTasks = computed(() => this.tasks().filter(t => t.status === 'done'));
+  todoTasks = computed(() => this.tasks().filter((t) => t.status === 'todo'));
+  inProgressTasks = computed(() => this.tasks().filter((t) => t.status === 'in-progress'));
+  doneTasks = computed(() => this.tasks().filter((t) => t.status === 'done'));
 
   getTasksByStatus(status: TaskStatus): Task[] {
     switch (status) {
@@ -79,8 +88,10 @@ export class KanbanBoardComponent implements OnInit {
   }
 
   getAssignedUser(assigneeId?: string): User | undefined {
-    if (!assigneeId) return undefined;
-    return this.users().find(u => u.id === assigneeId);
+    if (!assigneeId) {
+      return undefined;
+    }
+    return this.users().find((u) => u.id === assigneeId);
   }
 
   drop(event: CdkDragDrop<Task[]>, newStatus: TaskStatus) {
@@ -89,16 +100,11 @@ export class KanbanBoardComponent implements OnInit {
     } else {
       const task = event.previousContainer.data[event.previousIndex];
 
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
 
       const updatedTask = { ...task, status: newStatus };
       const currentTasks = this.tasks();
-      const taskIndex = currentTasks.findIndex(t => t.id === task.id);
+      const taskIndex = currentTasks.findIndex((t) => t.id === task.id);
       if (taskIndex !== -1) {
         const newTasks = [...currentTasks];
         newTasks[taskIndex] = updatedTask;
@@ -111,24 +117,18 @@ export class KanbanBoardComponent implements OnInit {
           this.error.set('Error updating status');
 
           const revertedTasks = [...this.tasks()];
-          const revertIndex = revertedTasks.findIndex(t => t.id === task.id);
+          const revertIndex = revertedTasks.findIndex((t) => t.id === task.id);
           if (revertIndex !== -1) {
             revertedTasks[revertIndex] = task;
             this.tasks.set(revertedTasks);
           }
-        }
+        },
       });
     }
   }
 
-  onTaskAction(event: { action: string; task: Task }) {
-    console.log('Task action:', event);
-  }
-
   getConnectedLists(currentColumnId: TaskStatus): string[] {
-    return this.columns
-      .filter(col => col.id !== currentColumnId)
-      .map(col => col.id);
+    return this.columns.filter((col) => col.id !== currentColumnId).map((col) => col.id);
   }
 
   ngOnInit() {
@@ -139,19 +139,20 @@ export class KanbanBoardComponent implements OnInit {
     this.isLoading.set(true);
     this.error.set(null);
 
-    Promise.all([
-      this.taskService.list().toPromise(),
-      this.userService.getUsers().toPromise()
-    ])
-    .then(([tasks, users]) => {
-      if (tasks) this.tasks.set(tasks);
-      if (users) this.users.set(users);
-      this.isLoading.set(false);
-    })
-    .catch(err => {
-      console.error('Error loading data:', err);
-      this.error.set('Failed to load tasks');
-      this.isLoading.set(false);
-    });
+    Promise.all([this.taskService.list().toPromise(), this.userService.getUsers().toPromise()])
+      .then(([tasks, users]) => {
+        if (tasks) {
+          this.tasks.set(tasks);
+        }
+        if (users) {
+          this.users.set(users);
+        }
+        this.isLoading.set(false);
+      })
+      .catch((err) => {
+        console.error('Error loading data:', err);
+        this.error.set('Failed to load tasks');
+        this.isLoading.set(false);
+      });
   }
 }

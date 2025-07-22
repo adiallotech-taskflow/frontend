@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule, TitleCasePipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Subject, forkJoin, of } from 'rxjs';
-import { takeUntil, switchMap, catchError } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Workspace, User, WorkspaceMember, Task } from '../../../../core/models';
-import { WorkspaceService } from '../../../../core/services/workspace.service';
+import { WorkspaceService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
-import { TaskMockService } from '../../../../core/services/mock/task-mock.service';
-
+import { TaskMockService } from '../../../../core/services';
 
 interface WorkspaceMemberWithUser extends WorkspaceMember {
   user?: User;
@@ -19,7 +18,7 @@ interface WorkspaceMemberWithUser extends WorkspaceMember {
   standalone: true,
   imports: [CommonModule, RouterModule, TaskListComponent, TitleCasePipe, DatePipe],
   templateUrl: './workspace-detail.component.html',
-  styleUrls: ['./workspace-detail.component.css']
+  styleUrls: ['./workspace-detail.component.css'],
 })
 export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -30,16 +29,12 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   hasError = signal(false);
   errorMessage = signal('');
 
-  
   currentUser = signal<User | null>(null);
-  
-  
+
   membersWithUsers = signal<WorkspaceMemberWithUser[]>([]);
-  
-  
+
   tasks = signal<Task[]>([]);
 
-  
   canEdit = computed(() => {
     const user = this.currentUser();
     const ws = this.workspace();
@@ -49,10 +44,10 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   taskStats = computed(() => {
     const allTasks = this.tasks();
     return {
-      todo: allTasks.filter(t => t.status === 'todo').length,
-      inProgress: allTasks.filter(t => t.status === 'in-progress').length,
-      done: allTasks.filter(t => t.status === 'done').length,
-      total: allTasks.length
+      todo: allTasks.filter((t) => t.status === 'todo').length,
+      inProgress: allTasks.filter((t) => t.status === 'in-progress').length,
+      done: allTasks.filter((t) => t.status === 'done').length,
+      total: allTasks.length,
     };
   });
 
@@ -73,9 +68,8 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadWorkspace() {
-    
     const resolvedWorkspace = this.route.snapshot.data['workspace'];
-    
+
     if (resolvedWorkspace) {
       this.workspace.set(resolvedWorkspace);
       this.loadMembersWithUserDetails(resolvedWorkspace);
@@ -84,7 +78,6 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    
     const workspaceId = this.route.snapshot.paramMap.get('id');
     if (!workspaceId) {
       this.router.navigate(['/workspaces']);
@@ -94,7 +87,8 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.hasError.set(false);
 
-    this.workspaceService.getById(workspaceId)
+    this.workspaceService
+      .getById(workspaceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (workspace) => {
@@ -108,13 +102,12 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
           this.hasError.set(true);
           this.errorMessage.set('Failed to load workspace details');
           this.isLoading.set(false);
-        }
+        },
       });
   }
 
   private loadMembersWithUserDetails(workspace: Workspace) {
-    
-    const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map(member => ({
+    const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => ({
       ...member,
       user: {
         id: member.userId,
@@ -123,15 +116,16 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
         lastName: member.userId.slice(-1),
         role: member.role,
         createdAt: new Date(),
-        updatedAt: new Date()
-      }
+        updatedAt: new Date(),
+      },
     }));
-    
+
     this.membersWithUsers.set(membersWithUsers);
   }
 
   private loadWorkspaceTasks(workspaceId: string) {
-    this.taskService.getByWorkspace(workspaceId)
+    this.taskService
+      .getByWorkspace(workspaceId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (tasks: Task[]) => {
@@ -139,31 +133,12 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error loading workspace tasks:', error);
-        }
+        },
       });
   }
 
   setActiveTab(tab: 'overview' | 'tasks' | 'members') {
     this.activeTab.set(tab);
-  }
-
-  onEditWorkspace() {
-    
-    console.log('Edit workspace functionality to be implemented');
-  }
-
-  onDeleteWorkspace() {
-    
-    console.log('Delete workspace functionality to be implemented');
-  }
-
-  onInviteMember() {
-    
-    console.log('Invite member functionality to be implemented');
-  }
-
-  navigateBack() {
-    this.router.navigate(['/dashboard']);
   }
 
   reloadWorkspace() {

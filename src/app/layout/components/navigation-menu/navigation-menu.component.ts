@@ -8,12 +8,12 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-navigation-menu',
   imports: [CommonModule, RouterLink, RouterLinkActive, MockDevToolsComponent],
-  templateUrl: './navigation-menu.component.html'
+  templateUrl: './navigation-menu.component.html',
 })
 export class NavigationMenuComponent {
   @Input() navigationItems: NavigationItem[] = [];
   @Input() teams: Team[] = [];
-  
+
   showDevTools = signal(!environment.production);
   showMockPanel = signal(false);
 

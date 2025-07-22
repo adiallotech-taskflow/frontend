@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
         }
         return true;
       },
-      deps: [MockUtilsService, MockConfigService]
-    }
-  ]
+      deps: [MockUtilsService, MockConfigService],
+    },
+  ],
 };

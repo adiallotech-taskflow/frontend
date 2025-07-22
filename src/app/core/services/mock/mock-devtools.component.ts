@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MockConfigService, MockConfig } from './mock.config';
@@ -10,13 +10,11 @@ import { environment } from '../../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    
     <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs" *ngIf="shouldShow()">
       <div class="mb-3">
         <h4 class="text-sm font-medium text-gray-900 mb-2">Mock DevTools</h4>
       </div>
 
-      
       <div class="mb-3">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Config</h5>
         <div class="space-y-1 text-xs">
@@ -31,43 +29,33 @@ import { environment } from '../../../../environments/environment';
         </div>
       </div>
 
-      
       <div class="mb-3" *ngIf="stats()">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Data</h5>
-        <div class="text-xs text-gray-600">
-          Tasks: {{ stats()?.tasks?.total || 0 }}
-        </div>
+        <div class="text-xs text-gray-600">Tasks: {{ stats()?.tasks?.total || 0 }}</div>
       </div>
 
-      
       <div class="space-y-2">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Actions</h5>
 
         <div class="grid grid-cols-2 gap-1">
-          <button
-            (click)="resetData()"
-            class="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+          <button (click)="resetData()" class="px-2 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700">
             Reset
           </button>
-          <button
-            (click)="seedData()"
-            class="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
+          <button (click)="seedData()" class="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700">
             Seed
           </button>
-          <button
-            (click)="exportData()"
-            class="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+          <button (click)="exportData()" class="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
             Export
           </button>
           <button
             (click)="downloadData()"
-            class="px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700">
+            class="px-2 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700"
+          >
             Download
           </button>
         </div>
       </div>
 
-      
       <div class="mt-3" *ngIf="consoleOutput().length > 0">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Console</h5>
         <div class="bg-gray-100 p-1 rounded text-xs max-h-16 overflow-y-auto">
@@ -78,17 +66,19 @@ import { environment } from '../../../../environments/environment';
       </div>
     </div>
   `,
-  styles: [`
-    :host {
-      position: relative;
-      z-index: 1000;
-    }
-  `]
+  styles: [
+    `
+      :host {
+        position: relative;
+        z-index: 1000;
+      }
+    `,
+  ],
 })
-export class MockDevToolsComponent implements OnInit, OnDestroy {
+export class MockDevToolsComponent implements OnInit {
   private currentConfig = signal<MockConfig>({} as MockConfig);
   private currentStats = signal<any>(null);
-  private logs = signal<Array<{timestamp: string, message: string}>>([]);
+  private logs = signal<Array<{ timestamp: string; message: string }>>([]);
 
   constructor(
     private configService: MockConfigService,
@@ -98,18 +88,12 @@ export class MockDevToolsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.currentConfig.set(this.configService.getConfig());
     this.refreshStats();
-    this.setupConsoleLogging();
-  }
-
-  ngOnDestroy() {
-    
   }
 
   shouldShow = computed(() => !environment.production);
   config = computed(() => this.currentConfig());
   stats = computed(() => this.currentStats());
   consoleOutput = computed(() => this.logs());
-
 
   resetData() {
     this.utilsService.resetAllMockData();
@@ -143,18 +127,6 @@ export class MockDevToolsComponent implements OnInit, OnDestroy {
   private addLog(message: string) {
     const timestamp = new Date().toLocaleTimeString();
     const newLogs = [...this.logs(), { timestamp, message }];
-    this.logs.set(newLogs.slice(-10)); 
-  }
-
-  private setupConsoleLogging() {
-    
-    const originalLog = console.log;
-    console.log = (...args) => {
-      const message = args.join(' ');
-      if (message.includes('[Mock]')) {
-        this.addLog(message.replace('[Mock]', '').trim());
-      }
-      originalLog.apply(console, args);
-    };
+    this.logs.set(newLogs.slice(-10));
   }
 }

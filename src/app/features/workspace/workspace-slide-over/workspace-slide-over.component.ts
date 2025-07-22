@@ -9,7 +9,7 @@ import { Workspace } from '../../../core/models';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './workspace-slide-over.component.html',
-  styleUrl: './workspace-slide-over.component.css'
+  styleUrl: './workspace-slide-over.component.css',
 })
 export class WorkspaceSlideOverComponent {
   isOpen = signal(false);
@@ -17,7 +17,6 @@ export class WorkspaceSlideOverComponent {
   error = signal<string | null>(null);
   form: FormGroup;
 
-  
   workspaceCreated = output<Workspace>();
   closed = output<void>();
 
@@ -27,7 +26,7 @@ export class WorkspaceSlideOverComponent {
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['']
+      description: [''],
     });
   }
 
@@ -49,7 +48,7 @@ export class WorkspaceSlideOverComponent {
 
       const workspaceData = {
         name: this.form.value.name.trim(),
-        description: this.form.value.description?.trim() || undefined
+        description: this.form.value.description?.trim() || undefined,
       };
 
       this.workspaceService.create(workspaceData).subscribe({
@@ -61,7 +60,7 @@ export class WorkspaceSlideOverComponent {
         error: (error) => {
           this.isLoading.set(false);
           this.error.set(error.message || 'An error occurred while creating the workspace');
-        }
+        },
       });
     } else {
       this.form.markAllAsTouched();
