@@ -115,7 +115,7 @@ export class RegisterComponent {
       error: (error) => {
         console.error('Registration error:', error);
         this.isLoading.set(false);
-        this.errorMessage.set(error.message || 'Une erreur est survenue lors de l\'inscription');
+        this.errorMessage.set(error.message || 'An error occurred during registration');
       }
     });
   }

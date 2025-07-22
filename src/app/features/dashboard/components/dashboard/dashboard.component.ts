@@ -107,7 +107,7 @@ export class DashboardComponent implements OnInit {
     
     const currentWorkspaces = this.workspaces();
     this.workspaces.set([...currentWorkspaces, workspace]);
-    console.log('Workspace créé avec succès:', workspace);
+    console.log('Workspace created successfully:', workspace);
   }
 
   getWorkspaceStats(workspace: Workspace): WorkspaceStats {

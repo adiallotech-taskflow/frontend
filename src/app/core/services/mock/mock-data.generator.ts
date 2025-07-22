@@ -54,12 +54,12 @@ class SeededRandom {
 
 export class MockDataLists {
   static readonly FIRST_NAMES = [
-    'Alexandre', 'Antoine', 'Arthur', 'Baptiste', 'Benjamin', 'Clément', 'David', 'Émile',
-    'Étienne', 'Fabien', 'Gabriel', 'Guillaume', 'Hugo', 'Julien', 'Lucas', 'Marc',
-    'Maxime', 'Nicolas', 'Olivier', 'Paul', 'Pierre', 'Raphaël', 'Romain', 'Samuel',
-    'Sébastien', 'Thomas', 'Adèle', 'Amélie', 'Anaïs', 'Camille', 'Charlotte', 'Chloé',
-    'Claire', 'Emma', 'Inès', 'Jade', 'Julie', 'Léa', 'Lisa', 'Lucie', 'Manon',
-    'Marie', 'Mathilde', 'Océane', 'Pauline', 'Sarah', 'Sofia', 'Valentine', 'Zoé'
+    'Alexander', 'Anthony', 'Arthur', 'Benjamin', 'Benjamin', 'Clement', 'David', 'Emil',
+    'Ethan', 'Fabian', 'Gabriel', 'William', 'Hugo', 'Julian', 'Lucas', 'Mark',
+    'Maxime', 'Nicholas', 'Oliver', 'Paul', 'Peter', 'Raphael', 'Roman', 'Samuel',
+    'Sebastian', 'Thomas', 'Adele', 'Amelie', 'Anais', 'Camille', 'Charlotte', 'Chloe',
+    'Claire', 'Emma', 'Ines', 'Jade', 'Julie', 'Lea', 'Lisa', 'Lucy', 'Manon',
+    'Marie', 'Mathilde', 'Oceane', 'Pauline', 'Sarah', 'Sofia', 'Valentine', 'Zoe'
   ];
 
   static readonly LAST_NAMES = [
@@ -72,59 +72,59 @@ export class MockDataLists {
   ];
 
   static readonly TASK_TITLES = [
-    'Implémenter l\'authentification JWT',
-    'Optimiser les requêtes de base de données',
-    'Créer les tests unitaires pour l\'API',
-    'Refactoriser le système de cache',
+    'Implement JWT authentication',
+    'Optimize database queries',
+    'Create unit tests for API',
+    'Refactor caching system',
     'Migrer vers Angular 20',
     'Configurer les pipelines CI/CD',
-    'Développer l\'interface utilisateur',
-    'Intégrer l\'API de paiement',
-    'Corriger les vulnérabilités de sécurité',
-    'Améliorer les performances frontend',
+    'Develop user interface',
+    'Integrate payment API',
+    'Fix security vulnerabilities',
+    'Improve frontend performance',
     'Documenter l\'architecture technique',
     'Mettre en place le monitoring',
-    'Développer les notifications push',
-    'Optimiser le build de production',
-    'Créer le système de logs',
-    'Implémenter le cache Redis',
-    'Configurer Docker pour le déploiement',
-    'Développer l\'API REST',
-    'Mettre à jour les dépendances',
-    'Créer les composants réutilisables',
-    'Optimiser les images et assets',
-    'Implémenter la recherche full-text',
-    'Configurer les alertes de monitoring',
-    'Développer le dashboard analytics',
-    'Créer les migrations de données',
-    'Implémenter le système de permissions',
-    'Optimiser les requêtes GraphQL',
+    'Develop push notifications',
+    'Optimize production build',
+    'Create logging system',
+    'Implement Redis cache',
+    'Configure Docker for deployment',
+    'Develop REST API',
+    'Update dependencies',
+    'Create reusable components',
+    'Optimize images and assets',
+    'Implement full-text search',
+    'Configure monitoring alerts',
+    'Develop analytics dashboard',
+    'Create data migrations',
+    'Implement permission system',
+    'Optimize GraphQL queries',
     'Configurer le load balancer',
-    'Développer l\'import/export CSV',
-    'Mettre en place l\'audit de sécurité'
+    'Develop CSV import/export',
+    'Set up security audit'
   ];
 
   static readonly PROJECT_DESCRIPTIONS = [
-    'Plateforme de gestion de projets avec collaboration en temps réel',
-    'Application mobile pour la gestion des tâches personnelles',
-    'Système de CRM pour la gestion de la relation client',
-    'Dashboard analytics pour le suivi des KPIs business',
-    'API de micro-services pour l\'architecture distribuée',
-    'Interface d\'administration pour la gestion des utilisateurs',
-    'Système de notification multi-canaux (email, SMS, push)',
-    'Module de facturation automatisée avec intégrations bancaires',
-    'Plateforme e-learning avec parcours personnalisés',
-    'Système de gestion documentaire avec workflow',
-    'Application de réservation en ligne avec calendrier',
-    'Module de chat en temps réel avec support multimédia',
-    'Système de surveillance de la performance applicative',
-    'Plateforme de vote électronique sécurisée',
-    'Interface de configuration de règles métier',
-    'Système de backup automatisé avec chiffrement',
-    'Module de rapports avec export multi-formats',
-    'Plateforme de streaming vidéo avec CDN',
-    'Système de gestion des stocks avec alertes',
-    'Application de géolocalisation avec cartes interactives'
+    'Project management platform with real-time collaboration',
+    'Mobile app for personal task management',
+    'CRM system for customer relationship management',
+    'Analytics dashboard for business KPI tracking',
+    'Microservices API for distributed architecture',
+    'Admin interface for user management',
+    'Multi-channel notification system (email, SMS, push)',
+    'Automated billing module with banking integrations',
+    'E-learning platform with personalized paths',
+    'Document management system with workflow',
+    'Online booking app with calendar',
+    'Real-time chat module with multimedia support',
+    'Application performance monitoring system',
+    'Secure electronic voting platform',
+    'Business rules configuration interface',
+    'Automated backup system with encryption',
+    'Reporting module with multi-format export',
+    'Video streaming platform with CDN',
+    'Inventory management system with alerts',
+    'Geolocation app with interactive maps'
   ];
 
   static readonly WORKSPACE_NAMES = [
@@ -141,16 +141,16 @@ export class MockDataLists {
   ];
 
   static readonly ACTIVITY_ACTIONS = [
-    'a créé la tâche',
-    'a modifié la tâche',
-    'a assigné la tâche à',
-    'a changé le statut en',
-    'a ajouté un commentaire sur',
-    'a marqué comme prioritaire',
-    'a défini l\'échéance pour',
-    'a joint un fichier à',
-    'a déplacé la tâche vers',
-    'a archivé la tâche'
+    'created task',
+    'modified task',
+    'assigned task to',
+    'changed status to',
+    'added comment on',
+    'marked as priority',
+    'set deadline for',
+    'attached file to',
+    'moved task to',
+    'archived task'
   ];
 
   static readonly TASK_PRIORITIES = [
@@ -228,11 +228,11 @@ export class MockGeneratorUtils {
   
   static generateTaskDescription(title: string): string {
     const descriptions = [
-      `${title} - Cette tâche nécessite une analyse approfondie des besoins et une conception technique détaillée.`,
-      `Objectif : ${title}. Prévoir une revue de code et des tests complets avant livraison.`,
-      `${title} avec respect des bonnes pratiques de développement et documentation à jour.`,
-      `Tâche critique : ${title}. Coordination requise avec l'équipe et validation client.`,
-      `${title} - Implémentation progressive avec déploiement en environnement de test.`
+      `${title} - This task requires thorough requirements analysis and detailed technical design.`,
+      `Objective: ${title}. Plan code review and comprehensive testing before delivery.`,
+      `${title} with adherence to development best practices and up-to-date documentation.`,
+      `Critical task: ${title}. Team coordination and client validation required.`,
+      `${title} - Progressive implementation with deployment in test environment.`
     ];
     return this.rng.pick(descriptions);
   }

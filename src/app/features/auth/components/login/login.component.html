@@ -8,10 +8,10 @@
         </svg>
       </div>
       <h2 class="text-3xl font-bold text-gray-900 mb-2">
-        Connexion à TaskFlow
+        Login to TaskFlow
       </h2>
       <p class="text-gray-600">
-        Accédez à votre espace de gestion de tâches
+        Access your task management space
       </p>
     </div>
   </div>
@@ -36,7 +36,7 @@
 
       
       <div class="mb-6">
-        <p class="text-sm text-gray-600 text-center mb-3">Connexion rapide pour les tests :</p>
+        <p class="text-sm text-gray-600 text-center mb-3">Quick login for testing:</p>
         <div class="grid grid-cols-3 gap-2">
           <button
             type="button"
@@ -135,10 +135,10 @@
           @if (passwordControl?.invalid && passwordControl?.touched) {
             <div class="mt-2 text-sm text-red-600">
               @if (passwordControl?.errors?.['required']) {
-                <p>Le mot de passe est requis</p>
+                <p>Password is required</p>
               }
               @if (passwordControl?.errors?.['minlength']) {
-                <p>Le mot de passe doit contenir au moins 6 caractères</p>
+                <p>Password must contain at least 6 characters</p>
               }
             </div>
           }
@@ -159,7 +159,7 @@
 
           <div class="text-sm">
             <a href="#" class="font-medium text-blue-600 hover:text-blue-500 transition-colors">
-              Mot de passe oublié ?
+              Forgot password?
             </a>
           </div>
         </div>
@@ -188,9 +188,9 @@
       
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-600">
-          Pas encore de compte ?
+          Don't have an account yet?
           <a routerLink="/auth/register" class="font-medium text-blue-600 hover:text-blue-500 transition-colors ml-1">
-            Créer un compte
+            Create account
           </a>
         </p>
       </div>

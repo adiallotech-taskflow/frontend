@@ -70,7 +70,7 @@ export class LoginComponent {
       error: (error) => {
         console.error('Login error:', error);
         this.isLoading.set(false);
-        this.errorMessage.set(error.message || 'Une erreur est survenue lors de la connexion');
+        this.errorMessage.set(error.message || 'An error occurred during login');
       }
     });
   }

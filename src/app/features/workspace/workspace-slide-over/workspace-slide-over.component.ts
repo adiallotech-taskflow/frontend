@@ -60,7 +60,7 @@ export class WorkspaceSlideOverComponent {
         },
         error: (error) => {
           this.isLoading.set(false);
-          this.error.set(error.message || 'Une erreur est survenue lors de la création du workspace');
+          this.error.set(error.message || 'An error occurred while creating the workspace');
         }
       });
     } else {
@@ -84,10 +84,10 @@ export class WorkspaceSlideOverComponent {
   get nameErrorMessage() {
     const nameControl = this.nameControl;
     if (nameControl?.hasError('required')) {
-      return 'Le nom est requis';
+      return 'Name is required';
     }
     if (nameControl?.hasError('minlength')) {
-      return 'Le nom doit contenir au moins 3 caractères';
+      return 'Name must contain at least 3 characters';
     }
     return '';
   }

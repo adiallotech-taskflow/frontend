@@ -210,7 +210,7 @@ export class AuthMockService extends MockBaseService<User> {
             email: registerData.email
           });
           return throwError(() => ({
-            message: 'Cet email est déjà utilisé',
+            message: 'This email is already in use',
             code: 'EMAIL_ALREADY_EXISTS',
             status: 409
           }));
@@ -280,7 +280,7 @@ export class AuthMockService extends MockBaseService<User> {
 
     if (!session || !this.isSessionValid(session)) {
       return throwError(() => ({
-        message: 'Session invalide ou expirée',
+        message: 'Invalid or expired session',
         code: 'INVALID_SESSION',
         status: 401
       }));

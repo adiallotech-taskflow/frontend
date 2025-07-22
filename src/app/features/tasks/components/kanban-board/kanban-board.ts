@@ -47,14 +47,14 @@ export class KanbanBoardComponent implements OnInit {
     },
     {
       id: 'in-progress',
-      title: 'En cours',
+      title: 'In Progress',
       color: 'text-yellow-700',
       bgColor: 'bg-yellow-50',
       borderColor: 'border-yellow-200'
     },
     {
       id: 'done',
-      title: 'Terminé',
+      title: 'Done',
       color: 'text-green-700',
       bgColor: 'bg-green-50',
       borderColor: 'border-green-200'
@@ -108,7 +108,7 @@ export class KanbanBoardComponent implements OnInit {
       this.taskService.updateStatus(task.id, newStatus).subscribe({
         error: (err) => {
           console.error('Failed to update task status:', err);
-          this.error.set('Erreur lors de la mise à jour du statut');
+          this.error.set('Error updating status');
 
           const revertedTasks = [...this.tasks()];
           const revertIndex = revertedTasks.findIndex(t => t.id === task.id);
