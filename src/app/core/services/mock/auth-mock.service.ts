@@ -139,7 +139,7 @@ export class AuthMockService extends MockBaseService<User> {
         if (!user) {
           this.configService.logAction('Login failed - user not found', { email });
           return throwError(() => ({
-            message: 'Email ou mot de passe incorrect',
+            message: 'Invalid email or password',
             code: 'INVALID_CREDENTIALS',
             status: 401
           }));
@@ -149,7 +149,7 @@ export class AuthMockService extends MockBaseService<User> {
         if (password !== 'password123') {
           this.configService.logAction('Login failed - invalid password', { email });
           return throwError(() => ({
-            message: 'Email ou mot de passe incorrect',
+            message: 'Invalid email or password',
             code: 'INVALID_CREDENTIALS',
             status: 401
           }));

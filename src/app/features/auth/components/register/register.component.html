@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gradient-to-br from-purple-50 via-white to-blue-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    
+
     <div class="text-center">
       <div class="mx-auto h-16 w-16 flex items-center justify-center bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl mb-6">
         <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,14 +11,14 @@
         Create your account
       </h2>
       <p class="text-gray-600">
-        Rejoignez TaskFlow et organisez vos projets
+        Join TaskFlow and organize your projects
       </p>
     </div>
   </div>
 
   <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
     <div class="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100">
-      
+
       @if (errorMessage()) {
         <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
           <div class="flex">
@@ -34,9 +34,9 @@
         </div>
       }
 
-      
+
       <div class="mb-6">
-        <button 
+        <button
           type="button"
           (click)="fillTestData()"
           [disabled]="isLoading()"
@@ -51,14 +51,14 @@
         </div>
       </div>
 
-      
+
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
-        
+
         <div class="grid grid-cols-2 gap-4">
-          
+
           <div>
             <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">
-              Prénom
+              First name
             </label>
             <input
               id="firstName"
@@ -66,11 +66,11 @@
               formControlName="firstName"
               autocomplete="given-name"
               [class]="'block w-full px-3 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors ' +
-                (firstNameControl?.invalid && firstNameControl?.touched 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                (firstNameControl?.invalid && firstNameControl?.touched
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500')"
               placeholder="Jean" />
-            
+
             @if (firstNameControl?.invalid && firstNameControl?.touched) {
               <div class="mt-1 text-xs text-red-600">
                 @if (firstNameControl?.errors?.['required']) {
@@ -83,10 +83,10 @@
             }
           </div>
 
-          
+
           <div>
             <label for="lastName" class="block text-sm font-medium text-gray-700 mb-2">
-              Nom
+              Name
             </label>
             <input
               id="lastName"
@@ -94,15 +94,15 @@
               formControlName="lastName"
               autocomplete="family-name"
               [class]="'block w-full px-3 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors ' +
-                (lastNameControl?.invalid && lastNameControl?.touched 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                (lastNameControl?.invalid && lastNameControl?.touched
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500')"
               placeholder="Dupont" />
-            
+
             @if (lastNameControl?.invalid && lastNameControl?.touched) {
               <div class="mt-1 text-xs text-red-600">
                 @if (lastNameControl?.errors?.['required']) {
-                  <p>Le nom est requis</p>
+                  <p>Last name is required</p>
                 }
                 @if (lastNameControl?.errors?.['minlength']) {
                   <p>Minimum 2 characters</p>
@@ -112,10 +112,10 @@
           </div>
         </div>
 
-        
+
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
-            Adresse email
+            Email address
           </label>
           <input
             id="email"
@@ -123,27 +123,27 @@
             formControlName="email"
             autocomplete="email"
             [class]="'block w-full px-3 py-3 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors ' +
-              (emailControl?.invalid && emailControl?.touched 
-                ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+              (emailControl?.invalid && emailControl?.touched
+                ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                 : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500')"
             placeholder="votre.email@exemple.com" />
-          
+
           @if (emailControl?.invalid && emailControl?.touched) {
             <div class="mt-2 text-sm text-red-600">
               @if (emailControl?.errors?.['required']) {
-                <p>L'adresse email est requise</p>
+                <p>Email address is required</p>
               }
               @if (emailControl?.errors?.['email']) {
-                <p>Veuillez saisir une adresse email valide</p>
+                <p>Please enter a valid email address</p>
               }
             </div>
           }
         </div>
 
-        
+
         <div>
           <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-            Mot de passe
+            Password
           </label>
           <div class="relative">
             <input
@@ -152,11 +152,11 @@
               formControlName="password"
               autocomplete="new-password"
               [class]="'block w-full px-3 py-3 pr-10 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors ' +
-                (passwordControl?.invalid && passwordControl?.touched 
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                (passwordControl?.invalid && passwordControl?.touched
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500')"
               placeholder="Choose a secure password" />
-            
+
             <button
               type="button"
               (click)="togglePasswordVisibility()"
@@ -173,7 +173,7 @@
               }
             </button>
           </div>
-          
+
           @if (passwordControl?.invalid && passwordControl?.touched) {
             <div class="mt-2 text-sm text-red-600">
               @if (passwordControl?.errors?.['required']) {
@@ -186,7 +186,7 @@
           }
         </div>
 
-        
+
         <div>
           <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
             Confirm password
@@ -199,10 +199,10 @@
               autocomplete="new-password"
               [class]="'block w-full px-3 py-3 pr-10 border rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-1 transition-colors ' +
                 ((confirmPasswordControl?.invalid && confirmPasswordControl?.touched) || (!passwordsMatch && confirmPasswordControl?.touched)
-                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                  ? 'border-red-300 focus:border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:border-purple-500 focus:ring-purple-500')"
-              placeholder="Ressaisissez votre mot de passe" />
-            
+              placeholder="Re-enter your password" />
+
             <button
               type="button"
               (click)="toggleConfirmPasswordVisibility()"
@@ -219,20 +219,20 @@
               }
             </button>
           </div>
-          
+
           @if ((confirmPasswordControl?.invalid && confirmPasswordControl?.touched) || (!passwordsMatch && confirmPasswordControl?.touched)) {
             <div class="mt-2 text-sm text-red-600">
               @if (confirmPasswordControl?.errors?.['required']) {
                 <p>Password confirmation is required</p>
               }
               @if (!passwordsMatch && confirmPasswordControl?.touched) {
-                <p>Les mots de passe ne correspondent pas</p>
+                <p>Passwords do not match</p>
               }
             </div>
           }
         </div>
 
-        
+
         <div class="flex items-start">
           <div class="flex items-center h-5">
             <input
@@ -246,28 +246,28 @@
           </div>
           <div class="ml-3 text-sm">
             <label for="acceptTerms" class="text-gray-700">
-              J'accepte les 
+              I accept the
               <a href="#" class="font-medium text-purple-600 hover:text-purple-500 transition-colors">
-                conditions d'utilisation
+                terms and conditions
               </a>
-              et la 
+              et la
               <a href="#" class="font-medium text-purple-600 hover:text-purple-500 transition-colors">
                 privacy policy
               </a>
             </label>
             @if (acceptTermsControl?.invalid && acceptTermsControl?.touched) {
-              <p class="mt-1 text-xs text-red-600">Vous devez accepter les conditions d'utilisation</p>
+              <p class="mt-1 text-xs text-red-600">You must accept the terms and conditions</p>
             }
           </div>
         </div>
 
-        
+
         <div>
           <button
             type="submit"
             [disabled]="!isFormValid || isLoading()"
             class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
-            
+
             @if (isLoading()) {
               <div class="absolute left-0 inset-y-0 flex items-center pl-3">
                 <svg class="h-5 w-5 text-white animate-spin" fill="none" viewBox="0 0 24 24">
@@ -276,18 +276,18 @@
                 </svg>
               </div>
             }
-            
+
             {{ isLoading() ? 'Creating...' : 'Create my account' }}
           </button>
         </div>
       </form>
 
-      
+
       <div class="mt-6 text-center">
         <p class="text-sm text-gray-600">
           Already have an account?
           <a routerLink="/auth/login" class="font-medium text-purple-600 hover:text-purple-500 transition-colors ml-1">
-            Se connecter
+            Log in
           </a>
         </p>
       </div>

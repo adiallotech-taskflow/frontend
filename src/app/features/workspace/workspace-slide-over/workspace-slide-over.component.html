@@ -30,7 +30,7 @@
                 <div class="bg-indigo-700 px-4 py-6 sm:px-6">
                   <div class="flex items-center justify-between">
                     <h2 id="slide-over-title" class="text-base font-semibold text-white">
-                      Nouveau Workspace
+                      New Workspace
                     </h2>
                     <div class="ml-3 flex h-7 items-center">
                       <button 
@@ -38,7 +38,7 @@
                         (click)="close()"
                         class="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
                         <span class="absolute -inset-2.5"></span>
-                        <span class="sr-only">Fermer le panneau</span>
+                        <span class="sr-only">Close panel</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6" aria-hidden="true">
                           <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -88,14 +88,14 @@
                       
                       <div>
                         <label for="workspace-name" class="block text-sm/6 font-medium text-gray-900">
-                          Nom du workspace
+                          Workspace name
                         </label>
                         <div class="mt-2">
                           <input 
                             id="workspace-name" 
                             type="text" 
                             formControlName="name"
-                            placeholder="Ex: Projet Marketing"
+                            placeholder="Ex: Marketing Project"
                             maxlength="100"
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6"
                             [class.outline-red-500]="hasNameError"
@@ -110,7 +110,7 @@
                       
                       <div>
                         <label for="workspace-description" class="block text-sm/6 font-medium text-gray-900">
-                          Description (optionnelle)
+                          Description (optional)
                         </label>
                         <div class="mt-2">
                           <textarea 

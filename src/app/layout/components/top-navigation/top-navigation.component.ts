@@ -24,7 +24,7 @@ export class TopNavigationComponent {
   
   userName = computed(() => {
     const user = this.authService.getCurrentUser();
-    return user ? this.authService.getUserFullName() : 'Utilisateur';
+    return user ? this.authService.getUserFullName() : 'User';
   });
 
   userInitials = computed(() => {
