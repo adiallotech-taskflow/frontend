@@ -5,9 +5,7 @@ import { trigger, transition, style, animate, stagger, query } from '@angular/an
 import { RouterLink } from '@angular/router';
 import { TaskCardComponent, TaskFiltersComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
-import {
-  ConfirmationDialogComponent,
-} from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
 import { TaskService, WorkspaceService } from '../../../../core/services';
 import {
@@ -17,7 +15,7 @@ import {
   TaskSlideOverMode,
   TaskGroup,
   TaskFilterOptions,
-  ConfirmationDialogData
+  ConfirmationDialogData,
 } from '../../../../core/models';
 
 @Component({

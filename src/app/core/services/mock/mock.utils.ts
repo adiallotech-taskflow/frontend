@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MockConfigService } from './mock.config';
 import { TaskMockService } from './task-mock.service';
-import {MockConfig} from '../../models';
+import { MockConfig } from '../../models';
 
 @Injectable({
   providedIn: 'root',

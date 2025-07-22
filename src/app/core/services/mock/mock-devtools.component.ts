@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MockConfigService } from './mock.config';
 import { MockUtilsService } from './mock.utils';
 import { environment } from '../../../../environments/environment';
-import {MockConfig} from '../../models';
+import { MockConfig } from '../../models';
 
 @Component({
   selector: 'app-mock-devtools',

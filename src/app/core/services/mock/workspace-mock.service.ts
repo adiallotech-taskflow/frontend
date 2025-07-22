@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
-import { 
-  Workspace, 
-  WorkspaceMember, 
-  WorkspaceStats, 
+import {
+  Workspace,
+  WorkspaceMember,
+  WorkspaceStats,
   PaginationResult,
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
-  InviteMemberRequest 
+  InviteMemberRequest,
 } from '../../models';
 
 @Injectable({

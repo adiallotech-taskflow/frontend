@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services';
-import {RegisterRequest} from '../../../../core/models';
+import { RegisterRequest } from '../../../../core/models';
 
 @Component({
   selector: 'app-register',

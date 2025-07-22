@@ -10,7 +10,7 @@ import { WorkspaceSkeletonComponent } from '../workspace-skeleton/workspace-skel
 import { EmptyStateComponent } from '../empty-state/empty-state';
 import { FabButtonComponent } from '../fab-button/fab-button';
 import { forkJoin } from 'rxjs';
-import {WorkspaceSlideOverComponent} from '../../../workspace/components/workspace-slide-over';
+import { WorkspaceSlideOverComponent } from '../../../workspace/components/workspace-slide-over';
 
 @Component({
   selector: 'app-dashboard',

@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders, inject } from '@angular/core';
 import { MockConfigService, MOCK_CONFIG, DEFAULT_MOCK_CONFIG } from './mock.config';
 
 import { TaskMockService } from './task-mock.service';
-import {MockConfig} from '../../models';
+import { MockConfig } from '../../models';
 
 export function createMockServiceProvider<T>(
   mockService: new (...args: unknown[]) => T,
