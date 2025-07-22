@@ -1,16 +1,16 @@
 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200 cursor-pointer h-full flex flex-col"
      [routerLink]="['/workspaces', workspace.id]">
-  <!-- Workspace Header -->
+  
   <div class="flex items-center justify-between mb-4">
     <h3 class="text-lg font-semibold text-gray-900 truncate">{{ workspace.name }}</h3>
     <button class="p-1 text-gray-400 hover:text-gray-600">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="h-5 w-5 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
       </svg>
     </button>
   </div>
 
-  <!-- Description -->
+  
   <div class="mb-4 min-h-[2.5rem]">
     @if (workspace.description) {
       <p class="text-sm text-gray-600 line-clamp-2">{{ workspace.description }}</p>
@@ -19,17 +19,17 @@
     }
   </div>
 
-  <!-- Stats -->
+  
   <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
     <div class="flex items-center space-x-4">
       <span class="flex items-center">
-        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-4 w-4 mr-1 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
         {{ stats.totalTasks }}
       </span>
       <span class="flex items-center">
-        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="h-4 w-4 mr-1 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
         </svg>
         {{ workspace.members.length }}
@@ -38,7 +38,7 @@
     <span class="text-xs">{{ workspace.updatedAt | date:'short' }}</span>
   </div>
 
-  <!-- Progress Bar -->
+  
   <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
     <div 
       class="bg-green-600 h-2 rounded-full transition-all duration-300" 
@@ -49,7 +49,7 @@
     {{ stats.completedTasks }} of {{ stats.totalTasks }} tasks completed
   </div>
 
-  <!-- Members Avatars -->
+  
   <div class="flex -space-x-2 mt-auto pt-4">
     @for (member of workspace.members.slice(0, 3); track member.userId) {
       <div class="relative">

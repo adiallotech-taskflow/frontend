@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-fab-button',
   imports: [CommonModule],
   templateUrl: './fab-button.html',
-  styleUrl: './fab-button.css'
+  styleUrl: './fab-button.css',
 })
 export class FabButtonComponent {
   @Output() click = new EventEmitter<void>();

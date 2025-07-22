@@ -7,7 +7,7 @@ import { Workspace, WorkspaceStats } from '../../../../core/models';
   selector: 'app-workspace-card',
   imports: [CommonModule, RouterLink],
   templateUrl: './workspace-card.html',
-  styleUrl: './workspace-card.css'
+  styleUrl: './workspace-card.css',
 })
 export class WorkspaceCardComponent {
   @Input() workspace!: Workspace;

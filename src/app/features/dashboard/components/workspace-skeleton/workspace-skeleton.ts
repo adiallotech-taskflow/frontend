@@ -4,8 +4,6 @@ import { Component } from '@angular/core';
   selector: 'app-workspace-skeleton',
   imports: [],
   templateUrl: './workspace-skeleton.html',
-  styleUrl: './workspace-skeleton.css'
+  styleUrl: './workspace-skeleton.css',
 })
-export class WorkspaceSkeletonComponent {
-
-}
+export class WorkspaceSkeletonComponent {}

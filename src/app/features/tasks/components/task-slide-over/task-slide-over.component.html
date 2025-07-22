@@ -1,13 +1,12 @@
-<!-- Task Slide-over -->
 @if (isOpen()) {
-  <div 
-    role="dialog" 
-    aria-modal="true" 
-    aria-labelledby="slide-over-title" 
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="slide-over-title"
     class="relative z-50">
-    
-    <!-- Background backdrop -->
-    <div 
+
+
+    <div
       class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out"
       (click)="close()">
     </div>
@@ -15,32 +14,32 @@
     <div class="fixed inset-0 overflow-hidden">
       <div class="absolute inset-0 overflow-hidden">
         <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-          <!-- Slide-over panel -->
-          <div 
+
+          <div
             class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700">
-          
-            <form 
+
+            <form
               [formGroup]="form"
-              (ngSubmit)="onSubmit()" 
+              (ngSubmit)="onSubmit()"
               class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
-              
-              <!-- Content area -->
+
+
               <div class="h-0 flex-1 overflow-y-auto">
-                
-                <!-- Header -->
+
+
                 <div class="bg-indigo-700 px-4 py-6 sm:px-6">
                   <div class="flex items-center justify-between">
                     <h2 id="slide-over-title" class="text-base font-semibold text-white">
                       {{ dialogTitle }}
                     </h2>
                     <div class="ml-3 flex h-7 items-center">
-                      <button 
+                      <button
                         type="button"
                         (click)="close()"
                         class="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
                         <span class="absolute -inset-2.5"></span>
                         <span class="sr-only">Close panel</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="size-6" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="fill-none size-6" aria-hidden="true">
                           <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                       </button>
@@ -53,16 +52,16 @@
                   </div>
                 </div>
 
-                <!-- Form content -->
+
                 <div class="flex flex-1 flex-col justify-between">
                   <div class="divide-y divide-gray-200 px-4 sm:px-6">
-                    
-                    <!-- Error message -->
+
+
                     @if (error()) {
                       <div class="rounded-md bg-red-50 p-4 mt-4">
                         <div class="flex">
                           <div class="flex-shrink-0">
-                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <svg class="fill-current h-5 w-5 text-red-400" viewBox="0 0 20 20" aria-hidden="true">
                               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
                             </svg>
                           </div>
@@ -70,12 +69,12 @@
                             <p class="text-sm font-medium text-red-800">{{ error() }}</p>
                           </div>
                           <div class="ml-auto pl-3">
-                            <button 
+                            <button
                               type="button"
                               (click)="clearError()"
                               class="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 focus-visible:ring-offset-red-50">
                               <span class="sr-only">Dismiss</span>
-                              <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                              <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" aria-hidden="true">
                                 <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                               </svg>
                             </button>
@@ -85,16 +84,16 @@
                     }
 
                     <div class="space-y-6 pb-5 pt-6">
-                      
-                      <!-- Task Title -->
+
+
                       <div>
                         <label for="task-title" class="block text-sm/6 font-medium text-gray-900">
                           Task Title *
                         </label>
                         <div class="mt-2">
-                          <input 
-                            id="task-title" 
-                            type="text" 
+                          <input
+                            id="task-title"
+                            type="text"
                             formControlName="title"
                             placeholder="Enter task title..."
                             maxlength="100"
@@ -108,16 +107,16 @@
                         </div>
                       </div>
 
-                      <!-- Description -->
+
                       <div>
                         <label for="task-description" class="block text-sm/6 font-medium text-gray-900">
                           Description (optional)
                         </label>
                         <div class="mt-2">
-                          <textarea 
-                            id="task-description" 
+                          <textarea
+                            id="task-description"
                             formControlName="description"
-                            rows="3" 
+                            rows="3"
                             placeholder="Add a description..."
                             maxlength="500"
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
@@ -126,14 +125,14 @@
                         </div>
                       </div>
 
-                      <!-- Status -->
+
                       <div>
                         <label for="task-status" class="block text-sm/6 font-medium text-gray-900">
                           Status
                         </label>
                         <div class="mt-2">
-                          <select 
-                            id="task-status" 
+                          <select
+                            id="task-status"
                             formControlName="status"
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
                             @for (status of statusOptions; track status.value) {
@@ -141,7 +140,7 @@
                             }
                           </select>
                         </div>
-                        <!-- Status Badge Preview -->
+
                         @if (statusControl?.value) {
                           <div class="mt-2">
                             @for (status of statusOptions; track status.value) {
@@ -155,16 +154,16 @@
                         }
                       </div>
 
-                      <!-- Priority -->
+
                       <fieldset>
                         <legend class="text-sm/6 font-medium text-gray-900">Priority</legend>
                         <div class="mt-2 space-y-4">
                           @for (priority of priorityOptions; track priority.value) {
                             <div class="relative flex items-start">
                               <div class="absolute flex h-6 items-center">
-                                <input 
+                                <input
                                   [id]="'priority-' + priority.value"
-                                  type="radio" 
+                                  type="radio"
                                   [value]="priority.value"
                                   formControlName="priority"
                                   class="relative size-4 appearance-none rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
@@ -181,14 +180,14 @@
                         </div>
                       </fieldset>
 
-                      <!-- Assignee -->
+
                       <div>
                         <label for="task-assignee" class="block text-sm/6 font-medium text-gray-900">
                           Assign to
                         </label>
                         <div class="mt-2">
-                          <select 
-                            id="task-assignee" 
+                          <select
+                            id="task-assignee"
                             formControlName="assigneeId"
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
                             <option value="">Unassigned</option>
@@ -197,7 +196,7 @@
                             }
                           </select>
                         </div>
-                        <!-- Assignee Avatar Preview -->
+
                         @if (assigneeControl?.value) {
                           <div class="mt-2">
                             @for (user of users(); track user.id) {
@@ -214,15 +213,15 @@
                         }
                       </div>
 
-                      <!-- Due Date -->
+
                       <div>
                         <label for="task-due-date" class="block text-sm/6 font-medium text-gray-900">
                           Due Date (optional)
                         </label>
                         <div class="mt-2">
-                          <input 
-                            id="task-due-date" 
-                            type="date" 
+                          <input
+                            id="task-due-date"
+                            type="date"
                             formControlName="dueDate"
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6" />
                         </div>
@@ -230,11 +229,11 @@
 
                     </div>
 
-                    <!-- Additional info -->
+
                     <div class="pb-6 pt-4">
                       <div class="flex text-sm">
                         <div class="group inline-flex items-center font-medium text-indigo-600">
-                          <svg viewBox="0 0 20 20" fill="currentColor" class="size-5 text-indigo-500" aria-hidden="true">
+                          <svg viewBox="0 0 20 20" class="fill-current size-5 text-indigo-500" aria-hidden="true">
                             <path d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" fill-rule="evenodd" />
                           </svg>
                           <span class="ml-2">{{ isEditMode ? 'Changes will be saved automatically' : 'Task will be created in the current workspace' }}</span>
@@ -245,21 +244,21 @@
                 </div>
               </div>
 
-              <!-- Action buttons -->
+
               <div class="flex shrink-0 justify-end px-4 py-4">
-                <button 
+                <button
                   type="button"
                   (click)="close()"
                   [disabled]="isLoading()"
                   class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
                   Cancel
                 </button>
-                <button 
+                <button
                   type="submit"
                   [disabled]="form.invalid || isLoading()"
                   class="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed">
                   @if (isLoading()) {
-                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white fill-none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>

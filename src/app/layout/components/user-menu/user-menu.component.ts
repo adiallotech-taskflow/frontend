@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-user-menu',
   imports: [CommonModule],
-  templateUrl: './user-menu.component.html'
+  templateUrl: './user-menu.component.html',
 })
 export class UserMenuComponent {
   @Input() isOpen = false;

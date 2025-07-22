@@ -1,14 +1,14 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { WorkspaceService } from '../../../../core/services/workspace.service';
+import { WorkspaceService } from '../../../../core/services';
 import { Workspace } from '../../../../core/models';
 
 @Component({
   selector: 'app-workspace-list',
   imports: [CommonModule, RouterLink],
   templateUrl: './workspace-list.component.html',
-  styleUrls: ['./workspace-list.component.css']
+  styleUrls: ['./workspace-list.component.css'],
 })
 export class WorkspaceListComponent implements OnInit {
   workspaces$ = signal<Workspace[]>([]);
@@ -25,16 +25,16 @@ export class WorkspaceListComponent implements OnInit {
   loadWorkspaces() {
     this.loading.set(true);
     this.error.set(null);
-    
+
     this.workspaceService.list().subscribe({
       next: (workspaces) => {
         this.workspaces$.set(workspaces);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.error.set('Failed to load workspaces. Please try again.');
         this.loading.set(false);
-      }
+      },
     });
   }
 
@@ -43,8 +43,8 @@ export class WorkspaceListComponent implements OnInit {
   }
 
   getUserRole(workspace: Workspace): string {
-    const currentUserId = 'current-user-id'; // TODO: Get from auth service
-    const member = workspace.members?.find(m => m.userId === currentUserId);
+    const currentUserId = 'current-user-id';
+    const member = workspace.members?.find((m) => m.userId === currentUserId);
     return member?.role || 'viewer';
   }
 
@@ -58,9 +58,9 @@ export class WorkspaceListComponent implements OnInit {
         next: () => {
           this.loadWorkspaces();
         },
-        error: (err) => {
+        error: () => {
           alert('Failed to delete workspace. Please try again.');
-        }
+        },
       });
     }
   }

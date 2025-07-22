@@ -1,5 +1,5 @@
-<div class="space-y-6">
-  <!-- Workspace Context Banner -->
+<div class="min-h-full">
+
   @if (workspace && !isLoading) {
     <div class="bg-white shadow-sm border-b border-gray-200 rounded-lg overflow-hidden">
       <div class="px-6 py-4">
@@ -7,8 +7,8 @@
           <div class="flex items-center space-x-4">
             <div class="flex-shrink-0">
               <div class="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center">
-                <svg class="h-6 w-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <svg class="h-6 w-6 text-indigo-600 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
                   </path>
                 </svg>
@@ -22,22 +22,22 @@
             </div>
           </div>
           <div class="flex items-center space-x-3">
-            <a [routerLink]="['/workspaces', workspace.id]" 
+            <a [routerLink]="['/workspaces', workspace.id]"
                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              <svg class="h-4 w-4 mr-1.5 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
                 </path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
                 </path>
               </svg>
               Workspace Settings
             </a>
-            <a [routerLink]="['/workspaces']" 
+            <a [routerLink]="['/workspaces']"
                class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              <svg class="h-4 w-4 mr-1.5 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4">
                 </path>
               </svg>
@@ -48,51 +48,46 @@
       </div>
     </div>
   }
-  
-  <!-- All Tasks View Banner (when no workspace selected) -->
+
+
   @if (!workspace && !workspaceId && !isLoading) {
-    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 shadow-sm rounded-lg overflow-hidden">
-      <div class="px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center space-x-4">
-            <div class="flex-shrink-0">
-              <div class="h-12 w-12 rounded-lg bg-white/20 flex items-center justify-center">
-                <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                  </path>
-                </svg>
-              </div>
-            </div>
-            <div>
-              <h1 class="text-xl font-semibold text-white">All Tasks</h1>
-              <p class="text-sm text-white/80">
-                Viewing tasks from all workspaces • {{ totalTaskCount }} total tasks
-              </p>
-            </div>
-          </div>
-          <div>
-            <a [routerLink]="['/workspaces']" 
-               class="inline-flex items-center px-3 py-1.5 border border-white/30 text-sm font-medium rounded-md text-white bg-white/10 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white/50">
-              <svg class="h-4 w-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+    <div class="mb-8">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-gray-900">Tasks</h1>
+        <div class="flex items-center space-x-3">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+              <svg class="w-4 h-4 mr-1.5 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+              </svg>
+              All Workspaces
+            </span>
+            <a [routerLink]="['/workspaces']"
+               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <svg class="h-4 w-4 mr-2 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z">
                 </path>
               </svg>
-              Select Workspace
+              Browse Workspaces
             </a>
-          </div>
         </div>
       </div>
+      <p class="text-gray-500 mt-1">{{ totalTaskCount }} {{ totalTaskCount === 1 ? 'task' : 'tasks' }} across all workspaces</p>
     </div>
+
+
+
+
+
+
   }
 
-  <!-- Loading State -->
+
   @if (isLoading) {
     <div class="space-y-8">
     @for (group of [1, 2, 3]; track group) {
       <div class="space-y-4">
-      <!-- Skeleton Header -->
+
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <div class="h-6 w-24 bg-gray-200 rounded animate-pulse"></div>
@@ -100,7 +95,7 @@
         </div>
       </div>
 
-      <!-- Skeleton Cards -->
+
       <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         @for (_ of getSkeletonArray(2); track $index) {
           <div class="bg-white rounded-lg border border-gray-200 p-4 animate-pulse">
@@ -109,7 +104,7 @@
             <div class="h-4 bg-gray-200 rounded w-full"></div>
             <div class="h-4 bg-gray-200 rounded w-2/3"></div>
             <div class="flex items-center justify-between mt-4">
-              <div class="h-8 w-8 bg-gray-200 rounded-full"></div>
+              <div class="h-8 w-8 bg-gray-200 rounded-full">{{_}}</div>
               <div class="h-6 w-16 bg-gray-200 rounded-full"></div>
             </div>
           </div>
@@ -121,10 +116,10 @@
     </div>
   }
 
-  <!-- Error State -->
+
   @if (hasError && !isLoading) {
     <div class="text-center py-12 px-4 bg-red-50 rounded-lg border border-red-200">
-    <svg class="mx-auto h-12 w-12 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg class="mx-auto h-12 w-12 text-red-400 mb-4 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
     </svg>
@@ -137,10 +132,10 @@
     </div>
   }
 
-  <!-- Empty State -->
+
   @if (isEmpty && !hasError) {
     <div class="text-center py-16 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
     </svg>
@@ -154,7 +149,7 @@
     </div>
   }
 
-  <!-- Task Filters -->
+
   @if (!isLoading && !hasError && !isEmpty) {
     <app-task-filters
       [resultsCount]="filteredTasksCount()"
@@ -163,13 +158,13 @@
     </app-task-filters>
   }
 
-  <!-- Task Groups -->
+
   @if (!isLoading && !hasError && !isEmpty) {
     <div class="space-y-8">
     @for (group of taskGroups; track group.status) {
       @if (group.tasks.length > 0) {
         <div class="space-y-4">
-      <!-- Group Header -->
+
       <div class="flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <h2 class="text-lg font-semibold {{ group.textColor }}">{{ group.label }}</h2>
@@ -179,7 +174,7 @@
         </div>
       </div>
 
-        <!-- Task Cards -->
+
         <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         @for (task of group.tasks; track task.id) {
           <app-task-card
@@ -196,24 +191,23 @@
     </div>
   }
 
-  <!-- Summary Footer -->
+
   @if (!isLoading && !hasError && !isEmpty) {
     <div class="mt-8 pt-4 border-t border-gray-200 text-center text-sm text-gray-500">
     <p>Total: {{ totalTaskCount }} {{ totalTaskCount === 1 ? 'task' : 'tasks' }} in this workspace</p>
     </div>
   }
 
-  <!-- Task Slide Over -->
+
   <app-task-slide-over
     #taskSlideOver
     [mode]="taskSlideOverMode"
     [users]="users"
     (taskCreated)="onTaskCreated($event)"
-    (taskUpdated)="onTaskUpdated($event)"
-    (closed)="onTaskSlideOverClosed()">
+    (taskUpdated)="onTaskUpdated($event)">
   </app-task-slide-over>
 
-  <!-- Confirmation Dialog -->
+
   <app-confirmation-dialog
     #confirmationDialog
     [data]="confirmationData"
@@ -221,7 +215,7 @@
     (cancelled)="onDeleteCancelled()">
   </app-confirmation-dialog>
 
-  <!-- Floating Action Button -->
+
   @if (!isLoading && !hasError && !isEmpty && !taskSlideOver.isOpen()) {
     <app-fab-button (click)="openCreateTaskSlideOver()"></app-fab-button>
   }

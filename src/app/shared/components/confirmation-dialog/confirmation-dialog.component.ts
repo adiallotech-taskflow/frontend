@@ -14,17 +14,17 @@ export interface ConfirmationDialogData {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './confirmation-dialog.component.html',
-  styleUrl: './confirmation-dialog.component.css'
+  styleUrl: './confirmation-dialog.component.css',
 })
 export class ConfirmationDialogComponent {
   isOpen = signal(false);
-  
+
   data = input<ConfirmationDialogData>({
     title: 'Confirm action',
     message: 'Are you sure you want to proceed?',
     confirmText: 'Confirm',
     cancelText: 'Cancel',
-    type: 'info'
+    type: 'info',
   });
 
   confirmed = output<void>();
@@ -54,19 +54,19 @@ export class ConfirmationDialogComponent {
         return {
           bgColor: 'bg-red-100',
           iconColor: 'text-red-600',
-          buttonColor: 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600'
+          buttonColor: 'bg-red-600 hover:bg-red-500 focus-visible:outline-red-600',
         };
       case 'warning':
         return {
           bgColor: 'bg-yellow-100',
           iconColor: 'text-yellow-600',
-          buttonColor: 'bg-yellow-600 hover:bg-yellow-500 focus-visible:outline-yellow-600'
+          buttonColor: 'bg-yellow-600 hover:bg-yellow-500 focus-visible:outline-yellow-600',
         };
       default:
         return {
           bgColor: 'bg-indigo-100',
           iconColor: 'text-indigo-600',
-          buttonColor: 'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600'
+          buttonColor: 'bg-indigo-600 hover:bg-indigo-500 focus-visible:outline-indigo-600',
         };
     }
   }

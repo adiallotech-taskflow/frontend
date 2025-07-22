@@ -1,4 +1,4 @@
-import { Component, signal, output, input, OnInit, HostListener } from '@angular/core';
+import { Component, signal, output, input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TaskMockService } from '../../../../core/services';
@@ -24,9 +24,9 @@ export interface TaskFormData {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './task-slide-over.component.html',
-  styleUrl: './task-slide-over.component.css'
+  styleUrl: './task-slide-over.component.css',
 })
-export class TaskSlideOverComponent implements OnInit {
+export class TaskSlideOverComponent {
   isOpen = signal(false);
   isLoading = signal(false);
   error = signal<string | null>(null);
@@ -42,13 +42,19 @@ export class TaskSlideOverComponent implements OnInit {
   readonly statusOptions = [
     { value: 'todo', label: 'To Do', bgColor: 'bg-gray-100', textColor: 'text-gray-800' },
     { value: 'in-progress', label: 'In Progress', bgColor: 'bg-yellow-100', textColor: 'text-yellow-800' },
-    { value: 'done', label: 'Done', bgColor: 'bg-green-100', textColor: 'text-green-800' }
+    { value: 'done', label: 'Done', bgColor: 'bg-green-100', textColor: 'text-green-800' },
   ] as const;
 
   readonly priorityOptions = [
     { value: 'low', label: 'Low', color: 'text-green-600', bgColor: 'bg-green-50', borderColor: 'border-green-200' },
-    { value: 'medium', label: 'Medium', color: 'text-yellow-600', bgColor: 'bg-yellow-50', borderColor: 'border-yellow-200' },
-    { value: 'high', label: 'High', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200' }
+    {
+      value: 'medium',
+      label: 'Medium',
+      color: 'text-yellow-600',
+      bgColor: 'bg-yellow-50',
+      borderColor: 'border-yellow-200',
+    },
+    { value: 'high', label: 'High', color: 'text-red-600', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
   ] as const;
 
   constructor(
@@ -61,12 +67,8 @@ export class TaskSlideOverComponent implements OnInit {
       status: ['todo', Validators.required],
       priority: ['medium', Validators.required],
       assigneeId: [''],
-      dueDate: ['']
+      dueDate: [''],
     });
-  }
-
-  ngOnInit() {
-    // Component initialization logic if needed
   }
 
   @HostListener('document:keydown.escape')
@@ -88,7 +90,7 @@ export class TaskSlideOverComponent implements OnInit {
           status: 'todo',
           priority: 'medium',
           assigneeId: '',
-          dueDate: ''
+          dueDate: '',
         });
       } else if (this.mode().type === 'edit' && this.mode().task) {
         this.populateForm(this.mode().task!);
@@ -100,7 +102,6 @@ export class TaskSlideOverComponent implements OnInit {
     this.isOpen.set(false);
     this.closed.emit();
   }
-
 
   onSubmit() {
     if (this.form.valid && !this.isLoading()) {
@@ -128,7 +129,7 @@ export class TaskSlideOverComponent implements OnInit {
       status: task.status,
       priority: task.priority,
       assigneeId: task.assigneeId || '',
-      dueDate
+      dueDate,
     });
   }
 
@@ -140,7 +141,7 @@ export class TaskSlideOverComponent implements OnInit {
       status: formValue.status,
       priority: formValue.priority,
       assigneeId: formValue.assigneeId || undefined,
-      dueDate: formValue.dueDate || undefined
+      dueDate: formValue.dueDate || undefined,
     };
   }
 
@@ -148,7 +149,7 @@ export class TaskSlideOverComponent implements OnInit {
     const createData = {
       ...formData,
       workspaceId: this.mode().workspaceId!,
-      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined
+      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
     this.taskService.createTask(createData).subscribe({
@@ -160,7 +161,7 @@ export class TaskSlideOverComponent implements OnInit {
       error: (error) => {
         this.isLoading.set(false);
         this.error.set(error.message || 'An error occurred while creating the task');
-      }
+      },
     });
   }
 
@@ -168,7 +169,7 @@ export class TaskSlideOverComponent implements OnInit {
     const taskId = this.mode().task!.id;
     const updateData = {
       ...formData,
-      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined
+      dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
     this.taskService.updateTask(taskId, updateData).subscribe({
@@ -180,7 +181,7 @@ export class TaskSlideOverComponent implements OnInit {
       error: (error) => {
         this.isLoading.set(false);
         this.error.set(error.message || 'An error occurred while updating the task');
-      }
+      },
     });
   }
 

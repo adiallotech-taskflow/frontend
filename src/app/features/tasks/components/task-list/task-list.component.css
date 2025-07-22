@@ -2,12 +2,12 @@
   display: block;
 }
 
-/* Smooth transitions for card hover effects */
+
 app-task-card {
   display: block;
 }
 
-/* Skeleton loader shimmer effect */
+
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -28,7 +28,7 @@ app-task-card {
   animation: shimmer 1.5s infinite;
 }
 
-/* Custom scrollbar for task groups */
+
 .task-group-scroll {
   scrollbar-width: thin;
   scrollbar-color: #e5e7eb #f9fafb;
@@ -53,7 +53,7 @@ app-task-card {
   background: #d1d5db;
 }
 
-/* Status indicators with subtle animations */
+
 .status-indicator {
   position: relative;
   overflow: hidden;
@@ -78,7 +78,7 @@ app-task-card {
   }
 }
 
-/* Grid layout adjustments for different screen sizes */
+
 @media (min-width: 768px) {
   .task-grid {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -91,7 +91,7 @@ app-task-card {
   }
 }
 
-/* Hover effects for interactive elements */
+
 .hover-lift {
   transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }

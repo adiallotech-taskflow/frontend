@@ -6,7 +6,7 @@ import { NavigationItem, Team } from '../../../core/models';
 @Component({
   selector: 'app-desktop-sidebar',
   imports: [CommonModule, NavigationMenuComponent],
-  templateUrl: './desktop-sidebar.component.html'
+  templateUrl: './desktop-sidebar.component.html',
 })
 export class DesktopSidebarComponent {
   @Input() navigationItems: NavigationItem[] = [];

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-empty-state',
   imports: [CommonModule],
   templateUrl: './empty-state.html',
-  styleUrl: './empty-state.css'
+  styleUrl: './empty-state.css',
 })
 export class EmptyStateComponent {
   @Input() type: 'no-workspaces' | 'no-results' = 'no-workspaces';

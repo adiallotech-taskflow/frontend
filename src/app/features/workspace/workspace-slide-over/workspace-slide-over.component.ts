@@ -1,7 +1,7 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { WorkspaceService } from '../../../core/services/workspace.service';
+import { WorkspaceService } from '../../../core/services';
 import { Workspace } from '../../../core/models';
 
 @Component({
@@ -9,7 +9,7 @@ import { Workspace } from '../../../core/models';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './workspace-slide-over.component.html',
-  styleUrl: './workspace-slide-over.component.css'
+  styleUrl: './workspace-slide-over.component.css',
 })
 export class WorkspaceSlideOverComponent {
   isOpen = signal(false);
@@ -17,7 +17,6 @@ export class WorkspaceSlideOverComponent {
   error = signal<string | null>(null);
   form: FormGroup;
 
-  // Outputs
   workspaceCreated = output<Workspace>();
   closed = output<void>();
 
@@ -27,7 +26,7 @@ export class WorkspaceSlideOverComponent {
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['']
+      description: [''],
     });
   }
 
@@ -49,7 +48,7 @@ export class WorkspaceSlideOverComponent {
 
       const workspaceData = {
         name: this.form.value.name.trim(),
-        description: this.form.value.description?.trim() || undefined
+        description: this.form.value.description?.trim() || undefined,
       };
 
       this.workspaceService.create(workspaceData).subscribe({
@@ -60,8 +59,8 @@ export class WorkspaceSlideOverComponent {
         },
         error: (error) => {
           this.isLoading.set(false);
-          this.error.set(error.message || 'Une erreur est survenue lors de la création du workspace');
-        }
+          this.error.set(error.message || 'An error occurred while creating the workspace');
+        },
       });
     } else {
       this.form.markAllAsTouched();
@@ -84,10 +83,10 @@ export class WorkspaceSlideOverComponent {
   get nameErrorMessage() {
     const nameControl = this.nameControl;
     if (nameControl?.hasError('required')) {
-      return 'Le nom est requis';
+      return 'Name is required';
     }
     if (nameControl?.hasError('minlength')) {
-      return 'Le nom doit contenir au moins 3 caractères';
+      return 'Name must contain at least 3 characters';
     }
     return '';
   }
