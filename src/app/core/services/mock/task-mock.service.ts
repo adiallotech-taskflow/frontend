@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MockBaseService, PaginationResult } from './mock-base.service';
 import { Task, CreateTaskRequest } from '../../models';
@@ -22,24 +22,24 @@ export type TaskStatus = Task['status'];
 })
 export class TaskMockService extends MockBaseService<Task> {
   protected override storageKey = 'taskflow_mock_tasks';
-  
+
   protected override defaultData: Task[] = this.generateDefaultTasks();
 
-  
+
   getTasks(page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
       switchMap(() => this.getAllFromMockData(page, limit))
     );
   }
 
-  
+
   getTaskById(id: string): Observable<Task> {
     return this.simulateError<Task>().pipe(
       switchMap(() => this.getByIdFromMockData(id))
     );
   }
 
-  
+
   createTask(taskData: CreateTaskRequest): Observable<Task> {
     const newTask: Omit<Task, 'id'> = {
       ...taskData,
@@ -53,7 +53,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   updateTask(id: string, updates: Partial<Task>): Observable<Task> {
     const taskUpdates = {
       ...updates,
@@ -65,17 +65,17 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   deleteTask(id: string): Observable<boolean> {
     return this.simulateError<boolean>().pipe(
       switchMap(() => this.deleteFromMockData(id))
     );
   }
 
-  
+
   searchTasks(
-    searchTerm: string, 
-    page?: number, 
+    searchTerm: string,
+    page?: number,
     limit?: number
   ): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
@@ -83,10 +83,10 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   getTasksByWorkspace(
-    workspaceId: string, 
-    page?: number, 
+    workspaceId: string,
+    page?: number,
     limit?: number
   ): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateDelay().pipe(
@@ -103,7 +103,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   getByWorkspace(workspaceId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -113,10 +113,10 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   getTasksByAssignee(
-    assigneeId: string, 
-    page?: number, 
+    assigneeId: string,
+    page?: number,
     limit?: number
   ): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateDelay().pipe(
@@ -133,7 +133,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   getMyTasks(userId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -143,22 +143,22 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   updateTaskStatus(id: string, status: Task['status']): Observable<Task> {
     return this.updateTask(id, { status });
   }
 
-  
+
   updateStatus(taskId: string, status: TaskStatus): Observable<Task> {
     return this.updateTask(taskId, { status });
   }
 
-  
+
   updateTaskPriority(id: string, priority: Task['priority']): Observable<Task> {
     return this.updateTask(id, { priority });
   }
 
-  
+
   filterTasks(filters: TaskFilters): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -181,23 +181,23 @@ export class TaskMockService extends MockBaseService<Task> {
         }
 
         if (filters.hasDueDate !== undefined) {
-          tasks = tasks.filter(task => 
+          tasks = tasks.filter(task =>
             filters.hasDueDate ? task.dueDate !== undefined : task.dueDate === undefined
           );
         }
 
         if (filters.isOverdue) {
           const now = new Date();
-          tasks = tasks.filter(task => 
-            task.dueDate && 
-            new Date(task.dueDate) < now && 
+          tasks = tasks.filter(task =>
+            task.dueDate &&
+            new Date(task.dueDate) < now &&
             task.status !== 'done'
           );
         }
 
         if (filters.search) {
           const searchLower = filters.search.toLowerCase();
-          tasks = tasks.filter(task => 
+          tasks = tasks.filter(task =>
             task.title.toLowerCase().includes(searchLower) ||
             (task.description && task.description.toLowerCase().includes(searchLower))
           );
@@ -208,7 +208,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  
+
   private generateDefaultTasks(): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 10,
@@ -268,19 +268,19 @@ export class TaskMockService extends MockBaseService<Task> {
 
       const status = MockGeneratorUtils.randomEnum(statusDistribution);
       const priority = MockGeneratorUtils.randomEnum(MockDataLists.TASK_PRIORITIES);
-      
+
       const createdAt = MockGeneratorUtils.generateCreationDate();
-      const updatedAt = status !== 'todo' 
+      const updatedAt = status !== 'todo'
         ? MockGeneratorUtils.generateUpdateDate(createdAt)
         : createdAt;
 
       const hasDueDate = rng.next() < 0.3;
       let dueDate: Date | undefined;
-      
+
       if (hasDueDate) {
         const now = new Date();
         const isOverdue = rng.next() < 0.3 && status !== 'done';
-        
+
         if (isOverdue) {
           const pastDate = new Date(now);
           pastDate.setDate(now.getDate() - rng.int(1, 10));
@@ -319,18 +319,18 @@ export class TaskMockService extends MockBaseService<Task> {
     return tasks;
   }
 
-  
+
   generateRealisticTasks(count: number = 10): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 8,
       workspaceCount: 3,
       taskCount: count,
-      seed: Date.now() 
+      seed: Date.now()
     });
     return dataset.tasks;
   }
 
-  
+
   loadRealisticDemoData(): void {
     const demoData = MockDataGenerator.generateCohesiveDataset({
       userCount: 15,
@@ -338,7 +338,7 @@ export class TaskMockService extends MockBaseService<Task> {
       taskCount: 30,
       seed: 123456
     });
-    
+
     this.loadTestData(demoData.tasks);
     this.configService.logAction('Loaded realistic demo data', {
       tasks: demoData.tasks.length,
