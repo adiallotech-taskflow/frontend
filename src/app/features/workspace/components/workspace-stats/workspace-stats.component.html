@@ -20,8 +20,8 @@
           </div>
         </div>
         <div class="p-3 rounded-full" [ngClass]="getColorClasses(stat.color).bg">
-          <svg class="w-6 h-6" [ngClass]="getColorClasses(stat.color).icon" 
-               class="fill-none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg class="fill-none w-6 h-6" [ngClass]="getColorClasses(stat.color).icon"
+                stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="stat.icon"></path>
           </svg>
         </div>
