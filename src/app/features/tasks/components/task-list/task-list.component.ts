@@ -3,15 +3,22 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { RouterLink } from '@angular/router';
-import { TaskCardComponent, TaskFiltersComponent, TaskFilters } from '../../../../shared';
+import { TaskCardComponent, TaskFiltersComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import {
   ConfirmationDialogComponent,
-  ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
 import { TaskService, WorkspaceService } from '../../../../core/services';
-import { Task, User, Workspace, TaskSlideOverMode, TaskGroup } from '../../../../core/models';
+import {
+  Task,
+  User,
+  Workspace,
+  TaskSlideOverMode,
+  TaskGroup,
+  TaskFilterOptions,
+  ConfirmationDialogData
+} from '../../../../core/models';
 
 @Component({
   selector: 'app-task-list',
@@ -63,7 +70,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     type: 'danger',
   };
 
-  currentFilters = signal<TaskFilters>({
+  currentFilters = signal<TaskFilterOptions>({
     myTasks: false,
     status: [],
     priority: [],
@@ -330,7 +337,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskToDelete = null;
   }
 
-  onFiltersChanged(filters: TaskFilters) {
+  onFiltersChanged(filters: TaskFilterOptions) {
     this.currentFilters.set(filters);
     this.groupTasksByStatus();
   }

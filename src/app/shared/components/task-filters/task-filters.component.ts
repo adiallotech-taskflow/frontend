@@ -1,20 +1,6 @@
 import { Component, Input, Output, EventEmitter, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Task } from '../../../core/models';
-
-export interface TaskFilters {
-  myTasks: boolean;
-  status: Task['status'][];
-  priority: Task['priority'][];
-  thisWeek: boolean;
-  overdue: boolean;
-}
-
-export interface FilterOption {
-  value: string;
-  label: string;
-  active: boolean;
-}
+import { Task, TaskFilterOptions, FilterOption } from '../../../core/models';
 
 @Component({
   selector: 'app-task-filters',
@@ -26,7 +12,7 @@ export interface FilterOption {
 export class TaskFiltersComponent {
   @Input() resultsCount: number = 0;
   @Input() currentUserId?: string;
-  @Output() filtersChanged = new EventEmitter<TaskFilters>();
+  @Output() filtersChanged = new EventEmitter<TaskFilterOptions>();
 
   isFilterPanelOpen = signal(false);
 
@@ -141,7 +127,7 @@ export class TaskFiltersComponent {
   }
 
   private emitFilters() {
-    const filters: TaskFilters = {
+    const filters: TaskFilterOptions = {
       myTasks: this.myTasks(),
       status: this.activeStatusFilters(),
       priority: this.activePriorityFilters(),

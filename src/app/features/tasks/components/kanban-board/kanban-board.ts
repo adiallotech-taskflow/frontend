@@ -10,18 +10,10 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Task, TaskStatus, User } from '../../../../core/models';
+import { Task, TaskStatus, User, KanbanColumn } from '../../../../core/models';
 import { TaskService } from '../../../../core/services';
 import { TaskCardComponent } from '../../../../shared';
 import { UserService } from '../../../../core/services';
-
-interface KanbanColumn {
-  id: TaskStatus;
-  title: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
-}
 
 @Component({
   selector: 'app-kanban-board',

@@ -1,13 +1,6 @@
 import { Component, signal, output, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface ConfirmationDialogData {
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  type?: 'danger' | 'info' | 'warning';
-}
+import { ConfirmationDialogData } from '../../../core/models';
 
 @Component({
   selector: 'app-confirmation-dialog',

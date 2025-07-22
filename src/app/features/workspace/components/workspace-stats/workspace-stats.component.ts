@@ -1,15 +1,6 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Task, Workspace } from '../../../../core/models';
-
-interface StatCard {
-  title: string;
-  value: number;
-  icon: string;
-  color: string;
-  percentage?: number;
-  suffix?: string;
-}
+import { Task, Workspace, StatCard } from '../../../../core/models';
 
 @Component({
   selector: 'app-workspace-stats',

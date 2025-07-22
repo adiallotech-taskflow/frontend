@@ -2,16 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { TaskMockService, TaskFilters } from './mock/task-mock.service';
-import { Task, TaskStatus, TaskPriority, CreateTaskRequest } from '../models';
+import { Task, TaskStatus, TaskPriority, CreateTaskRequest, UpdateTaskRequest } from '../models';
 import { environment } from '../../../environments/environment';
-
-export interface UpdateTaskRequest {
-  title?: string;
-  description?: string;
-  priority?: TaskPriority;
-  assigneeId?: string;
-  dueDate?: Date;
-}
 
 @Injectable({
   providedIn: 'root',
