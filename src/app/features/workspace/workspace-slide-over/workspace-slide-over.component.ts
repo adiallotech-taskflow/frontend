@@ -1,7 +1,7 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { WorkspaceService } from '../../../core/services/workspace.service';
+import { WorkspaceService } from '../../../core/services';
 import { Workspace } from '../../../core/models';
 
 @Component({

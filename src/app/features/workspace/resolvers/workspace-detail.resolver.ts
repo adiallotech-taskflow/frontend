@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { Workspace } from '../../../core/models';
-import { WorkspaceService } from '../../../core/services/workspace.service';
+import { WorkspaceService } from '../../../core/services';
 
 @Injectable({
   providedIn: 'root',
