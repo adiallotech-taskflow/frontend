@@ -4,23 +4,14 @@ import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { RouterLink } from '@angular/router';
 import { TaskCardComponent, TaskFiltersComponent, TaskFilters } from '../../../../shared';
-import { TaskSlideOverComponent, TaskSlideOverMode } from '../task-slide-over/task-slide-over.component';
+import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
 } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
 import { TaskService, WorkspaceService } from '../../../../core/services';
-import { Task, User, Workspace } from '../../../../core/models';
-
-interface TaskGroup {
-  status: Task['status'];
-  label: string;
-  tasks: Task[];
-  count: number;
-  bgColor: string;
-  textColor: string;
-}
+import { Task, User, Workspace, TaskSlideOverMode, TaskGroup } from '../../../../core/models';
 
 @Component({
   selector: 'app-task-list',

@@ -2,22 +2,7 @@ import { Component, signal, output, input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TaskMockService } from '../../../../core/services';
-import { Task, User } from '../../../../core/models';
-
-export interface TaskSlideOverMode {
-  type: 'create' | 'edit';
-  task?: Task;
-  workspaceId?: string;
-}
-
-export interface TaskFormData {
-  title: string;
-  description?: string;
-  status: Task['status'];
-  priority: Task['priority'];
-  assigneeId?: string;
-  dueDate?: string;
-}
+import { Task, User, TaskSlideOverMode, TaskFormData } from '../../../../core/models';
 
 @Component({
   selector: 'app-task-slide-over',
