@@ -1,7 +1,7 @@
 import { Component, signal, output, input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TaskMockService } from '../../../../core/services';
+import { TaskService } from '../../../../core/services';
 import { Task, User, TaskSlideOverMode, TaskFormData } from '../../../../core/models';
 
 @Component({
@@ -44,7 +44,7 @@ export class TaskSlideOverComponent {
 
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskMockService
+    private taskService: TaskService
   ) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -137,7 +137,7 @@ export class TaskSlideOverComponent {
       dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
-    this.taskService.createTask(createData).subscribe({
+    this.taskService.create(createData).subscribe({
       next: (task: Task) => {
         this.isLoading.set(false);
         this.taskCreated.emit(task);
@@ -157,7 +157,7 @@ export class TaskSlideOverComponent {
       dueDate: formData.dueDate ? new Date(formData.dueDate) : undefined,
     };
 
-    this.taskService.updateTask(taskId, updateData).subscribe({
+    this.taskService.update(taskId, updateData).subscribe({
       next: (task: Task) => {
         this.isLoading.set(false);
         this.taskUpdated.emit(task);

@@ -11,8 +11,6 @@ import { environment } from '../../../environments/environment';
 export class TaskService {
   private tasksSubject = new BehaviorSubject<Task[]>([]);
 
-  public tasks$ = this.tasksSubject.asObservable();
-
   constructor(
     private apiService: ApiService,
     private mockService: TaskMockService
