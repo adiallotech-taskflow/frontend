@@ -36,7 +36,7 @@ export class MockUtilsService {
       const importData = JSON.parse(jsonData);
 
       if (!importData.data) {
-        throw new Error('Invalid data structure: missing data property');
+        console.warn('Invalid data structure: missing data property');
       }
 
       if (importData.data.tasks) {
