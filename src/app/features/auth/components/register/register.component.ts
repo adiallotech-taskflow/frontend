@@ -38,7 +38,7 @@ export class RegisterComponent {
     );
   }
 
-  passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
+  passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MockConfigService } from './mock.config';
+import { MockConfigService, MockConfig } from './mock.config';
 import { TaskMockService } from './task-mock.service';
 import { Task } from '../../models';
 
@@ -75,7 +75,7 @@ export class MockUtilsService {
     URL.revokeObjectURL(url);
   }
 
-  getMockDataStats(): any {
+  getMockDataStats(): Record<string, unknown> {
     const stats = {
       tasks: {
         total: (this.taskMockService.getStoredData() || []).length,
@@ -198,8 +198,8 @@ declare global {
       export: () => string;
       import: (data: string) => boolean;
       download: (filename?: string) => void;
-      stats: () => any;
-      config: () => any;
+      stats: () => Record<string, unknown>;
+      config: () => MockConfig;
       clearStorage: () => void;
     };
   }
@@ -214,7 +214,7 @@ export function initializeMockDevTools(utilsService: MockUtilsService, configSer
       import: (data: string) => utilsService.importMockData(data),
       download: (filename?: string) => utilsService.downloadMockData(filename),
       stats: () => utilsService.getMockDataStats(),
-      config: () => configService.getConfig(),
+      config: () => configService.getConfig() as unknown as MockConfig,
       clearStorage: () => utilsService.clearAllStorageData(),
     };
   }

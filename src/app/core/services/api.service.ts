@@ -12,7 +12,7 @@ export interface ApiResponse<T> {
 export interface ApiError {
   message: string;
   code?: string;
-  details?: any;
+  details?: unknown;
 }
 
 @Injectable({
@@ -30,11 +30,11 @@ export class ApiService {
     return this.makeRequest<T>('GET', endpoint, null, options);
   }
 
-  post<T>(endpoint: string, data?: any, options?: { headers?: HttpHeaders }): Observable<T> {
+  post<T>(endpoint: string, data?: unknown, options?: { headers?: HttpHeaders }): Observable<T> {
     return this.makeRequest<T>('POST', endpoint, data, options);
   }
 
-  put<T>(endpoint: string, data?: any, options?: { headers?: HttpHeaders }): Observable<T> {
+  put<T>(endpoint: string, data?: unknown, options?: { headers?: HttpHeaders }): Observable<T> {
     return this.makeRequest<T>('PUT', endpoint, data, options);
   }
 
@@ -42,14 +42,14 @@ export class ApiService {
     return this.makeRequest<T>('DELETE', endpoint, null, options);
   }
 
-  patch<T>(endpoint: string, data?: any, options?: { headers?: HttpHeaders }): Observable<T> {
+  patch<T>(endpoint: string, data?: unknown, options?: { headers?: HttpHeaders }): Observable<T> {
     return this.makeRequest<T>('PATCH', endpoint, data, options);
   }
 
   private makeRequest<T>(
     method: string,
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: { headers?: HttpHeaders }
   ): Observable<T> {
     const url = this.buildUrl(endpoint);
@@ -57,23 +57,23 @@ export class ApiService {
 
     this.setLoading(true);
 
-    let request$: Observable<any>;
+    let request$: Observable<T>;
 
     switch (method) {
       case 'GET':
-        request$ = this.http.get(url, { headers });
+        request$ = this.http.get<T>(url, { headers });
         break;
       case 'POST':
-        request$ = this.http.post(url, data, { headers });
+        request$ = this.http.post<T>(url, data, { headers });
         break;
       case 'PUT':
-        request$ = this.http.put(url, data, { headers });
+        request$ = this.http.put<T>(url, data, { headers });
         break;
       case 'PATCH':
-        request$ = this.http.patch(url, data, { headers });
+        request$ = this.http.patch<T>(url, data, { headers });
         break;
       case 'DELETE':
-        request$ = this.http.delete(url, { headers });
+        request$ = this.http.delete<T>(url, { headers });
         break;
       default:
         throw new Error(`Unsupported HTTP method: ${method}`);
@@ -107,15 +107,15 @@ export class ApiService {
     return headers;
   }
 
-  private transformResponse<T>(response: any): T {
+  private transformResponse<T>(response: unknown): T {
     if (response && typeof response === 'object' && 'data' in response) {
-      return response.data;
+      return (response as { data: T }).data;
     }
 
-    return response;
+    return response as T;
   }
 
-  private retryStrategy(errors: Observable<any>): Observable<any> {
+  private retryStrategy(errors: Observable<HttpErrorResponse>): Observable<number> {
     return errors.pipe(
       mergeMap((error, index) => {
         const retryAttempt = index + 1;

@@ -57,7 +57,7 @@ export abstract class MockBaseService<T> {
 
       return throwError(() => error);
     }
-    return of(null as any);
+    return of(null as unknown as R);
   }
 
   protected generateId(): string {
@@ -129,7 +129,7 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const currentData = this.getStoredData() || [];
-        const index = currentData.findIndex((item: any) => item.id === id);
+        const index = currentData.findIndex((item) => (item as Record<string, unknown>)['id'] === id);
 
         if (index === -1) {
           throw new Error(`Item with id ${id} not found`);
@@ -147,7 +147,7 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const currentData = this.getStoredData() || [];
-        const filteredData = currentData.filter((item: any) => item.id !== id);
+        const filteredData = currentData.filter((item) => (item as Record<string, unknown>)['id'] !== id);
 
         if (filteredData.length === currentData.length) {
           throw new Error(`Item with id ${id} not found`);
@@ -177,7 +177,7 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const data = this.getStoredData() || [];
-        const item = data.find((item: any) => item.id === id);
+        const item = data.find((item) => (item as Record<string, unknown>)['id'] === id);
 
         if (!item) {
           throw new Error(`Item with id ${id} not found`);
@@ -197,8 +197,13 @@ export abstract class MockBaseService<T> {
     return this.simulateDelay().pipe(
       map(() => {
         const data = this.getStoredData() || [];
-        const filteredData = data.filter((item: any) =>
-          searchFields.some((field) => item[field]?.toString().toLowerCase().includes(searchTerm.toLowerCase()))
+        const filteredData = data.filter((item) =>
+          searchFields.some((field) =>
+            (item as Record<string, unknown>)[field as string]
+              ?.toString()
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+          )
         );
 
         if (page && limit) {

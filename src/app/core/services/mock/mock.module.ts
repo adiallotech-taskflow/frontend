@@ -4,8 +4,8 @@ import { MockConfigService, MOCK_CONFIG, DEFAULT_MOCK_CONFIG, MockConfig } from 
 import { TaskMockService } from './task-mock.service';
 
 export function createMockServiceProvider<T>(
-  mockService: new (...args: any[]) => T,
-  realService: new (...args: any[]) => T,
+  mockService: new (...args: unknown[]) => T,
+  realService: new (...args: unknown[]) => T,
   serviceName: keyof MockConfig['enabledServices']
 ) {
   return () => {

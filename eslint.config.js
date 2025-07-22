@@ -65,7 +65,7 @@ export default tseslint.config(
       // TypeScript rules
       '@typescript-eslint/explicit-function-return-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-empty-function': 'warn',

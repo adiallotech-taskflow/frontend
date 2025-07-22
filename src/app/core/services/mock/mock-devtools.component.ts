@@ -31,7 +31,7 @@ import { environment } from '../../../../environments/environment';
 
       <div class="mb-3" *ngIf="stats()">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Data</h5>
-        <div class="text-xs text-gray-600">Tasks: {{ stats()?.tasks?.total || 0 }}</div>
+        <div class="text-xs text-gray-600">Tasks: {{ stats()?.['tasks']?.['total'] || 0 }}</div>
       </div>
 
       <div class="space-y-2">
@@ -77,7 +77,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class MockDevToolsComponent implements OnInit {
   private currentConfig = signal<MockConfig>({} as MockConfig);
-  private currentStats = signal<any>(null);
+  private currentStats = signal<{ tasks?: { total?: number } } | null>(null);
   private logs = signal<Array<{ timestamp: string; message: string }>>([]);
 
   constructor(

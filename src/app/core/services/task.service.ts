@@ -52,7 +52,7 @@ export class TaskService {
       : this.apiService.get<Task[]>('/tasks');
 
     return request$.pipe(
-      map((result) => (Array.isArray(result) ? result : (result as any).items || [])),
+      map((result) => (Array.isArray(result) ? result : (result as { items?: Task[] }).items || [])),
       tap((tasks) => this.tasksSubject.next(tasks)),
       catchError((error) => throwError(() => error))
     );
@@ -155,7 +155,7 @@ export class TaskService {
       : this.apiService.get<Task[]>('/tasks/search');
 
     return request$.pipe(
-      map((result) => (Array.isArray(result) ? result : (result as any).items || [])),
+      map((result) => (Array.isArray(result) ? result : (result as { items?: Task[] }).items || [])),
       catchError((error) => throwError(() => error))
     );
   }

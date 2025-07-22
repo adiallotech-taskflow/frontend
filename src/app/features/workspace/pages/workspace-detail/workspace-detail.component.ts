@@ -131,7 +131,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
         next: (tasks: Task[]) => {
           this.tasks.set(tasks);
         },
-        error: (error: any) => {
+        error: (error: unknown) => {
           console.error('Error loading workspace tasks:', error);
         },
       });
