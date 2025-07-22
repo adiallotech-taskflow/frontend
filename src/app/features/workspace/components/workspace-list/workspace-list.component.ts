@@ -1,12 +1,13 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { WorkspaceService } from '../../../../core/services';
 import { Workspace } from '../../../../core/models';
+import { WorkspaceSlideOverComponent } from '../workspace-slide-over';
 
 @Component({
   selector: 'app-workspace-list',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, WorkspaceSlideOverComponent],
   templateUrl: './workspace-list.component.html',
   styleUrls: ['./workspace-list.component.css'],
 })
@@ -14,7 +15,8 @@ export class WorkspaceListComponent implements OnInit {
   workspaces$ = signal<Workspace[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  showCreateDialog = signal(false);
+
+  @ViewChild(WorkspaceSlideOverComponent) slideOver!: WorkspaceSlideOverComponent;
 
   constructor(private workspaceService: WorkspaceService) {}
 
@@ -49,7 +51,11 @@ export class WorkspaceListComponent implements OnInit {
   }
 
   openCreateDialog() {
-    this.showCreateDialog.set(true);
+    this.slideOver.open();
+  }
+
+  onWorkspaceCreated() {
+    this.loadWorkspaces();
   }
 
   deleteWorkspace(workspaceId: string) {
