@@ -28,16 +28,14 @@ export abstract class MockBaseService<T> {
   protected updateSubject = new Subject<T[]>();
   protected configService = inject(MockConfigService);
 
-  // Observable pour écouter les changements en temps réel
+  
   public updates$ = this.updateSubject.asObservable();
 
   constructor() {
     this.initializeStorage();
   }
 
-  /**
-   * Initialise le storage avec des données par défaut si nécessaire
-   */
+  
   protected initializeStorage(): void {
     const config = this.configService.getConfig();
     if (config.persistToLocalStorage && !this.getStoredData()) {
@@ -49,17 +47,13 @@ export abstract class MockBaseService<T> {
     }
   }
 
-  /**
-   * Simule un délai aléatoire basé sur la configuration
-   */
+  
   protected simulateDelay(): Observable<void> {
     const delayMs = this.configService.getRandomDelay();
     return of(void 0).pipe(delay(delayMs));
   }
 
-  /**
-   * Simule une erreur basée sur la configuration
-   */
+  
   protected simulateError<R>(
     customRate?: number,
     options: MockErrorOptions = {}
@@ -80,16 +74,12 @@ export abstract class MockBaseService<T> {
     return of(null as any);
   }
 
-  /**
-   * Génère un ID unique basé sur timestamp et random
-   */
+  
   protected generateId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  /**
-   * Pagine un tableau de résultats
-   */
+  
   protected paginateResults<R>(
     items: R[],
     page: number = 1,
@@ -111,9 +101,7 @@ export abstract class MockBaseService<T> {
     };
   }
 
-  /**
-   * Sauvegarde des données dans localStorage
-   */
+  
   protected saveToStorage(data: T[]): void {
     const config = this.configService.getConfig();
 
@@ -132,9 +120,7 @@ export abstract class MockBaseService<T> {
     }
   }
 
-  /**
-   * Récupère les données depuis localStorage
-   */
+  
   public getStoredData(): T[] | null {
     const config = this.configService.getConfig();
 
@@ -152,9 +138,7 @@ export abstract class MockBaseService<T> {
     }
   }
 
-  /**
-   * Ajoute un élément aux données mockées
-   */
+  
   protected addToMockData(item: T): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -168,9 +152,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Met à jour un élément dans les données mockées
-   */
+  
   protected updateInMockData(id: string, updates: Partial<T>): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -190,9 +172,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Supprime un élément des données mockées
-   */
+  
   protected deleteFromMockData(id: string): Observable<boolean> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -210,9 +190,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Récupère tous les éléments avec pagination optionnelle
-   */
+  
   protected getAllFromMockData(page?: number, limit?: number): Observable<T[] | PaginationResult<T>> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -227,9 +205,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Récupère un élément par ID
-   */
+  
   protected getByIdFromMockData(id: string): Observable<T> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -245,9 +221,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Recherche dans les données mockées
-   */
+  
   protected searchInMockData(
     searchTerm: string,
     searchFields: (keyof T)[],
@@ -272,9 +246,7 @@ export abstract class MockBaseService<T> {
     );
   }
 
-  /**
-   * Remet les données à zéro (utile pour les tests)
-   */
+  
   public resetMockData(): void {
     this.saveToStorage(this.defaultData);
     this.configService.logAction(`Reset ${this.storageKey} to default data`, {
@@ -282,9 +254,7 @@ export abstract class MockBaseService<T> {
     });
   }
 
-  /**
-   * Charge des données de test prédéfinies
-   */
+  
   public loadTestData(testData: T[]): void {
     this.saveToStorage(testData);
     this.configService.logAction(`Loaded test data to ${this.storageKey}`, {
@@ -292,9 +262,7 @@ export abstract class MockBaseService<T> {
     });
   }
 
-  /**
-   * Obtient des statistiques sur les données mockées
-   */
+  
   public getMockDataStats(): Observable<{ total: number; lastModified: Date }> {
     return of({
       total: (this.getStoredData() || []).length,
@@ -302,16 +270,12 @@ export abstract class MockBaseService<T> {
     });
   }
 
-  /**
-   * Émet une mise à jour aux observateurs
-   */
+  
   private emitUpdate(data: T[]): void {
     this.updateSubject.next(data);
   }
 
-  /**
-   * Nettoie les ressources (à appeler dans ngOnDestroy)
-   */
+  
   public cleanup(): void {
     this.updateSubject.complete();
   }

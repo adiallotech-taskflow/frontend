@@ -1,4 +1,3 @@
-<!-- Task Slide-over -->
 @if (isOpen()) {
   <div 
     role="dialog" 
@@ -6,7 +5,7 @@
     aria-labelledby="slide-over-title" 
     class="relative z-50">
     
-    <!-- Background backdrop -->
+    
     <div 
       class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out"
       (click)="close()">
@@ -15,7 +14,7 @@
     <div class="fixed inset-0 overflow-hidden">
       <div class="absolute inset-0 overflow-hidden">
         <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-          <!-- Slide-over panel -->
+          
           <div 
             class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700">
           
@@ -24,10 +23,10 @@
               (ngSubmit)="onSubmit()" 
               class="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
               
-              <!-- Content area -->
+              
               <div class="h-0 flex-1 overflow-y-auto">
                 
-                <!-- Header -->
+                
                 <div class="bg-indigo-700 px-4 py-6 sm:px-6">
                   <div class="flex items-center justify-between">
                     <h2 id="slide-over-title" class="text-base font-semibold text-white">
@@ -53,11 +52,11 @@
                   </div>
                 </div>
 
-                <!-- Form content -->
+                
                 <div class="flex flex-1 flex-col justify-between">
                   <div class="divide-y divide-gray-200 px-4 sm:px-6">
                     
-                    <!-- Error message -->
+                    
                     @if (error()) {
                       <div class="rounded-md bg-red-50 p-4 mt-4">
                         <div class="flex">
@@ -86,7 +85,7 @@
 
                     <div class="space-y-6 pb-5 pt-6">
                       
-                      <!-- Task Title -->
+                      
                       <div>
                         <label for="task-title" class="block text-sm/6 font-medium text-gray-900">
                           Task Title *
@@ -108,7 +107,7 @@
                         </div>
                       </div>
 
-                      <!-- Description -->
+                      
                       <div>
                         <label for="task-description" class="block text-sm/6 font-medium text-gray-900">
                           Description (optional)
@@ -126,7 +125,7 @@
                         </div>
                       </div>
 
-                      <!-- Status -->
+                      
                       <div>
                         <label for="task-status" class="block text-sm/6 font-medium text-gray-900">
                           Status
@@ -141,7 +140,7 @@
                             }
                           </select>
                         </div>
-                        <!-- Status Badge Preview -->
+                        
                         @if (statusControl?.value) {
                           <div class="mt-2">
                             @for (status of statusOptions; track status.value) {
@@ -155,7 +154,7 @@
                         }
                       </div>
 
-                      <!-- Priority -->
+                      
                       <fieldset>
                         <legend class="text-sm/6 font-medium text-gray-900">Priority</legend>
                         <div class="mt-2 space-y-4">
@@ -181,7 +180,7 @@
                         </div>
                       </fieldset>
 
-                      <!-- Assignee -->
+                      
                       <div>
                         <label for="task-assignee" class="block text-sm/6 font-medium text-gray-900">
                           Assign to
@@ -197,7 +196,7 @@
                             }
                           </select>
                         </div>
-                        <!-- Assignee Avatar Preview -->
+                        
                         @if (assigneeControl?.value) {
                           <div class="mt-2">
                             @for (user of users(); track user.id) {
@@ -214,7 +213,7 @@
                         }
                       </div>
 
-                      <!-- Due Date -->
+                      
                       <div>
                         <label for="task-due-date" class="block text-sm/6 font-medium text-gray-900">
                           Due Date (optional)
@@ -230,7 +229,7 @@
 
                     </div>
 
-                    <!-- Additional info -->
+                    
                     <div class="pb-6 pt-4">
                       <div class="flex text-sm">
                         <div class="group inline-flex items-center font-medium text-indigo-600">
@@ -245,7 +244,7 @@
                 </div>
               </div>
 
-              <!-- Action buttons -->
+              
               <div class="flex shrink-0 justify-end px-4 py-4">
                 <button 
                   type="button"

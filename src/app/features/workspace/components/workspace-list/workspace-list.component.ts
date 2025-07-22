@@ -43,7 +43,7 @@ export class WorkspaceListComponent implements OnInit {
   }
 
   getUserRole(workspace: Workspace): string {
-    const currentUserId = 'current-user-id'; // TODO: Get from auth service
+    const currentUserId = 'current-user-id'; 
     const member = workspace.members?.find(m => m.userId === currentUserId);
     return member?.role || 'viewer';
   }

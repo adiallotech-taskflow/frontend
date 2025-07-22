@@ -64,7 +64,7 @@ export class LoginComponent {
       next: (response) => {
         console.log('Login successful:', response);
         this.isLoading.set(false);
-        // Redirection vers le dashboard
+        
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
@@ -82,7 +82,7 @@ export class LoginComponent {
     });
   }
 
-  // Méthode pour tester avec différents utilisateurs
+  
   loginAs(userType: 'admin' | 'user' | 'demo') {
     const credentials = {
       admin: { email: 'admin@test.com', password: 'password123' },

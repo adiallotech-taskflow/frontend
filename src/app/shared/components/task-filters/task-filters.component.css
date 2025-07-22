@@ -1,29 +1,28 @@
-/* Ensure consistent checkbox appearance across browsers */
 input[type="checkbox"] {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
 
-/* Focus states for accessibility */
+
 input[type="checkbox"]:focus-visible {
   outline: 2px solid;
   outline-offset: 2px;
 }
 
-/* Smooth transitions for interactive elements */
+
 button {
   transition: color 0.15s ease-in-out;
 }
 
-/* Grid layout adjustments for responsive design */
+
 @media (max-width: 768px) {
   .grid-cols-2 {
     grid-template-columns: 1fr;
   }
 }
 
-/* Custom scrollbar for better UX if content overflows */
+
 section {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 #f1f5f9;
@@ -42,21 +41,21 @@ section::-webkit-scrollbar-thumb {
   border-radius: 3px;
 }
 
-/* Ensure proper alignment of form elements */
+
 fieldset {
-  min-width: 0; /* Prevent fieldset from expanding beyond container */
+  min-width: 0; 
 }
 
 legend {
   line-height: 1.5;
 }
 
-/* Hover effects for better interactivity */
+
 label:hover {
   color: #374151;
 }
 
-/* Animation for panel expansion/collapse */
+
 #filter-panel {
   animation: slideDown 0.2s ease-out;
 }

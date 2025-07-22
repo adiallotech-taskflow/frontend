@@ -4,14 +4,14 @@
     <span class="absolute -inset-1.5"></span>
     <span class="sr-only">Open user menu</span>
     
-    <!-- Avatar avec initiales -->
+    
     <div class="size-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-semibold">
       {{ userInitials }}
     </div>
     
     <span class="hidden lg:flex lg:items-center">
       <span aria-hidden="true" class="ml-4 text-sm/6 font-semibold text-gray-900">{{ userName }}</span>
-      <!-- Badge de rôle -->
+      
       <span class="ml-2 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ring-gray-500/10"
             [class]="getRoleBadgeClass()">
         {{ getRoleLabel() }}
@@ -26,7 +26,7 @@
     <div role="menu" tabindex="-1" aria-labelledby="user-menu-button" aria-orientation="vertical"
          class="absolute right-0 z-10 mt-2.5 w-56 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
       
-      <!-- En-tête du menu avec informations utilisateur -->
+      
       <div class="px-4 py-3 border-b border-gray-200">
         <p class="text-sm font-medium text-gray-900">{{ userName }}</p>
         <p class="text-xs text-gray-500 mt-1">
@@ -41,7 +41,7 @@
         </p>
       </div>
 
-      <!-- Actions du menu -->
+      
       <div class="py-1">
         <button 
           id="user-menu-item-profile" 
@@ -84,10 +84,10 @@
         </button>
       </div>
 
-      <!-- Séparateur -->
+      
       <div class="border-t border-gray-200"></div>
 
-      <!-- Déconnexion -->
+      
       <div class="py-1">
         <button 
           id="user-menu-item-logout" 

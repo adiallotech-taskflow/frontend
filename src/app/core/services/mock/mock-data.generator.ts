@@ -1,8 +1,6 @@
 import { Task, User, Workspace, WorkspaceMember } from '../../models';
 
-/**
- * Seeded Random Number Generator for consistent data generation
- */
+
 class SeededRandom {
   private seed: number;
 
@@ -10,46 +8,34 @@ class SeededRandom {
     this.seed = seed;
   }
 
-  /**
-   * Generate next random number (0-1)
-   */
+  
   next(): number {
     this.seed = (this.seed * 9301 + 49297) % 233280;
     return this.seed / 233280;
   }
 
-  /**
-   * Generate random integer between min and max (inclusive)
-   */
+  
   int(min: number, max: number): number {
     return Math.floor(this.next() * (max - min + 1)) + min;
   }
 
-  /**
-   * Generate random float between min and max
-   */
+  
   float(min: number, max: number): number {
     return this.next() * (max - min) + min;
   }
 
-  /**
-   * Pick random element from array
-   */
+  
   pick<T>(array: T[]): T {
     return array[this.int(0, array.length - 1)];
   }
 
-  /**
-   * Pick multiple random elements from array
-   */
+  
   subset<T>(array: T[], count: number): T[] {
     const shuffled = [...array].sort(() => this.next() - 0.5);
     return shuffled.slice(0, Math.min(count, array.length));
   }
 
-  /**
-   * Weighted random selection
-   */
+  
   weighted<T>(items: Array<{ item: T; weight: number }>): T {
     const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
     let random = this.float(0, totalWeight);
@@ -61,13 +47,11 @@ class SeededRandom {
       }
     }
     
-    return items[0].item; // Fallback
+    return items[0].item; 
   }
 }
 
-/**
- * Realistic data lists for generation
- */
+
 export class MockDataLists {
   static readonly FIRST_NAMES = [
     'Alexandre', 'Antoine', 'Arthur', 'Baptiste', 'Benjamin', 'Clément', 'David', 'Émile',
@@ -188,58 +172,42 @@ export class MockDataLists {
   ];
 }
 
-/**
- * Utility functions for data generation
- */
+
 export class MockGeneratorUtils {
   private static rng = new SeededRandom();
 
-  /**
-   * Get the random number generator (for internal use)
-   */
+  
   static getRng(): SeededRandom {
     return this.rng;
   }
 
-  /**
-   * Set seed for consistent data generation
-   */
+  
   static setSeed(seed: number): void {
     this.rng = new SeededRandom(seed);
   }
 
-  /**
-   * Generate random date between start and end
-   */
+  
   static randomDate(start: Date, end: Date): Date {
     const timestamp = this.rng.float(start.getTime(), end.getTime());
     return new Date(timestamp);
   }
 
-  /**
-   * Pick random enum value with weights
-   */
+  
   static randomEnum<T>(enumItems: Array<{ item: T; weight: number }>): T {
     return this.rng.weighted(enumItems);
   }
 
-  /**
-   * Pick random subset from array
-   */
+  
   static randomSubset<T>(array: T[], count: number): T[] {
     return this.rng.subset(array, count);
   }
 
-  /**
-   * Weighted random selection
-   */
+  
   static weightedRandom<T>(items: Array<{ item: T; weight: number }>): T {
     return this.rng.weighted(items);
   }
 
-  /**
-   * Generate random email from name
-   */
+  
   static generateEmail(firstName: string, lastName: string): string {
     const domain = this.rng.pick(MockDataLists.COMPANY_DOMAINS);
     const formats = [
@@ -251,17 +219,13 @@ export class MockGeneratorUtils {
     return this.rng.pick(formats);
   }
 
-  /**
-   * Generate avatar URL
-   */
+  
   static generateAvatar(): string {
     const avatarId = this.rng.int(1, 70);
     return `https://i.pravatar.cc/150?img=${avatarId}`;
   }
 
-  /**
-   * Generate realistic task description based on title
-   */
+  
   static generateTaskDescription(title: string): string {
     const descriptions = [
       `${title} - Cette tâche nécessite une analyse approfondie des besoins et une conception technique détaillée.`,
@@ -273,17 +237,13 @@ export class MockGeneratorUtils {
     return this.rng.pick(descriptions);
   }
 
-  /**
-   * Generate activity description
-   */
+  
   static generateActivity(userName: string, taskTitle: string): string {
     const action = this.rng.pick(MockDataLists.ACTIVITY_ACTIONS);
     return `${userName} ${action} "${taskTitle}"`;
   }
 
-  /**
-   * Generate realistic due date (1-30 days from now)
-   */
+  
   static generateDueDate(): Date {
     const now = new Date();
     const futureDate = new Date(now);
@@ -291,9 +251,7 @@ export class MockGeneratorUtils {
     return futureDate;
   }
 
-  /**
-   * Generate creation date (1-90 days ago)
-   */
+  
   static generateCreationDate(): Date {
     const now = new Date();
     const pastDate = new Date(now);
@@ -301,17 +259,13 @@ export class MockGeneratorUtils {
     return pastDate;
   }
 
-  /**
-   * Generate update date (between creation and now)
-   */
+  
   static generateUpdateDate(createdAt: Date): Date {
     const now = new Date();
     return this.randomDate(createdAt, now);
   }
 
-  /**
-   * Generate unique ID
-   */
+  
   static generateId(prefix: string = ''): string {
     const timestamp = Date.now().toString(36);
     const random = this.rng.int(1000, 9999).toString(36);
@@ -319,13 +273,9 @@ export class MockGeneratorUtils {
   }
 }
 
-/**
- * Core data generators
- */
+
 export class MockDataGenerator {
-  /**
-   * Generate realistic user profile
-   */
+  
   static generateUser(id?: string): User {
     const rng = MockGeneratorUtils.getRng();
     const firstName = rng.pick(MockDataLists.FIRST_NAMES);
@@ -347,9 +297,7 @@ export class MockDataGenerator {
     };
   }
 
-  /**
-   * Generate realistic task with context
-   */
+  
   static generateTask(options?: {
     id?: string;
     assigneeId?: string;
@@ -365,7 +313,7 @@ export class MockDataGenerator {
     const createdAt = MockGeneratorUtils.generateCreationDate();
     const updatedAt = MockGeneratorUtils.generateUpdateDate(createdAt);
     
-    // Generate due date only for 60% of tasks
+    
     const hasDueDate = rng.next() < 0.6;
     const dueDate = hasDueDate ? MockGeneratorUtils.generateDueDate() : undefined;
 
@@ -383,9 +331,7 @@ export class MockDataGenerator {
     };
   }
 
-  /**
-   * Generate realistic workspace
-   */
+  
   static generateWorkspace(id?: string): Workspace {
     const rng = MockGeneratorUtils.getRng();
     const name = rng.pick(MockDataLists.WORKSPACE_NAMES);
@@ -403,9 +349,7 @@ export class MockDataGenerator {
     };
   }
 
-  /**
-   * Generate activity entry
-   */
+  
   static generateActivity(taskId: string, userId: string): {
     id: string;
     taskId: string;
@@ -427,17 +371,13 @@ export class MockDataGenerator {
     };
   }
 
-  /**
-   * Generate workspace name
-   */
+  
   static generateWorkspaceName(): string {
     const rng = MockGeneratorUtils.getRng();
     return rng.pick(MockDataLists.WORKSPACE_NAMES);
   }
 
-  /**
-   * Generate cohesive dataset with relationships
-   */
+  
   static generateCohesiveDataset(options: {
     userCount?: number;
     workspaceCount?: number;
@@ -455,26 +395,26 @@ export class MockDataGenerator {
       seed = 12345
     } = options;
 
-    // Set seed for consistent generation
+    
     MockGeneratorUtils.setSeed(seed);
 
-    // Generate users first
+    
     const users = Array.from({ length: userCount }, (_, i) => 
       this.generateUser(`user-${i + 1}`)
     );
 
-    // Generate workspaces
+    
     const workspaces = Array.from({ length: workspaceCount }, (_, i) => {
       const rng = MockGeneratorUtils.getRng();
       const workspace = this.generateWorkspace(`ws-${i + 1}`);
-      // Assign random owner and members
+      
       workspace.ownerId = rng.pick(users).id;
       const memberUserIds = MockGeneratorUtils.randomSubset(
         users.map(u => u.id), 
         rng.int(2, Math.min(6, userCount))
       );
       
-      // Convert to WorkspaceMember format
+      
       workspace.members = memberUserIds.map(userId => ({
         userId,
         role: MockGeneratorUtils.randomEnum([
@@ -488,7 +428,7 @@ export class MockDataGenerator {
       return workspace;
     });
 
-    // Generate tasks with realistic assignments
+    
     const tasks = Array.from({ length: taskCount }, (_, i) => {
       const rng = MockGeneratorUtils.getRng();
       const workspaceId = rng.pick(workspaces).id;
@@ -508,7 +448,5 @@ export class MockDataGenerator {
   }
 }
 
-/**
- * Export default instance with preset seed
- */
+
 export const mockDataGenerator = MockDataGenerator;

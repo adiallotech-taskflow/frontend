@@ -17,7 +17,7 @@ export class WorkspaceSlideOverComponent {
   error = signal<string | null>(null);
   form: FormGroup;
 
-  // Outputs
+  
   workspaceCreated = output<Workspace>();
   closed = output<void>();
 

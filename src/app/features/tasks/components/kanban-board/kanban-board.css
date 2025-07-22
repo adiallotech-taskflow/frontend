@@ -1,10 +1,9 @@
-/* Kanban Board Styles */
 :host {
   display: block;
   height: 100%;
 }
 
-/* Drag and Drop Animations */
+
 .cdk-drag-preview {
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   opacity: 0.95;
@@ -24,24 +23,24 @@
   transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Smooth transitions for all cards */
+
 .cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
   transition: transform 200ms cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* Active dragging state */
+
 .cdk-drop-list-dragging {
   cursor: grabbing;
 }
 
-/* Card hover state when not dragging */
+
 .cdk-drag:not(.cdk-drag-disabled):hover {
   cursor: grab;
   transform: translateY(-2px);
   transition: transform 150ms ease;
 }
 
-/* Column styling */
+
 .cdk-drop-list {
   min-height: 100px;
   transition: background-color 0.2s ease;
@@ -51,7 +50,7 @@
   background-color: rgba(59, 130, 246, 0.05);
 }
 
-/* Mobile responsiveness */
+
 @media (max-width: 768px) {
   .grid {
     overflow-x: auto;
@@ -63,7 +62,7 @@
   }
 }
 
-/* Custom scrollbar for columns */
+
 .overflow-y-auto {
   scrollbar-width: thin;
   scrollbar-color: #e5e7eb #f9fafb;
@@ -87,7 +86,7 @@
   background-color: #d1d5db;
 }
 
-/* Task card specific styles */
+
 .task-card-drag {
   cursor: grab;
   transition: all 150ms ease;
@@ -105,17 +104,17 @@
   transition: all 200ms ease;
 }
 
-/* Disable pointer events on task card content during drag */
+
 .cdk-drag-preview app-task-card {
   pointer-events: none;
 }
 
-/* Smooth list reordering */
+
 .cdk-drop-list {
   transition: background-color 200ms ease;
 }
 
-/* Highlight drop zone on hover */
+
 .cdk-drop-list.cdk-drop-list-dragging:not(.cdk-drop-list-disabled) {
   background-color: rgba(99, 102, 241, 0.05);
   border-color: rgba(99, 102, 241, 0.2);

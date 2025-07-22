@@ -10,13 +10,13 @@ import { environment } from '../../../../environments/environment';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <!-- DevTools Panel - Integrated in sidebar -->
+    
     <div class="bg-gray-50 border border-gray-200 rounded-lg p-3 text-xs" *ngIf="shouldShow()">
       <div class="mb-3">
         <h4 class="text-sm font-medium text-gray-900 mb-2">Mock DevTools</h4>
       </div>
 
-      <!-- Configuration Section -->
+      
       <div class="mb-3">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Config</h5>
         <div class="space-y-1 text-xs">
@@ -31,7 +31,7 @@ import { environment } from '../../../../environments/environment';
         </div>
       </div>
 
-      <!-- Statistics -->
+      
       <div class="mb-3" *ngIf="stats()">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Data</h5>
         <div class="text-xs text-gray-600">
@@ -39,7 +39,7 @@ import { environment } from '../../../../environments/environment';
         </div>
       </div>
 
-      <!-- Actions -->
+      
       <div class="space-y-2">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Actions</h5>
 
@@ -67,7 +67,7 @@ import { environment } from '../../../../environments/environment';
         </div>
       </div>
 
-      <!-- Console Output (compact) -->
+      
       <div class="mt-3" *ngIf="consoleOutput().length > 0">
         <h5 class="font-medium text-gray-800 mb-1 text-xs">Console</h5>
         <div class="bg-gray-100 p-1 rounded text-xs max-h-16 overflow-y-auto">
@@ -102,7 +102,7 @@ export class MockDevToolsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Cleanup if needed
+    
   }
 
   shouldShow = computed(() => !environment.production);
@@ -143,11 +143,11 @@ export class MockDevToolsComponent implements OnInit, OnDestroy {
   private addLog(message: string) {
     const timestamp = new Date().toLocaleTimeString();
     const newLogs = [...this.logs(), { timestamp, message }];
-    this.logs.set(newLogs.slice(-10)); // Keep last 10 logs
+    this.logs.set(newLogs.slice(-10)); 
   }
 
   private setupConsoleLogging() {
-    // Override console.log to capture mock-related logs
+    
     const originalLog = console.log;
     console.log = (...args) => {
       const message = args.join(' ');

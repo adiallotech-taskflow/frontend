@@ -27,29 +27,23 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
   
   protected override defaultData: Workspace[] = this.generateDefaultWorkspaces();
 
-  /**
-   * Récupère tous les workspaces avec pagination optionnelle
-   */
+  
   getWorkspaces(page?: number, limit?: number): Observable<Workspace[] | PaginationResult<Workspace>> {
     return this.simulateError<Workspace[] | PaginationResult<Workspace>>().pipe(
       switchMap(() => this.getAllFromMockData(page, limit))
     );
   }
 
-  /**
-   * Récupère un workspace par ID
-   */
+  
   getWorkspaceById(id: string): Observable<Workspace> {
     return this.simulateError<Workspace>().pipe(
       switchMap(() => this.getByIdFromMockData(id))
     );
   }
 
-  /**
-   * Crée un nouveau workspace
-   */
+  
   createWorkspace(workspaceData: CreateWorkspaceRequest): Observable<Workspace> {
-    const currentUser = 'current-user-id'; // TODO: Get from auth service
+    const currentUser = 'current-user-id'; 
     
     const newWorkspace: Omit<Workspace, 'id'> = {
       name: workspaceData.name,
@@ -71,9 +65,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Met à jour un workspace
-   */
+  
   updateWorkspace(id: string, updateData: UpdateWorkspaceRequest): Observable<Workspace> {
     const updates = {
       ...updateData,
@@ -85,21 +77,17 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Supprime un workspace
-   */
+  
   deleteWorkspace(id: string): Observable<boolean> {
     return this.simulateError<boolean>().pipe(
       switchMap(() => this.deleteFromMockData(id))
     );
   }
 
-  /**
-   * Invite un membre dans un workspace
-   */
+  
   inviteMember(workspaceId: string, inviteData: InviteMemberRequest): Observable<WorkspaceMember> {
     const newMember: WorkspaceMember = {
-      userId: this.generateId(), // Mock user ID
+      userId: this.generateId(), 
       role: inviteData.role,
       joinedAt: new Date()
     };
@@ -123,9 +111,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Récupère les membres d'un workspace
-   */
+  
   getWorkspaceMembers(workspaceId: string): Observable<WorkspaceMember[]> {
     return this.simulateError<WorkspaceMember[]>().pipe(
       switchMap(() => {
@@ -138,9 +124,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Supprime un membre d'un workspace
-   */
+  
   removeMember(workspaceId: string, userId: string): Observable<boolean> {
     return this.simulateError<boolean>().pipe(
       switchMap(() => {
@@ -161,9 +145,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Met à jour le rôle d'un membre
-   */
+  
   updateMemberRole(workspaceId: string, userId: string, role: 'admin' | 'member' | 'viewer'): Observable<WorkspaceMember> {
     return this.simulateError<WorkspaceMember>().pipe(
       switchMap(() => {
@@ -192,15 +174,13 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Récupère les statistiques d'un workspace
-   */
+  
   getWorkspaceStats(workspaceId: string): Observable<WorkspaceStats> {
     return this.simulateError<WorkspaceStats>().pipe(
       switchMap(() => {
         return this.getByIdFromMockData(workspaceId).pipe(
           switchMap((workspace) => {
-            // Mock statistics
+            
             const stats: WorkspaceStats = {
               totalTasks: Math.floor(Math.random() * 20) + 5,
               completedTasks: Math.floor(Math.random() * 10) + 2,
@@ -217,9 +197,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Recherche dans les workspaces
-   */
+  
   searchWorkspaces(
     searchTerm: string, 
     page?: number, 
@@ -230,9 +208,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  /**
-   * Génère des workspaces par défaut pour les tests
-   */
+  
   private generateDefaultWorkspaces(): Workspace[] {
     const currentUser = 'current-user-id';
     const now = new Date();

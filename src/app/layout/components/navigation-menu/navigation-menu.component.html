@@ -31,7 +31,7 @@
       </ul>
     </li>
     <li class="mt-auto space-y-1">
-      <!-- Settings Menu -->
+      
       <button 
         (click)="toggleMockPanel()"
         class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-700 hover:bg-gray-50 hover:text-indigo-600">
@@ -45,7 +45,7 @@
         }
       </button>
 
-      <!-- Mock DevTools Panel - Now integrated in sidebar -->
+      
       @if (showDevTools() && showMockPanel()) {
         <div class="pl-6 pr-2">
           <app-mock-devtools></app-mock-devtools>

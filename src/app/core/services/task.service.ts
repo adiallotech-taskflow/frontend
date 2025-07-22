@@ -27,16 +27,12 @@ export class TaskService {
     private mockService: TaskMockService
   ) {}
 
-  /**
-   * Determines whether to use mock service based on environment
-   */
+  
   private get useMockService(): boolean {
     return !environment.production;
   }
 
-  /**
-   * Create a new task
-   */
+  
   create(taskData: CreateTaskRequest): Observable<Task> {
     const request$ = this.useMockService 
       ? this.mockService.createTask(taskData)
@@ -51,9 +47,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Get all tasks with optional filters
-   */
+  
   list(filters?: TaskFilters): Observable<Task[]> {
     const request$ = this.useMockService 
       ? (filters ? this.mockService.filterTasks(filters) : this.mockService.getTasks())
@@ -66,9 +60,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Get a specific task by ID
-   */
+  
   getById(taskId: string): Observable<Task> {
     const request$ = this.useMockService 
       ? this.mockService.getTaskById(taskId)
@@ -88,9 +80,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Update a task
-   */
+  
   update(taskId: string, updateData: UpdateTaskRequest): Observable<Task> {
     const request$ = this.useMockService 
       ? this.mockService.updateTask(taskId, updateData)
@@ -110,9 +100,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Update task status
-   */
+  
   updateStatus(taskId: string, status: TaskStatus): Observable<Task> {
     const request$ = this.useMockService 
       ? this.mockService.updateTaskStatus(taskId, status)
@@ -132,9 +120,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Update task priority
-   */
+  
   updatePriority(taskId: string, priority: TaskPriority): Observable<Task> {
     const request$ = this.useMockService 
       ? this.mockService.updateTaskPriority(taskId, priority)
@@ -154,9 +140,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Delete a task
-   */
+  
   delete(taskId: string): Observable<void> {
     const request$ = this.useMockService 
       ? this.mockService.deleteTask(taskId).pipe(map(() => undefined as void))
@@ -172,9 +156,7 @@ export class TaskService {
     );
   }
 
-  /**
-   * Search tasks
-   */
+  
   search(query: string): Observable<Task[]> {
     const request$ = this.useMockService 
       ? this.mockService.filterTasks({ search: query })
@@ -186,37 +168,27 @@ export class TaskService {
     );
   }
 
-  /**
-   * Get tasks for a specific workspace
-   */
+  
   getByWorkspace(workspaceId: string): Observable<Task[]> {
     return this.list({ workspaceId });
   }
 
-  /**
-   * Get tasks assigned to a specific user
-   */
+  
   getByAssignee(assigneeId: string): Observable<Task[]> {
     return this.list({ assigneeId });
   }
 
-  /**
-   * Refresh tasks from the server
-   */
+  
   refreshTasks(filters?: TaskFilters): Observable<Task[]> {
     return this.list(filters);
   }
 
-  /**
-   * Get cached tasks without making an API call
-   */
+  
   getCachedTasks(): Task[] {
     return this.tasksSubject.value;
   }
 
-  /**
-   * Clear the task cache
-   */
+  
   clearCache(): void {
     this.tasksSubject.next([]);
   }

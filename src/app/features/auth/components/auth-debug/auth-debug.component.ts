@@ -69,7 +69,7 @@ export class AuthDebugComponent {
   constructor() {
     console.log('🔍 AuthDebugComponent initialized');
     
-    // Log toutes les changes d'état
+    
     this.currentUser$.subscribe(user => {
       console.log('🔍 AuthDebug - Current user:', user);
     });

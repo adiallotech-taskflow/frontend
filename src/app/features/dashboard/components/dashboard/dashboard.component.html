@@ -1,16 +1,16 @@
 <div class="min-h-full">
-  <!-- Header with title and search -->
+  
   <div class="mb-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
       <app-search-bar (searchChange)="onSearchChange($event)"></app-search-bar>
     </div>
 
-    <!-- Stats Overview -->
+    
     <app-stats-overview [stats]="totalStats()"></app-stats-overview>
   </div>
 
-  <!-- Workspaces Grid -->
+  
   <div class="mb-8">
     <h2 class="text-xl font-semibold text-gray-900 mb-6">Your Workspaces</h2>
 
@@ -43,12 +43,12 @@
     }
   </div>
 
-  <!-- Floating Action Button -->
+  
   @if (!isLoading() && workspaces().length > 0) {
     <app-fab-button (click)="createWorkspace()"></app-fab-button>
   }
 
-  <!-- Workspace Creation Slide-over -->
+  
   <app-workspace-slide-over 
     #slideOver
     (workspaceCreated)="onWorkspaceCreated($event)">

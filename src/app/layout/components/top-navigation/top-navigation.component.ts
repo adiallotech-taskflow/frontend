@@ -17,11 +17,11 @@ export class TopNavigationComponent {
   @Output() toggleMobileSidenav = new EventEmitter<void>();
   @Output() toggleUserMenu = new EventEmitter<void>();
 
-  // Observables et computed values pour l'authentification
+  
   currentUser$ = this.authService.currentUser$;
   isAuthenticated$ = this.authService.isAuthenticated$;
 
-  // Computed values pour l'affichage
+  
   userName = computed(() => {
     const user = this.authService.getCurrentUser();
     return user ? this.authService.getUserFullName() : 'Utilisateur';
@@ -55,7 +55,7 @@ export class TopNavigationComponent {
       },
       error: (error) => {
         console.error('Logout error:', error);
-        // Même en cas d'erreur, on redirige vers login
+        
         this.router.navigate(['/auth/login']);
       }
     });
@@ -66,7 +66,7 @@ export class TopNavigationComponent {
   }
 
   navigateToProfile() {
-    // TODO: Implémenter la navigation vers le profil
+    
     console.log('Navigate to profile - not implemented yet');
   }
 }

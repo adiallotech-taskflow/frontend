@@ -29,10 +29,10 @@ import { forkJoin } from 'rxjs';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
-  // ViewChild for slide-over component
+  
   slideOver = viewChild<WorkspaceSlideOverComponent>('slideOver');
 
-  // State
+  
   workspaces = signal<Workspace[]>([]);
   allTasks = signal<Task[]>([]);
   isLoading = signal(true);
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
     private taskService: TaskMockService
   ) {}
 
-  // Computed values
+  
   filteredWorkspaces = computed(() => {
     const term = this.searchTerm().toLowerCase();
     return this.workspaces().filter(workspace =>
@@ -72,14 +72,14 @@ export class DashboardComponent implements OnInit {
   loadData() {
     this.isLoading.set(true);
 
-    // Load workspaces and tasks in parallel
+    
     forkJoin({
       workspaces: this.workspaceService.list(),
       tasks: this.taskService.getTasks()
     }).subscribe({
       next: (data) => {
         this.workspaces.set(data.workspaces);
-        // getTasks returns either Task[] or PaginationResult<Task>
+        
         const tasks = Array.isArray(data.tasks) ? data.tasks : data.tasks.items;
         this.allTasks.set(tasks);
         this.isLoading.set(false);
@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onWorkspaceCreated(workspace: Workspace) {
-    // Add the newly created workspace to the local state
+    
     const currentWorkspaces = this.workspaces();
     this.workspaces.set([...currentWorkspaces, workspace]);
     console.log('Workspace créé avec succès:', workspace);

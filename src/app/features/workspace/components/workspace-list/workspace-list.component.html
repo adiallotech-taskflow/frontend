@@ -1,5 +1,5 @@
 <div class="min-h-full">
-  <!-- Header -->
+  
   <div class="mb-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Workspaces</h1>
@@ -16,7 +16,7 @@
     <p class="text-gray-500 mt-1">Manage your team workspaces and collaborations</p>
   </div>
 
-  <!-- Loading State -->
+  
   <div *ngIf="loading()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let _ of [1,2,3,4,5,6]" class="animate-pulse">
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <!-- Error State -->
+  
   <div *ngIf="error() && !loading()" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
     <p class="text-red-600">{{ error() }}</p>
     <button (click)="loadWorkspaces()" class="mt-2 text-red-600 underline hover:no-underline">
@@ -38,7 +38,7 @@
     </button>
   </div>
 
-  <!-- Empty State -->
+  
   <div *ngIf="workspaces$().length === 0 && !loading() && !error()" 
        class="text-center py-12 bg-gray-50 rounded-lg">
     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,18 +61,18 @@
     </div>
   </div>
 
-  <!-- Workspace Grid -->
+  
   <div *ngIf="workspaces$().length > 0 && !loading()" 
        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <div *ngFor="let workspace of workspaces$()" 
          class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200">
       
-      <!-- Main content -->
+      
       <div class="flex w-full items-center justify-between space-x-6 p-6">
         <div class="flex-1 truncate">
           <div class="flex items-center space-x-3">
             <h3 class="truncate text-sm font-medium text-gray-900">{{ workspace.name }}</h3>
-            <!-- Role Badge -->
+            
             <span class="inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset"
                   [ngClass]="{
                     'bg-purple-50 text-purple-700 ring-purple-600/20': getUserRole(workspace) === 'admin',
@@ -83,14 +83,14 @@
             </span>
           </div>
           
-          <!-- Description -->
+          
           <p class="mt-1 truncate text-sm text-gray-500">
             {{ workspace.description || 'No description' }}
           </p>
           
-          <!-- Workspace Info -->
+          
           <div class="mt-2 flex items-center space-x-3">
-            <!-- Members count -->
+            
             <div class="flex items-center text-xs text-gray-500">
               <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -100,7 +100,7 @@
               <span>{{ getMemberCount(workspace) }} members</span>
             </div>
             
-            <!-- Created date -->
+            
             <div class="flex items-center text-xs text-gray-500">
               <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -111,7 +111,7 @@
           </div>
         </div>
         
-        <!-- Workspace Icon -->
+        
         <div class="relative">
           <div class="size-10 shrink-0 rounded-full bg-indigo-100 flex items-center justify-center">
             <svg class="h-5 w-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +120,7 @@
               </path>
             </svg>
           </div>
-          <!-- Owner indicator -->
+          
           <div *ngIf="getUserRole(workspace) === 'admin'" 
                class="absolute -top-1 -right-1 h-3 w-3 bg-yellow-400 rounded-full border border-white flex items-center justify-center">
             <svg class="h-2 w-2 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -130,7 +130,7 @@
         </div>
       </div>
       
-      <!-- Action buttons -->
+      
       <div>
         <div class="-mt-px flex divide-x divide-gray-200">
           <div class="flex w-0 flex-1">

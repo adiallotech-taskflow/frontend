@@ -1,11 +1,11 @@
 <div class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200 h-full flex flex-col">
 
-  <!-- Main content -->
+  
   <div class="flex w-full items-center justify-between space-x-6 p-6 flex-1">
     <div class="flex-1 truncate">
       <div class="flex items-center space-x-3">
         <h3 class="truncate text-sm font-medium text-gray-900">{{ task.title }}</h3>
-        <!-- Status Badge -->
+        
         <span class="inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset"
               [class]="statusConfig.bgColor + ' ' + statusConfig.textColor + ' ' + statusConfig.ringColor">
           {{ statusConfig.label }}
@@ -19,9 +19,9 @@
         }
       </div>
 
-      <!-- Priority and Due Date -->
+      
       <div class="mt-2 flex items-center space-x-3">
-        <!-- Priority Badge -->
+        
         <span class="inline-flex items-center gap-x-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium"
               [class]="priorityConfig.bgColor + ' ' + priorityConfig.textColor">
           <svg viewBox="0 0 6 6" aria-hidden="true" class="size-1.5"
@@ -31,7 +31,7 @@
           {{ task.priority | titlecase }}
         </span>
 
-        <!-- Due Date -->
+        
         <div class="flex items-center">
           @if (task.dueDate) {
             <div class="flex items-center text-xs"
@@ -51,7 +51,7 @@
       </div>
     </div>
 
-    <!-- Assignee Avatar -->
+    
     <div class="relative">
       @if (assignedUser?.avatar) {
         <img [src]="assignedUser?.avatar" [alt]="userName"
@@ -71,7 +71,7 @@
     </div>
   </div>
 
-  <!-- Overdue Warning -->
+  
   @if (isOverdue) {
     <div class="px-6 pb-4">
       <div class="text-xs text-red-600 bg-red-50 px-2 py-1 rounded flex items-center">
@@ -83,7 +83,7 @@
     </div>
   }
 
-  <!-- Action buttons -->
+  
   <div>
     <div class="-mt-px flex divide-x divide-gray-200">
       <div class="flex w-0 flex-1">

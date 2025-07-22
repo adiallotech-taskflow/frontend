@@ -9,7 +9,7 @@ import { WorkspaceService } from '../../../../core/services/workspace.service';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services/mock/task-mock.service';
 
-// Extended interface for members with user details
+
 interface WorkspaceMemberWithUser extends WorkspaceMember {
   user?: User;
 }
@@ -30,16 +30,16 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   hasError = signal(false);
   errorMessage = signal('');
 
-  // Current user for permissions
+  
   currentUser = signal<User | null>(null);
   
-  // Members with user details
+  
   membersWithUsers = signal<WorkspaceMemberWithUser[]>([]);
   
-  // Tasks for the workspace
+  
   tasks = signal<Task[]>([]);
 
-  // Computed values
+  
   canEdit = computed(() => {
     const user = this.currentUser();
     const ws = this.workspace();
@@ -73,7 +73,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadWorkspace() {
-    // Try to get workspace from route resolver first
+    
     const resolvedWorkspace = this.route.snapshot.data['workspace'];
     
     if (resolvedWorkspace) {
@@ -84,7 +84,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Fallback to manual loading if resolver failed
+    
     const workspaceId = this.route.snapshot.paramMap.get('id');
     if (!workspaceId) {
       this.router.navigate(['/workspaces']);
@@ -113,7 +113,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadMembersWithUserDetails(workspace: Workspace) {
-    // For mock purposes, create mock user data for members
+    
     const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map(member => ({
       ...member,
       user: {
@@ -148,17 +148,17 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   onEditWorkspace() {
-    // TODO: Implement edit workspace functionality
+    
     console.log('Edit workspace functionality to be implemented');
   }
 
   onDeleteWorkspace() {
-    // TODO: Implement delete workspace functionality
+    
     console.log('Delete workspace functionality to be implemented');
   }
 
   onInviteMember() {
-    // TODO: Implement invite member functionality
+    
     console.log('Invite member functionality to be implemented');
   }
 

@@ -1,8 +1,7 @@
-<!-- Filters Section -->
 <section aria-labelledby="filter-heading" class="grid items-center border-b border-t border-gray-200">
   <h2 id="filter-heading" class="sr-only">Filters</h2>
   
-  <!-- Filter Controls Bar -->
+  
   <div class="relative col-start-1 row-start-1 py-4">
     <div class="mx-auto flex max-w-7xl divide-x divide-gray-200 px-4 text-sm sm:px-6 lg:px-8">
       <div class="pr-6">
@@ -31,15 +30,15 @@
     </div>
   </div>
 
-  <!-- Collapsible Filter Panel -->
+  
   @if (isFilterPanelOpen()) {
     <div id="filter-panel" class="border-t border-gray-200 py-10">
       <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-4 px-4 text-sm sm:px-6 md:gap-x-6 lg:px-8">
         
-        <!-- Left Column -->
+        
         <div class="grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6">
           
-          <!-- Status Filter -->
+          
           <fieldset>
             <legend class="block font-medium text-gray-900">Status</legend>
             <div class="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
@@ -64,7 +63,7 @@
             </div>
           </fieldset>
 
-          <!-- Priority Filter -->
+          
           <fieldset>
             <legend class="block font-medium text-gray-900">Priority</legend>
             <div class="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
@@ -90,10 +89,10 @@
           </fieldset>
         </div>
 
-        <!-- Right Column -->
+        
         <div class="grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6">
           
-          <!-- Assignee Filter -->
+          
           <fieldset>
             <legend class="block font-medium text-gray-900">Assignee</legend>
             <div class="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
@@ -118,7 +117,7 @@
             </div>
           </fieldset>
 
-          <!-- Time Filter -->
+          
           <fieldset>
             <legend class="block font-medium text-gray-900">Time</legend>
             <div class="space-y-6 pt-6 sm:space-y-4 sm:pt-4">
@@ -160,7 +159,7 @@
         </div>
       </div>
       
-      <!-- Results Count -->
+      
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
         <p class="text-sm text-gray-500 text-center">
           {{ resultsCount }} {{ resultsCount === 1 ? 'task' : 'tasks' }} found

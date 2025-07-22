@@ -25,27 +25,21 @@ export class TaskMockService extends MockBaseService<Task> {
   
   protected override defaultData: Task[] = this.generateDefaultTasks();
 
-  /**
-   * Récupère toutes les tâches avec pagination optionnelle
-   */
+  
   getTasks(page?: number, limit?: number): Observable<Task[] | PaginationResult<Task>> {
     return this.simulateError<Task[] | PaginationResult<Task>>().pipe(
       switchMap(() => this.getAllFromMockData(page, limit))
     );
   }
 
-  /**
-   * Récupère une tâche par ID
-   */
+  
   getTaskById(id: string): Observable<Task> {
     return this.simulateError<Task>().pipe(
       switchMap(() => this.getByIdFromMockData(id))
     );
   }
 
-  /**
-   * Crée une nouvelle tâche
-   */
+  
   createTask(taskData: CreateTaskRequest): Observable<Task> {
     const newTask: Omit<Task, 'id'> = {
       ...taskData,
@@ -59,9 +53,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Met à jour une tâche
-   */
+  
   updateTask(id: string, updates: Partial<Task>): Observable<Task> {
     const taskUpdates = {
       ...updates,
@@ -73,18 +65,14 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Supprime une tâche
-   */
+  
   deleteTask(id: string): Observable<boolean> {
     return this.simulateError<boolean>().pipe(
       switchMap(() => this.deleteFromMockData(id))
     );
   }
 
-  /**
-   * Recherche des tâches par terme
-   */
+  
   searchTasks(
     searchTerm: string, 
     page?: number, 
@@ -95,9 +83,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Récupère les tâches par workspace
-   */
+  
   getTasksByWorkspace(
     workspaceId: string, 
     page?: number, 
@@ -117,9 +103,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Simplified method to get tasks by workspace without pagination
-   */
+  
   getByWorkspace(workspaceId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -129,9 +113,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Récupère les tâches assignées à un utilisateur
-   */
+  
   getTasksByAssignee(
     assigneeId: string, 
     page?: number, 
@@ -151,9 +133,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Simplified method to get user's tasks without pagination
-   */
+  
   getMyTasks(userId: string): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -163,30 +143,22 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Change le statut d'une tâche
-   */
+  
   updateTaskStatus(id: string, status: Task['status']): Observable<Task> {
     return this.updateTask(id, { status });
   }
 
-  /**
-   * Simplified method name for status update
-   */
+  
   updateStatus(taskId: string, status: TaskStatus): Observable<Task> {
     return this.updateTask(taskId, { status });
   }
 
-  /**
-   * Change la priorité d'une tâche
-   */
+  
   updateTaskPriority(id: string, priority: Task['priority']): Observable<Task> {
     return this.updateTask(id, { priority });
   }
 
-  /**
-   * Filter tasks based on multiple criteria
-   */
+  
   filterTasks(filters: TaskFilters): Observable<Task[]> {
     return this.simulateDelay().pipe(
       map(() => {
@@ -236,9 +208,7 @@ export class TaskMockService extends MockBaseService<Task> {
     );
   }
 
-  /**
-   * Generate default realistic tasks using the generator
-   */
+  
   private generateDefaultTasks(): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 10,
@@ -349,22 +319,18 @@ export class TaskMockService extends MockBaseService<Task> {
     return tasks;
   }
 
-  /**
-   * Generate additional realistic tasks
-   */
+  
   generateRealisticTasks(count: number = 10): Task[] {
     const dataset = MockDataGenerator.generateCohesiveDataset({
       userCount: 8,
       workspaceCount: 3,
       taskCount: count,
-      seed: Date.now() // Random seed for variety
+      seed: Date.now() 
     });
     return dataset.tasks;
   }
 
-  /**
-   * Load realistic demo data
-   */
+  
   loadRealisticDemoData(): void {
     const demoData = MockDataGenerator.generateCohesiveDataset({
       userCount: 15,

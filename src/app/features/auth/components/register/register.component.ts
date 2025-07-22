@@ -35,7 +35,7 @@ export class RegisterComponent {
     });
   }
 
-  // Validateur personnalisé pour vérifier que les mots de passe correspondent
+  
   passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -109,7 +109,7 @@ export class RegisterComponent {
       next: (response) => {
         console.log('Registration successful:', response);
         this.isLoading.set(false);
-        // Redirection vers le dashboard après inscription réussie
+        
         this.router.navigate(['/dashboard']);
       },
       error: (error) => {
@@ -127,7 +127,7 @@ export class RegisterComponent {
     });
   }
 
-  // Méthode pour remplir automatiquement le formulaire avec des données de test
+  
   fillTestData() {
     this.registerForm.patchValue({
       firstName: 'Jean',

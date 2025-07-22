@@ -28,10 +28,10 @@ export class TaskFiltersComponent {
   @Input() currentUserId?: string;
   @Output() filtersChanged = new EventEmitter<TaskFilters>();
 
-  // Panel visibility
+  
   isFilterPanelOpen = signal(false);
 
-  // Filter states
+  
   myTasks = signal(false);
   thisWeek = signal(false);
   overdue = signal(false);
@@ -53,7 +53,7 @@ export class TaskFiltersComponent {
     { value: 'unassigned', label: 'Unassigned', active: false }
   ]);
 
-  // Computed values
+  
   hasActiveFilters = computed(() => {
     return this.statusFilters().some(f => f.active) ||
            this.priorityFilters().some(f => f.active) ||
@@ -103,7 +103,7 @@ export class TaskFiltersComponent {
     filters[index].active = !filters[index].active;
     this.assigneeFilters.set([...filters]);
     
-    // Update myTasks state based on assignee filter
+    
     if (filters[index].value === 'my-tasks') {
       this.myTasks.set(filters[index].active);
     }

@@ -27,7 +27,7 @@
 
         <div aria-hidden="true" class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"></div>
 
-        <!-- Menu utilisateur si connecté -->
+        
         @if (isAuthenticated$ | async) {
           <app-user-menu 
             [isOpen]="isUserMenuOpen" 
@@ -39,7 +39,7 @@
             (profile)="navigateToProfile()">
           </app-user-menu>
         } @else {
-          <!-- Bouton de connexion si non connecté -->
+          
           <button 
             type="button"
             (click)="navigateToLogin()"

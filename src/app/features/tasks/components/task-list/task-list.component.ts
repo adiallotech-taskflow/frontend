@@ -64,7 +64,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     type: 'danger'
   };
 
-  // Filters state
+  
   currentFilters = signal<TaskFilters>({
     myTasks: false,
     status: [],
@@ -73,27 +73,27 @@ export class TaskListComponent implements OnInit, OnDestroy {
     overdue: false
   });
 
-  // Computed filtered tasks
+  
   filteredTasks = computed(() => {
     let tasks = this.allTasks;
     const filters = this.currentFilters();
 
-    // My tasks filter
+    
     if (filters.myTasks && this.currentUserId) {
       tasks = tasks.filter(task => task.assigneeId === this.currentUserId);
     }
 
-    // Status filter
+    
     if (filters.status.length > 0) {
       tasks = tasks.filter(task => filters.status.includes(task.status));
     }
 
-    // Priority filter
+    
     if (filters.priority.length > 0) {
       tasks = tasks.filter(task => filters.priority.includes(task.priority));
     }
 
-    // This week filter
+    
     if (filters.thisWeek) {
       const now = new Date();
       const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
@@ -106,7 +106,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       });
     }
 
-    // Overdue filter
+    
     if (filters.overdue) {
       const now = new Date();
       tasks = tasks.filter(task => {
@@ -118,7 +118,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     return tasks;
   });
 
-  // Computed results count
+  
   filteredTasksCount = computed(() => this.filteredTasks().length);
 
   @ViewChild('taskSlideOver') taskSlideOver!: TaskSlideOverComponent;
@@ -213,7 +213,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       }
     ];
 
-    // Use filtered tasks instead of all tasks
+    
     const tasksToGroup = this.filteredTasks();
     
     tasksToGroup.forEach(task => {
@@ -278,7 +278,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onTaskSlideOverClosed() {
-    // Handle slide-over closed if needed
+    
   }
 
   getAssignedUser(assigneeId?: string): User | undefined {
@@ -308,7 +308,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     
     this.confirmationDialog.open();
     
-    // Store the task to delete for the confirmation handler
+    
     this.taskToDelete = task;
   }
 
