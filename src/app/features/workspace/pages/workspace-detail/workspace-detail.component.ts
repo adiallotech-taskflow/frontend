@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { CommonModule, TitleCasePipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject, forkJoin, of } from 'rxjs';
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
@@ -7,7 +7,6 @@ import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { Workspace, User, WorkspaceMember, Task } from '../../../../core/models';
 import { WorkspaceService } from '../../../../core/services/workspace.service';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
-import { WorkspaceStatsComponent } from '../../components/workspace-stats/workspace-stats.component';
 import { TaskMockService } from '../../../../core/services/mock/task-mock.service';
 
 // Extended interface for members with user details
@@ -18,7 +17,7 @@ interface WorkspaceMemberWithUser extends WorkspaceMember {
 @Component({
   selector: 'app-workspace-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskListComponent, WorkspaceStatsComponent, TitleCasePipe],
+  imports: [CommonModule, RouterModule, TaskListComponent, TitleCasePipe, DatePipe],
   templateUrl: './workspace-detail.component.html',
   styleUrls: ['./workspace-detail.component.css']
 })
@@ -26,7 +25,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   workspace = signal<Workspace | null>(null);
-  activeTab = signal<'tasks' | 'members' | 'settings'>('tasks');
+  activeTab = signal<'overview' | 'tasks' | 'members'>('overview');
   isLoading = signal(true);
   hasError = signal(false);
   errorMessage = signal('');
@@ -144,7 +143,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  setActiveTab(tab: 'tasks' | 'members' | 'settings') {
+  setActiveTab(tab: 'overview' | 'tasks' | 'members') {
     this.activeTab.set(tab);
   }
 
