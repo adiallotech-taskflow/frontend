@@ -9,8 +9,8 @@ import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
 import { WorkspaceSkeletonComponent } from '../workspace-skeleton/workspace-skeleton';
 import { EmptyStateComponent } from '../empty-state/empty-state';
 import { FabButtonComponent } from '../fab-button/fab-button';
-import { WorkspaceSlideOverComponent } from '../../../workspace/workspace-slide-over';
 import { forkJoin } from 'rxjs';
+import {WorkspaceSlideOverComponent} from '../../../workspace/components/workspace-slide-over';
 
 @Component({
   selector: 'app-dashboard',

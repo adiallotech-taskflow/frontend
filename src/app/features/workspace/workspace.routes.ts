@@ -10,7 +10,7 @@ export const workspaceRoutes: Routes = [
   {
     path: ':id',
     loadComponent: () =>
-      import('./pages/workspace-detail/workspace-detail.component').then((c) => c.WorkspaceDetailComponent),
+      import('./components/workspace-detail/workspace-detail.component').then((c) => c.WorkspaceDetailComponent),
     resolve: {
       workspace: WorkspaceDetailResolver,
     },

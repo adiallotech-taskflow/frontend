@@ -1,8 +1,8 @@
 import { Component, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { WorkspaceService } from '../../../core/services';
-import { Workspace } from '../../../core/models';
+import {Workspace} from '../../../../core/models';
+import {WorkspaceService} from '../../../../core/services';
 
 @Component({
   selector: 'app-workspace-slide-over',
