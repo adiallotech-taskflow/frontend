@@ -1,26 +1,6 @@
 import { Injectable, InjectionToken } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-
-export interface MockConfig {
-  delayMin: number;
-
-  delayMax: number;
-
-  errorRate: number;
-
-  autoGenerateActivity: boolean;
-
-  persistToLocalStorage: boolean;
-
-  enableLogging: boolean;
-
-  enabledServices: {
-    tasks: boolean;
-    users: boolean;
-    workspaces: boolean;
-    auth: boolean;
-  };
-}
+import { MockConfig } from '../../models';
 
 export const DEFAULT_MOCK_CONFIG: MockConfig = {
   delayMin: 300,

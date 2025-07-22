@@ -1,9 +1,10 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MockConfigService, MockConfig } from './mock.config';
+import { MockConfigService } from './mock.config';
 import { MockUtilsService } from './mock.utils';
 import { environment } from '../../../../environments/environment';
+import {MockConfig} from '../../models';
 
 @Component({
   selector: 'app-mock-devtools',

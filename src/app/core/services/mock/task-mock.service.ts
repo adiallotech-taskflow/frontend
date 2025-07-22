@@ -1,19 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { MockBaseService, PaginationResult } from './mock-base.service';
-import { Task, CreateTaskRequest } from '../../models';
+import { MockBaseService } from './mock-base.service';
+import { Task, CreateTaskRequest, PaginationResult, TaskFilters } from '../../models';
 import { MockDataGenerator, MockGeneratorUtils, MockDataLists } from './mock-data.generator';
-
-export interface TaskFilters {
-  status?: Task['status'];
-  priority?: Task['priority'];
-  assigneeId?: string;
-  workspaceId?: string;
-  search?: string;
-  hasDueDate?: boolean;
-  isOverdue?: boolean;
-}
 
 export type TaskStatus = Task['status'];
 

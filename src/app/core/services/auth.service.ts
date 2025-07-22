@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthMockService, RegisterRequest, AuthResponse } from './mock/auth-mock.service';
-import { User } from '../models';
+import { AuthMockService } from './mock/auth-mock.service';
+import { User, RegisterRequest, AuthResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',

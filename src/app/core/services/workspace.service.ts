@@ -2,23 +2,15 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
 import { WorkspaceMockService } from './mock/workspace-mock.service';
-import { Workspace, WorkspaceMember, WorkspaceStats } from '../models';
+import { 
+  Workspace, 
+  WorkspaceMember, 
+  WorkspaceStats,
+  CreateWorkspaceRequest,
+  UpdateWorkspaceRequest,
+  InviteMemberRequest 
+} from '../models';
 import { environment } from '../../../environments/environment';
-
-export interface CreateWorkspaceRequest {
-  name: string;
-  description?: string;
-}
-
-export interface UpdateWorkspaceRequest {
-  name?: string;
-  description?: string;
-}
-
-export interface InviteMemberRequest {
-  email: string;
-  role: 'admin' | 'member' | 'viewer';
-}
 
 @Injectable({
   providedIn: 'root',

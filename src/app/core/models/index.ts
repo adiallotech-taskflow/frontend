@@ -11,3 +11,8 @@ export * from './workspace-stats';
 export * from './task-filters';
 export * from './confirmation-dialog';
 export * from './task-service';
+export * from './api';
+export * from './auth';
+export * from './mock';
+export * from './task-service-filters';
+export * from './workspace-service';

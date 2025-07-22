@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Workspace, User, WorkspaceMember, Task, WorkspaceMemberWithUser } from '../../../../core/models';
+import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core/models';
 import { WorkspaceService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';

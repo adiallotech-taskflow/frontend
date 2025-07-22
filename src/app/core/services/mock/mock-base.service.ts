@@ -2,22 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { MockConfigService } from './mock.config';
-
-export interface PaginationResult<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrev: boolean;
-}
-
-export interface MockErrorOptions {
-  message?: string;
-  code?: string;
-  status?: number;
-}
+import { PaginationResult, MockErrorOptions } from '../../models';
 
 @Injectable({
   providedIn: 'root',

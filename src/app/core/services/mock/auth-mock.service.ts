@@ -2,27 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
-import { User } from '../../models';
-
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  token: string;
-  expiresAt: Date;
-}
-
-export interface AuthSession {
-  user: User;
-  token: string;
-  expiresAt: Date;
-  refreshToken?: string;
-}
+import { User, RegisterRequest, AuthResponse, AuthSession } from '../../models';
 
 @Injectable({
   providedIn: 'root',

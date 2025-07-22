@@ -2,7 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService, RegisterRequest } from '../../../../core/services';
+import { AuthService } from '../../../../core/services';
+import {RegisterRequest} from '../../../../core/models';
 
 @Component({
   selector: 'app-register',

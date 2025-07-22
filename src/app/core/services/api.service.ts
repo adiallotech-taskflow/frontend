@@ -2,18 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, timer } from 'rxjs';
 import { catchError, map, finalize, retryWhen, mergeMap } from 'rxjs/operators';
-
-export interface ApiResponse<T> {
-  data: T;
-  message?: string;
-  success: boolean;
-}
-
-export interface ApiError {
-  message: string;
-  code?: string;
-  details?: unknown;
-}
+import { ApiError } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +10,6 @@ export interface ApiError {
 export class ApiService {
   private readonly baseUrl = 'http://localhost:3000/api';
   private loadingSubject = new BehaviorSubject<boolean>(false);
-
-  public loading$ = this.loadingSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -165,9 +152,5 @@ export class ApiService {
 
   private setLoading(loading: boolean): void {
     this.loadingSubject.next(loading);
-  }
-
-  get isLoading(): boolean {
-    return this.loadingSubject.value;
   }
 }
