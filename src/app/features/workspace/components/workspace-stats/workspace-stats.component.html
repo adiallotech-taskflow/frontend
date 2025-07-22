@@ -21,7 +21,7 @@
         </div>
         <div class="p-3 rounded-full" [ngClass]="getColorClasses(stat.color).bg">
           <svg class="w-6 h-6" [ngClass]="getColorClasses(stat.color).icon" 
-               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+               class="fill-none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="stat.icon"></path>
           </svg>
         </div>
@@ -37,7 +37,7 @@
       <svg class="w-full h-full" viewBox="0 0 100 30" preserveAspectRatio="none">
         <polyline
           [attr.points]="getSparklinePoints()"
-          fill="none"
+          class="fill-none"
           stroke="rgb(59, 130, 246)"
           stroke-width="2"
           stroke-linecap="round"
