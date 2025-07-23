@@ -17,7 +17,13 @@
           <div class="flex h-16 shrink-0 items-center">
             <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" class="h-8 w-auto" />
           </div>
-          <app-navigation-menu [navigationItems]="navigationItems" [teams]="teams"></app-navigation-menu>
+          <app-navigation-menu 
+            [navigationItems]="navigationItems" 
+            [teams]="teams"
+            [userTeams]="userTeams"
+            [isTeamLeader]="isTeamLeader"
+            (teamClick)="navigateToTeamTasks($event)">
+          </app-navigation-menu>
         </div>
       </div>
     </div>

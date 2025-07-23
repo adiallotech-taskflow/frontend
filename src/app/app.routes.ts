@@ -31,7 +31,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/calendar/calendar.routes').then((r) => r.CALENDAR_ROUTES),
       },
       {
-        path: 'team',
+        path: 'teams',
         loadChildren: () => import('./features/team/team.routes').then((r) => r.TEAM_ROUTES),
       },
       {

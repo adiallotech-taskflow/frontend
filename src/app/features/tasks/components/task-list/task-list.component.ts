@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { RouterLink } from '@angular/router';
-import { TaskCardComponent, TaskFiltersComponent } from '../../../../shared';
+import { TaskCardComponent } from '../../../../shared';
+import { SearchFilterComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
@@ -25,7 +26,7 @@ import {
     CommonModule,
     RouterLink,
     TaskCardComponent,
-    TaskFiltersComponent,
+    SearchFilterComponent,
     TaskSlideOverComponent,
     ConfirmationDialogComponent,
     FabButtonComponent,
@@ -74,6 +75,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     priority: [],
     thisWeek: false,
     overdue: false,
+    teamIds: [],
   });
 
   filteredTasks = computed(() => {
@@ -90,6 +92,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     if (filters.priority.length > 0) {
       tasks = tasks.filter((task) => filters.priority.includes(task.priority));
+    }
+
+    if (filters.teamIds.length > 0) {
+      tasks = tasks.filter((task) => task.teamId && filters.teamIds.includes(task.teamId));
     }
 
     if (filters.thisWeek) {

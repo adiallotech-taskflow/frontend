@@ -150,17 +150,19 @@
   }
 
 
-  @if (!isLoading && !hasError && !isEmpty) {
-    <app-task-filters
-      [resultsCount]="filteredTasksCount()"
-      [currentUserId]="currentUserId"
-      (filtersChanged)="onFiltersChanged($event)">
-    </app-task-filters>
+  @if (!isLoading && !hasError) {
+    <div class="mb-6">
+      <app-search-filter
+        [resultsCount]="filteredTasksCount()"
+        [currentUserId]="currentUserId"
+        (filtersChanged)="onFiltersChanged($event)">
+      </app-search-filter>
+    </div>
   }
 
 
   @if (!isLoading && !hasError && !isEmpty) {
-    <div class="space-y-8">
+    <div class="space-y-8 mt-9">
     @for (group of taskGroups; track group.status) {
       @if (group.tasks.length > 0) {
         <div class="space-y-4">

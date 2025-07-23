@@ -3,12 +3,18 @@
     [isOpen]="isMobileSidenavOpen()"
     [navigationItems]="navigationItems"
     [teams]="teams"
+    [userTeams]="userTeams()"
+    [isTeamLeader]="isTeamLeader"
+    [navigateToTeamTasks]="navigateToTeamTasks.bind(this)"
     (close)="closeMobileSidenav()">
   </app-mobile-sidebar>
 
   <app-desktop-sidebar 
     [navigationItems]="navigationItems"
-    [teams]="teams">
+    [teams]="teams"
+    [userTeams]="userTeams()"
+    [isTeamLeader]="isTeamLeader"
+    [navigateToTeamTasks]="navigateToTeamTasks.bind(this)">
   </app-desktop-sidebar>
 
   <div class="lg:pl-72">
