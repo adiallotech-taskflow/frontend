@@ -45,7 +45,7 @@ export class MainLayoutComponent implements OnInit {
     }
   }
 
-  isTeamLeader(team: TeamModel): boolean {
+  isTeamLeader = (team: TeamModel): boolean => {
     const currentUser = this.authService.getCurrentUser();
     return currentUser ? team.leaderId === currentUser.id : false;
   }
