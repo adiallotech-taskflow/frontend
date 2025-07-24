@@ -87,4 +87,14 @@ export class TeamService {
       catchError((error) => throwError(() => error))
     );
   }
+
+  deleteTeam(teamId: string): Observable<boolean> {
+    const request$ = this.useMockService
+      ? this.mockService.deleteTeam(teamId)
+      : this.apiService.delete<boolean>(`/teams/${teamId}`);
+
+    return request$.pipe(
+      catchError((error) => throwError(() => error))
+    );
+  }
 }

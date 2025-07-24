@@ -67,7 +67,16 @@ export class TeamMockService extends MockBaseService<TeamModel> {
     };
 
     return this.simulateError<TeamModel>().pipe(
-      switchMap(() => this.addToMockData(newTeam as TeamModel))
+      switchMap(() => {
+        const teamWithId: TeamModel = {
+          ...newTeam,
+          teamId: this.generateId(),
+        } as TeamModel;
+        const teams = this.getStoredData() || [];
+        teams.push(teamWithId);
+        this.saveToStorage(teams);
+        return this.simulateDelay().pipe(map(() => teamWithId));
+      })
     );
   }
 
@@ -84,18 +93,28 @@ export class TeamMockService extends MockBaseService<TeamModel> {
   addMember(teamId: string, userId: string): Observable<TeamModel> {
     return this.simulateError<TeamModel>().pipe(
       switchMap(() => {
-        return this.getByIdFromMockData(teamId).pipe(
-          switchMap((team) => {
-            if (team.memberIds.includes(userId)) {
-              return throwError(() => new Error('User is already a member of this team'));
-            }
+        const teams = this.getStoredData() || this.defaultData;
+        const team = teams.find(t => t.teamId === teamId);
+        
+        if (!team) {
+          return throwError(() => new Error(`Team with id ${teamId} not found`));
+        }
+        
+        if (team.memberIds.includes(userId)) {
+          return throwError(() => new Error('User is already a member of this team'));
+        }
 
-            const updatedMemberIds = [...team.memberIds, userId];
-            return this.updateInMockData(teamId, {
-              memberIds: updatedMemberIds,
-            });
-          })
-        );
+        const updatedTeam = {
+          ...team,
+          memberIds: [...team.memberIds, userId],
+          updatedAt: new Date().toISOString()
+        };
+        
+        const index = teams.findIndex(t => t.teamId === teamId);
+        teams[index] = updatedTeam;
+        this.saveToStorage(teams);
+        
+        return this.simulateDelay().pipe(map(() => updatedTeam));
       })
     );
   }
@@ -122,37 +141,71 @@ export class TeamMockService extends MockBaseService<TeamModel> {
   removeMember(teamId: string, userId: string): Observable<TeamModel> {
     return this.simulateError<TeamModel>().pipe(
       switchMap(() => {
-        return this.getByIdFromMockData(teamId).pipe(
-          switchMap((team) => {
-            if (team.leaderId === userId) {
-              return throwError(() => new Error('Cannot remove team leader'));
-            }
+        const teams = this.getStoredData() || this.defaultData;
+        const team = teams.find(t => t.teamId === teamId);
+        
+        if (!team) {
+          return throwError(() => new Error(`Team with id ${teamId} not found`));
+        }
+        
+        if (team.leaderId === userId) {
+          return throwError(() => new Error('Cannot remove team leader'));
+        }
 
-            const updatedMemberIds = team.memberIds.filter((id) => id !== userId);
-            return this.updateInMockData(teamId, {
-              memberIds: updatedMemberIds,
-            });
-          })
-        );
+        const updatedTeam = {
+          ...team,
+          memberIds: team.memberIds.filter((id) => id !== userId),
+          updatedAt: new Date().toISOString()
+        };
+        
+        const index = teams.findIndex(t => t.teamId === teamId);
+        teams[index] = updatedTeam;
+        this.saveToStorage(teams);
+        
+        return this.simulateDelay().pipe(map(() => updatedTeam));
       })
     );
   }
 
   getTeamById(teamId: string): Observable<TeamModel> {
     return this.simulateError<TeamModel>().pipe(
-      switchMap(() => this.getByIdFromMockData(teamId))
+      switchMap(() => {
+        const teams = this.getStoredData() || this.defaultData;
+        const team = teams.find(t => t.teamId === teamId);
+        if (!team) {
+          throw new Error(`Team with id ${teamId} not found`);
+        }
+        return this.simulateDelay().pipe(map(() => team));
+      })
     );
   }
 
   updateTeam(teamId: string, updates: Partial<TeamModel>): Observable<TeamModel> {
     return this.simulateError<TeamModel>().pipe(
-      switchMap(() => this.updateInMockData(teamId, updates))
+      switchMap(() => {
+        const teams = this.getStoredData() || this.defaultData;
+        const index = teams.findIndex(t => t.teamId === teamId);
+        if (index === -1) {
+          throw new Error(`Team with id ${teamId} not found`);
+        }
+        teams[index] = { ...teams[index], ...updates, updatedAt: new Date().toISOString() };
+        this.saveToStorage(teams);
+        return this.simulateDelay().pipe(map(() => teams[index]));
+      })
     );
   }
 
   deleteTeam(teamId: string): Observable<boolean> {
     return this.simulateError<boolean>().pipe(
-      switchMap(() => this.deleteFromMockData(teamId))
+      switchMap(() => {
+        const teams = this.getStoredData() || this.defaultData;
+        const filteredTeams = teams.filter(t => t.teamId !== teamId);
+        if (filteredTeams.length === teams.length) {
+          throw new Error(`Team with id ${teamId} not found`);
+        }
+        this.saveToStorage(filteredTeams);
+        return this.simulateDelay().pipe(map(() => true));
+      })
     );
   }
 }

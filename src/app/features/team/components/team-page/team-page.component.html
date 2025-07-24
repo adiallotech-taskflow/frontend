@@ -67,7 +67,7 @@
   @if (teams$().length > 0 && !loading()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       @for (team of teams$(); track team.teamId) {
-        <div class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200">
+        <div (click)="navigateToTeamDetails(team.teamId)" class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200 cursor-pointer flex flex-col h-full">
 
           <div class="flex w-full items-center justify-between space-x-6 p-6">
             <div class="flex-1 truncate">
@@ -122,9 +122,9 @@
             </div>
           </div>
 
-          <div class="px-6 pt-3 pb-6">
+          <div class="px-6 pt-3 pb-6 flex flex-col flex-1">
             <h4 class="text-sm font-medium text-gray-900 mb-3">Team Members</h4>
-            <div class="flex flex-col space-y-3">
+            <div class="flex flex-col space-y-3 flex-1">
               @for (member of getTeamMembers(team.memberIds); track member.id; let i = $index) {
                 @if (i < 3) {
                   <div class="flex items-center space-x-3">
@@ -149,10 +149,10 @@
                 <p class="text-xs text-gray-500 pl-11">+{{ team.memberIds.length - 3 }} more members</p>
               }
             </div>
-            
-            <div class="mt-4 pt-4 border-t border-gray-200">
+
+            <div class="mt-auto pt-4 border-t border-gray-200">
               <button
-                (click)="navigateToTeamDetails(team.teamId)"
+                (click)="navigateToTeamDetails(team.teamId); $event.stopPropagation()"
                 class="w-full text-center text-sm font-medium text-indigo-600 hover:text-indigo-500">
                 View Team Details
               </button>

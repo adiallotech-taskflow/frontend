@@ -1,5 +1,6 @@
 import { Component, OnInit, signal, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { TeamService, AuthService, UserService } from '../../../../core/services';
 import { TeamModel, User } from '../../../../core/models';
 import { TeamSlideOverComponent } from '../team-slide-over';
@@ -15,6 +16,7 @@ export class TeamPageComponent implements OnInit {
   private teamService = inject(TeamService);
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private router = inject(Router);
 
   teams$ = signal<TeamModel[]>([]);
   users$ = signal<User[]>([]);
@@ -103,8 +105,11 @@ export class TeamPageComponent implements OnInit {
   }
 
   navigateToTeamDetails(teamId: string) {
-    // TODO: Navigate to team details page when created
-    console.log('Navigate to team details:', teamId);
+    if (!teamId) {
+      console.error('Team ID is undefined');
+      return;
+    }
+    this.router.navigate(['/teams', teamId]);
   }
 
   deleteTeam(teamId: string) {
