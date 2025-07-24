@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, Subject, tap } from 'rxjs';
 import { ApiService } from './api.service';
 import { TeamMockService } from './mock';
 import { TeamModel, Task } from '../models';
@@ -9,6 +9,9 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class TeamService {
+  private teamUpdated = new Subject<void>();
+  teamUpdated$ = this.teamUpdated.asObservable();
+
   constructor(
     private apiService: ApiService,
     private mockService: TeamMockService
@@ -24,6 +27,7 @@ export class TeamService {
       : this.apiService.post<TeamModel>('/teams', { name, description });
 
     return request$.pipe(
+      tap(() => this.teamUpdated.next()),
       catchError((error) => throwError(() => error))
     );
   }
@@ -44,6 +48,7 @@ export class TeamService {
       : this.apiService.post<TeamModel>(`/teams/${teamId}/members`, { userId });
 
     return request$.pipe(
+      tap(() => this.teamUpdated.next()),
       catchError((error) => throwError(() => error))
     );
   }
@@ -54,6 +59,7 @@ export class TeamService {
       : this.apiService.delete<TeamModel>(`/teams/${teamId}/members/${userId}`);
 
     return request$.pipe(
+      tap(() => this.teamUpdated.next()),
       catchError((error) => throwError(() => error))
     );
   }
@@ -94,6 +100,18 @@ export class TeamService {
       : this.apiService.delete<boolean>(`/teams/${teamId}`);
 
     return request$.pipe(
+      tap(() => this.teamUpdated.next()),
+      catchError((error) => throwError(() => error))
+    );
+  }
+
+  updateTeam(teamId: string, updates: Partial<TeamModel>): Observable<TeamModel> {
+    const request$ = this.useMockService
+      ? this.mockService.updateTeam(teamId, updates)
+      : this.apiService.patch<TeamModel>(`/teams/${teamId}`, updates);
+
+    return request$.pipe(
+      tap(() => this.teamUpdated.next()),
       catchError((error) => throwError(() => error))
     );
   }

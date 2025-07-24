@@ -1,4 +1,4 @@
-import { Component, signal, OnInit, inject } from '@angular/core';
+import { Component, signal, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { MobileSidebarComponent } from '../components/mobile-sidebar/mobile-sidebar.component';
@@ -7,6 +7,7 @@ import { TopNavigationComponent } from '../components/top-navigation/top-navigat
 import { NotificationComponent } from '../../shared/components/notification/notification.component';
 import { NavigationItem, Team, TeamModel } from '../../core/models';
 import { TeamService, AuthService } from '../../core/services';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
@@ -14,10 +15,11 @@ import { TeamService, AuthService } from '../../core/services';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   private teamService = inject(TeamService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private destroy$ = new Subject<void>();
 
   isMobileSidenavOpen = signal(false);
   isUserMenuOpen = signal(false);
@@ -25,6 +27,18 @@ export class MainLayoutComponent implements OnInit {
 
   ngOnInit() {
     this.loadUserTeams();
+    
+    // Subscribe to team updates
+    this.teamService.teamUpdated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadUserTeams();
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadUserTeams() {
