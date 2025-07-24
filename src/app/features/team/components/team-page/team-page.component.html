@@ -17,14 +17,14 @@
 
   @if (loading()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (_ of [1,2,3,4,5,6]; track $index) {
+      @for (item of [1,2,3,4,5,6]; track item) {
         <div class="animate-pulse">
           <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div class="h-6 bg-gray-200 rounded mb-4"></div>
             <div class="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
             <div class="flex justify-between items-center">
               <div class="h-4 bg-gray-200 rounded w-20"></div>
-              <div class="h-8 bg-gray-200 rounded w-8">{{_}}</div>
+              <div class="h-8 bg-gray-200 rounded w-8"></div>
             </div>
           </div>
         </div>
@@ -69,12 +69,12 @@
       @for (team of teams$(); track team.teamId) {
         <div class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow hover:shadow-md transition-shadow duration-200 cursor-pointer"
              (click)="navigateToTeamTasks(team.teamId)">
-          
+
           <div class="flex w-full items-center justify-between space-x-6 p-6">
             <div class="flex-1 truncate">
               <div class="flex items-center space-x-3">
                 <h3 class="truncate text-sm font-medium text-gray-900">{{ team.name }}</h3>
-                
+
                 @if (isLeader(team)) {
                   <span class="inline-flex shrink-0 items-center rounded-full px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset bg-purple-50 text-purple-700 ring-purple-600/20">
                     Leader

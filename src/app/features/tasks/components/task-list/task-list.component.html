@@ -95,8 +95,8 @@
 
 
           <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            @for (id of getSkeletonArray(2); track $index) {
-              <div [id]="id" class="bg-white rounded-lg border border-gray-200 p-4 animate-pulse">
+            @for (item of getSkeletonArray(2); track item) {
+              <div class="bg-white rounded-lg border border-gray-200 p-4 animate-pulse">
                 <div class="space-y-3">
                   <div class="h-5 bg-gray-200 rounded w-3/4"></div>
                   <div class="h-4 bg-gray-200 rounded w-full"></div>
