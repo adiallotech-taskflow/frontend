@@ -4,6 +4,7 @@ export * from './task.service';
 export * from './workspace.service';
 export * from './user.service';
 export * from './team.service';
+export * from './notification.service';
 export * from './mock/mock-base.service';
 export * from './mock/auth-mock.service';
 export * from './mock/task-mock.service';

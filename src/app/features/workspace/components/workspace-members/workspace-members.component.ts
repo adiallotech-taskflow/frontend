@@ -2,7 +2,7 @@ import { Component, input, output, ViewChild, inject } from '@angular/core';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { Workspace, WorkspaceMemberWithUser, User, WorkspaceMember } from '../../../../core/models';
 import { AddMemberSlideOverComponent } from '../add-member-slide-over/add-member-slide-over.component';
-import { WorkspaceService, AuthService } from '../../../../core/services';
+import { WorkspaceService, AuthService, NotificationService } from '../../../../core/services';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -18,6 +18,7 @@ export class WorkspaceMembersComponent {
   
   private workspaceService = inject(WorkspaceService);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
   
   workspace = input.required<Workspace>();
   membersWithUsers = input.required<WorkspaceMemberWithUser[]>();
@@ -65,30 +66,49 @@ export class WorkspaceMembersComponent {
   confirmRemoveMember() {
     if (!this.memberToRemove) return;
     
+    const memberName = this.getUserFullName(this.memberToRemove.user);
+    
     this.workspaceService
       .removeMember(this.workspace().id, this.memberToRemove.userId)
       .subscribe({
         next: () => {
           this.memberRemoved.emit(this.memberToRemove!.userId);
+          this.notificationService.success(
+            'Member removed',
+            `${memberName} has been removed from the workspace`
+          );
           this.memberToRemove = null;
         },
         error: (error) => {
           console.error('Error removing member:', error);
-          // You might want to show an error message to the user
+          this.notificationService.error(
+            'Failed to remove member',
+            'An error occurred while removing the member. Please try again.'
+          );
         }
       });
   }
   
   onRoleChange(userId: string, newRole: 'admin' | 'member' | 'viewer') {
+    const member = this.membersWithUsers().find(m => m.userId === userId);
+    const memberName = member ? this.getUserFullName(member.user) : 'Member';
+    
     this.workspaceService
       .updateMemberRole(this.workspace().id, userId, newRole)
       .subscribe({
         next: () => {
           this.memberRoleChanged.emit({ userId, role: newRole });
+          this.notificationService.success(
+            'Role updated',
+            `${memberName}'s role has been changed to ${newRole}`
+          );
         },
         error: (error) => {
           console.error('Error updating member role:', error);
-          // You might want to show an error message to the user
+          this.notificationService.error(
+            'Failed to update role',
+            'An error occurred while updating the member role. Please try again.'
+          );
         }
       });
   }

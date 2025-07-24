@@ -4,12 +4,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { MobileSidebarComponent } from '../components/mobile-sidebar/mobile-sidebar.component';
 import { DesktopSidebarComponent } from '../components/desktop-sidebar/desktop-sidebar.component';
 import { TopNavigationComponent } from '../components/top-navigation/top-navigation.component';
+import { NotificationComponent } from '../../shared/components/notification/notification.component';
 import { NavigationItem, Team, TeamModel } from '../../core/models';
 import { TeamService, AuthService } from '../../core/services';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [CommonModule, RouterOutlet, MobileSidebarComponent, DesktopSidebarComponent, TopNavigationComponent],
+  imports: [CommonModule, RouterOutlet, MobileSidebarComponent, DesktopSidebarComponent, TopNavigationComponent, NotificationComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })

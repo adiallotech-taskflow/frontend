@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { Workspace, User, WorkspaceMember } from '../../../../core/models';
-import { WorkspaceService, UserService } from '../../../../core/services';
+import { WorkspaceService, UserService, NotificationService } from '../../../../core/services';
 
 interface UserWithRole {
   user: User;
@@ -21,6 +21,7 @@ interface UserWithRole {
 export class AddMemberSlideOverComponent implements OnInit {
   private workspaceService = inject(WorkspaceService);
   private userService = inject(UserService);
+  private notificationService = inject(NotificationService);
 
   workspace = input.required<Workspace>();
 
@@ -162,7 +163,12 @@ export class AddMemberSlideOverComponent implements OnInit {
         }
       }
 
+      const count = addedMembers.length;
       this.membersAdded.emit(addedMembers);
+      this.notificationService.success(
+        'Members added',
+        `Successfully added ${count} ${count === 1 ? 'member' : 'members'} to the workspace`
+      );
       this.close();
     } catch (error) {
       this.error.set('Failed to add members. Please try again.');
