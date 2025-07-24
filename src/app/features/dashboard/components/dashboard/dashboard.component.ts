@@ -116,6 +116,14 @@ export class DashboardComponent implements OnInit {
     const currentWorkspaces = this.workspaces();
     this.workspaces.set([...currentWorkspaces, workspace]);
   }
+  
+  onWorkspaceUpdated(updatedWorkspace: Workspace) {
+    const currentWorkspaces = this.workspaces();
+    const updatedWorkspaces = currentWorkspaces.map(w => 
+      w.id === updatedWorkspace.id ? updatedWorkspace : w
+    );
+    this.workspaces.set(updatedWorkspaces);
+  }
 
   getWorkspaceStats(workspace: Workspace): WorkspaceStats {
     const tasks = this.allTasks();
@@ -141,8 +149,7 @@ export class DashboardComponent implements OnInit {
   }
   
   editWorkspace(workspace: Workspace) {
-    // TODO: Implement edit functionality
-    console.log('Edit workspace:', workspace);
+    this.slideOver()?.open(workspace);
   }
   
   deleteWorkspace(workspace: Workspace) {
