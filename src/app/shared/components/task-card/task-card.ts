@@ -92,7 +92,12 @@ export class TaskCardComponent {
     return new Date(this.task.dueDate) < new Date() && this.task.status !== 'done';
   }
 
-  onAction(action: TaskAction) {
-    this.taskAction.emit({ action, task: this.task });
+  onCardClick() {
+    this.taskAction.emit({ action: 'edit', task: this.task });
+  }
+
+  onDeleteClick(event: Event) {
+    event.stopPropagation();
+    this.taskAction.emit({ action: 'delete', task: this.task });
   }
 }
