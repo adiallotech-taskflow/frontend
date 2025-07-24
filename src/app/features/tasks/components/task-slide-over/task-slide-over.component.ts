@@ -1,7 +1,7 @@
 import { Component, signal, output, input, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TaskService, NotificationService, TeamService } from '../../../../core/services';
+import { TaskService, NotificationService } from '../../../../core/services';
 import { Task, User, TaskSlideOverMode, TaskFormData, TeamModel } from '../../../../core/models';
 
 @Component({
@@ -48,8 +48,7 @@ export class TaskSlideOverComponent {
 
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskService,
-    private teamService: TeamService
+    private taskService: TaskService
   ) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],

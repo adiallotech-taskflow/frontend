@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
-import { TaskMockService } from './mock/task-mock.service';
+import { TaskMockService } from './mock';
 import { Task, TaskStatus, TaskPriority, CreateTaskRequest, UpdateTaskRequest, TaskFilters } from '../models';
 import { environment } from '../../../environments/environment';
 

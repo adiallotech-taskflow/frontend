@@ -94,7 +94,11 @@ export class WorkspaceService {
   }
 
   delete(workspaceId: string): Observable<void> {
-    return this.apiService.delete<void>(`/workspaces/${workspaceId}`).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.deleteWorkspace(workspaceId).pipe(map(() => undefined))
+      : this.apiService.delete<void>(`/workspaces/${workspaceId}`);
+
+    return request$.pipe(
       tap(() => {
         const currentWorkspaces = this.workspacesSubject.value;
         const filteredWorkspaces = currentWorkspaces.filter((w) => w.id !== workspaceId);

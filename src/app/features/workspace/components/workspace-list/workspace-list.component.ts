@@ -1,13 +1,14 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { WorkspaceService } from '../../../../core/services';
-import { Workspace } from '../../../../core/models';
+import { WorkspaceService, AuthService } from '../../../../core/services';
+import { Workspace, ConfirmationDialogData } from '../../../../core/models';
 import { WorkspaceSlideOverComponent } from '../workspace-slide-over';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-workspace-list',
-  imports: [CommonModule, RouterLink, WorkspaceSlideOverComponent],
+  imports: [CommonModule, RouterLink, WorkspaceSlideOverComponent, ConfirmationDialogComponent],
   templateUrl: './workspace-list.component.html',
   styleUrls: ['./workspace-list.component.css'],
 })
@@ -17,6 +18,18 @@ export class WorkspaceListComponent implements OnInit {
   error = signal<string | null>(null);
 
   @ViewChild(WorkspaceSlideOverComponent) slideOver!: WorkspaceSlideOverComponent;
+  @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
+
+  private authService = inject(AuthService);
+  private workspaceToDelete: Workspace | null = null;
+
+  confirmationData: ConfirmationDialogData = {
+    title: '',
+    message: '',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    type: 'danger',
+  };
 
   constructor(private workspaceService: WorkspaceService) {}
 
@@ -45,8 +58,11 @@ export class WorkspaceListComponent implements OnInit {
   }
 
   getUserRole(workspace: Workspace): string {
-    const currentUserId = 'current-user-id';
-    const member = workspace.members?.find((m) => m.userId === currentUserId);
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return 'viewer';
+    }
+    const member = workspace.members?.find((m) => m.userId === currentUser.id);
     return member?.role || 'viewer';
   }
 
@@ -59,15 +75,37 @@ export class WorkspaceListComponent implements OnInit {
   }
 
   deleteWorkspace(workspaceId: string) {
-    if (confirm('Are you sure you want to delete this workspace?')) {
-      this.workspaceService.delete(workspaceId).subscribe({
+    const workspace = this.workspaces$().find(w => w.id === workspaceId);
+    if (!workspace) return;
+
+    this.workspaceToDelete = workspace;
+    this.confirmationData = {
+      title: 'Delete Workspace',
+      message: `Are you sure you want to delete "${workspace.name}"? This action cannot be undone and will delete all associated tasks.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger',
+    };
+
+    this.confirmationDialog.open();
+  }
+
+  onDeleteConfirmed() {
+    if (this.workspaceToDelete) {
+      this.workspaceService.delete(this.workspaceToDelete.id).subscribe({
         next: () => {
           this.loadWorkspaces();
+          this.workspaceToDelete = null;
         },
         error: () => {
-          alert('Failed to delete workspace. Please try again.');
+          this.error.set('Failed to delete workspace. Please try again.');
+          this.workspaceToDelete = null;
         },
       });
     }
+  }
+
+  onDeleteCancelled() {
+    this.workspaceToDelete = null;
   }
 }
