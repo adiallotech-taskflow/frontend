@@ -44,7 +44,9 @@
               [workspace]="workspace()!"
               [membersWithUsers]="membersWithUsers()"
               [canEdit]="canEdit() || false"
-              (membersAdded)="onMembersAdded()">
+              (membersAdded)="onMembersAdded()"
+              (memberRemoved)="onMemberRemoved()"
+              (memberRoleChanged)="onMemberRoleChanged($event)">
             </app-workspace-members>
           }
         }

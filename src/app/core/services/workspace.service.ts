@@ -146,7 +146,11 @@ export class WorkspaceService {
   }
 
   removeMember(workspaceId: string, userId: string): Observable<void> {
-    return this.apiService.delete<void>(`/workspaces/${workspaceId}/members/${userId}`).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.removeMember(workspaceId, userId).pipe(map(() => undefined))
+      : this.apiService.delete<void>(`/workspaces/${workspaceId}/members/${userId}`);
+
+    return request$.pipe(
       tap(() => {
         const currentWorkspaces = this.workspacesSubject.value;
         const workspaceIndex = currentWorkspaces.findIndex((w) => w.id === workspaceId);
@@ -176,7 +180,11 @@ export class WorkspaceService {
     userId: string,
     role: 'admin' | 'member' | 'viewer'
   ): Observable<WorkspaceMember> {
-    return this.apiService.patch<WorkspaceMember>(`/workspaces/${workspaceId}/members/${userId}`, { role }).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.updateMemberRole(workspaceId, userId, role)
+      : this.apiService.patch<WorkspaceMember>(`/workspaces/${workspaceId}/members/${userId}`, { role });
+
+    return request$.pipe(
       tap((updatedMember) => {
         const currentWorkspaces = this.workspacesSubject.value;
         const workspaceIndex = currentWorkspaces.findIndex((w) => w.id === workspaceId);

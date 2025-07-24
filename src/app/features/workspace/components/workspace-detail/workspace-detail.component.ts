@@ -187,6 +187,27 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
 
   onMembersAdded() {
     // Refresh the workspace to get updated member list
+    this.refreshWorkspaceData();
+  }
+
+  onMemberRemoved() {
+    // Refresh the workspace to get updated member list
+    this.refreshWorkspaceData();
+  }
+
+  onMemberRoleChanged(event: { userId: string; role: 'admin' | 'member' | 'viewer' }) {
+    // Update the member role in the local state
+    const members = this.membersWithUsers();
+    const updatedMembers = members.map(member => {
+      if (member.userId === event.userId) {
+        return { ...member, role: event.role };
+      }
+      return member;
+    });
+    this.membersWithUsers.set(updatedMembers);
+  }
+
+  private refreshWorkspaceData() {
     const workspaceId = this.workspace()?.id;
     if (workspaceId) {
       this.workspaceService
