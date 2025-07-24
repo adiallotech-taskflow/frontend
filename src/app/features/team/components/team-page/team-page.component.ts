@@ -71,10 +71,6 @@ export class TeamPageComponent implements OnInit {
       .filter((user): user is User => user !== undefined);
   }
 
-  getTeamLeader(leaderId: string): User | undefined {
-    return this.users$().find(user => user.id === leaderId);
-  }
-
   isLeader(team: TeamModel): boolean {
     const currentUser = this.authService.getCurrentUser();
     return currentUser ? team.leaderId === currentUser.id : false;
@@ -110,10 +106,5 @@ export class TeamPageComponent implements OnInit {
       return;
     }
     this.router.navigate(['/teams', teamId]);
-  }
-
-  deleteTeam(teamId: string) {
-    // TODO: Implement team deletion
-    alert('Team deletion coming soon!');
   }
 }
