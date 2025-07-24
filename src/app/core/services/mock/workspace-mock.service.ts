@@ -3,6 +3,7 @@ import { Observable, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
 import { AuthMockService } from './auth-mock.service';
+import { UserService } from '../user.service';
 import {
   Workspace,
   WorkspaceMember,
@@ -19,6 +20,7 @@ import {
 export class WorkspaceMockService extends MockBaseService<Workspace> {
   protected override storageKey = 'taskflow_mock_workspaces';
   private authService = inject(AuthMockService);
+  private userService = inject(UserService);
 
   protected override defaultData: Workspace[] = this.generateDefaultWorkspaces();
 
@@ -70,21 +72,38 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
   }
 
   inviteMember(workspaceId: string, inviteData: InviteMemberRequest): Observable<WorkspaceMember> {
-    const newMember: WorkspaceMember = {
-      userId: this.generateId(),
-      role: inviteData.role,
-      joinedAt: new Date(),
-    };
-
     return this.simulateError<WorkspaceMember>().pipe(
       switchMap(() => {
         return this.getByIdFromMockData(workspaceId).pipe(
           switchMap((workspace) => {
-            const updatedMembers = [...workspace.members, newMember];
-            return this.updateInMockData(workspaceId, {
-              members: updatedMembers,
-              updatedAt: new Date(),
-            }).pipe(switchMap(() => this.simulateDelay().pipe(switchMap(() => [newMember]))));
+            // Get all users to find by email
+            return this.userService.getUsers().pipe(
+              switchMap((users) => {
+                const user = users.find(u => u.email === inviteData.email);
+                
+                if (!user) {
+                  return throwError(() => new Error('User not found'));
+                }
+                
+                // Check if user is already a member
+                const isAlreadyMember = workspace.members.some(m => m.userId === user.id);
+                if (isAlreadyMember) {
+                  return throwError(() => new Error('User is already a member of this workspace'));
+                }
+                
+                const newMember: WorkspaceMember = {
+                  userId: user.id,
+                  role: inviteData.role,
+                  joinedAt: new Date(),
+                };
+                
+                const updatedMembers = [...workspace.members, newMember];
+                return this.updateInMockData(workspaceId, {
+                  members: updatedMembers,
+                  updatedAt: new Date(),
+                }).pipe(switchMap(() => this.simulateDelay().pipe(switchMap(() => [newMember]))));
+              })
+            );
           })
         );
       })

@@ -185,4 +185,23 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     this.loadWorkspace();
   }
 
+  onMembersAdded() {
+    // Refresh the workspace to get updated member list
+    const workspaceId = this.workspace()?.id;
+    if (workspaceId) {
+      this.workspaceService
+        .getById(workspaceId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (workspace) => {
+            this.workspace.set(workspace);
+            this.loadMembersWithUserDetails(workspace);
+          },
+          error: (error) => {
+            console.error('Error refreshing workspace:', error);
+          },
+        });
+    }
+  }
+
 }

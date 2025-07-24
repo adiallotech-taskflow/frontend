@@ -3,7 +3,7 @@
 }
 
 @if (hasError() && !isLoading()) {
-  <app-workspace-error 
+  <app-workspace-error
     [errorMessage]="errorMessage()"
     (retry)="reloadWorkspace()">
   </app-workspace-error>
@@ -11,7 +11,7 @@
 
 @if (!isLoading() && !hasError() && workspace()) {
   <div class="min-h-full">
-    <app-workspace-header 
+    <app-workspace-header
       [workspace]="workspace()!"
       [canEdit]="canEdit() || false">
     </app-workspace-header>
@@ -42,7 +42,9 @@
           @case ('members') {
             <app-workspace-members
               [workspace]="workspace()!"
-              [membersWithUsers]="membersWithUsers()">
+              [membersWithUsers]="membersWithUsers()"
+              [canEdit]="canEdit() || false"
+              (membersAdded)="onMembersAdded()">
             </app-workspace-members>
           }
         }

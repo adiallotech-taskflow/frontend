@@ -1,0 +1,186 @@
+@if (isOpen()) {
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="slide-over-title"
+    class="relative z-50">
+
+    <div
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out"
+      (click)="close()">
+    </div>
+
+    <div class="fixed inset-0 overflow-hidden">
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
+          <div
+            class="pointer-events-auto w-screen max-w-lg transform transition ease-in-out duration-500 sm:duration-700">
+
+            <div class="flex h-full flex-col bg-white shadow-xl">
+              <div class="bg-indigo-700 px-4 py-6 sm:px-6">
+                <div class="flex items-center justify-between">
+                  <h2 id="slide-over-title" class="text-base font-semibold text-white">
+                    Add Members to {{ workspace().name }}
+                  </h2>
+                  <div class="ml-3 flex h-7 items-center">
+                    <button
+                      type="button"
+                      (click)="close()"
+                      class="relative rounded-md bg-indigo-700 text-indigo-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                      <span class="absolute -inset-2.5"></span>
+                      <span class="sr-only">Close panel</span>
+                      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" class="fill-none size-6" aria-hidden="true">
+                        <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="mt-1">
+                  <p class="text-sm text-indigo-300">
+                    Select users to add as members of this workspace.
+                  </p>
+                </div>
+              </div>
+
+              @if (error()) {
+                <div class="rounded-md bg-red-50 p-4 mx-4 mt-4">
+                  <div class="flex">
+                    <div class="flex-shrink-0">
+                      <svg class="fill-current h-5 w-5 text-red-400" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <div class="ml-3 flex-1">
+                      <p class="text-sm font-medium text-red-800">{{ error() }}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                      <button
+                        type="button"
+                        (click)="clearError()"
+                        class="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2 focus-visible:ring-offset-red-50">
+                        <span class="sr-only">Close</span>
+                        <svg class="fill-current h-4 w-4" viewBox="0 0 20 20" aria-hidden="true">
+                          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              }
+
+              <div class="px-4 py-4 border-b border-gray-200">
+                <div class="relative">
+                  <input
+                    type="text"
+                    [(ngModel)]="searchTerm"
+                    placeholder="Search users by name or email..."
+                    class="block w-full rounded-md bg-white px-3 py-2 pl-10 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400 fill-current" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+
+                @if (selectedCount() > 0) {
+                  <div class="mt-3 flex items-center justify-between">
+                    <span class="text-sm text-gray-600">{{ selectedCount() }} users selected</span>
+                    <button
+                      type="button"
+                      (click)="deselectAll()"
+                      class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                      Clear selection
+                    </button>
+                  </div>
+                }
+              </div>
+
+              <div class="flex-1 overflow-y-auto">
+                @if (loadingUsers()) {
+                  <div class="flex items-center justify-center py-12">
+                    <svg class="fill-none animate-spin h-8 w-8 text-gray-400" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                } @else if (filteredUsers().length === 0) {
+                  <div class="text-center py-12 px-4">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 fill-none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                    </svg>
+                    <p class="mt-2 text-sm text-gray-900">No available users found</p>
+                    @if (searchTerm()) {
+                      <p class="text-sm text-gray-500">Try adjusting your search</p>
+                    } @else {
+                      <p class="text-sm text-gray-500">All users are already members</p>
+                    }
+                  </div>
+                } @else {
+                  <div class="divide-y divide-gray-200">
+                    @for (userWithRole of filteredUsers(); track userWithRole.user.id) {
+                      <div class="px-4 py-4 hover:bg-gray-50">
+                        <div class="flex items-start">
+                          <input
+                            type="checkbox"
+                            [checked]="userWithRole.selected"
+                            (change)="toggleUserSelection(userWithRole.user.id)"
+                            class="h-4 w-4 mt-1 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+
+                          <div class="ml-3 flex-1">
+                            <div class="flex items-center justify-between">
+                              <div>
+                                <p class="text-sm font-medium text-gray-900">
+                                  {{ userWithRole.user.firstName }} {{ userWithRole.user.lastName }}
+                                </p>
+                                <p class="text-sm text-gray-500">{{ userWithRole.user.email }}</p>
+                              </div>
+
+                              <select
+                                [value]="userWithRole.role"
+                                (change)="updateUserRole(userWithRole.user.id, $any($event.target).value)"
+                                [disabled]="!userWithRole.selected"
+                                class="ml-4 text-sm rounded-md border-gray-300 py-1 pl-3 pr-8 focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <option value="admin">Admin</option>
+                                <option value="member">Member</option>
+                                <option value="viewer">Viewer</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <div class="flex shrink-0 justify-end px-4 py-4 border-t border-gray-200">
+                <button
+                  type="button"
+                  (click)="close()"
+                  [disabled]="isLoading()"
+                  class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  (click)="onSubmit()"
+                  [disabled]="selectedCount() === 0 || isLoading()"
+                  class="ml-4 inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                  @if (isLoading()) {
+                    <svg class="fill-none animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Adding...
+                  } @else {
+                    Add {{ selectedCount() }} {{ selectedCount() === 1 ? 'member' : 'members' }}
+                  }
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
