@@ -1,8 +1,8 @@
-import { Component, OnInit, signal, computed, viewChild } from '@angular/core';
+import { Component, OnInit, signal, computed, viewChild, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Workspace, WorkspaceStats, DashboardStats, Task } from '../../../../core/models';
-import { WorkspaceService, TaskMockService } from '../../../../core/services';
+import { Workspace, WorkspaceStats, DashboardStats, Task, ConfirmationDialogData } from '../../../../core/models';
+import { WorkspaceService, TaskMockService, AuthService } from '../../../../core/services';
 import { SearchBarComponent } from '../search-bar/search-bar';
 import { StatsOverviewComponent } from '../stats-overview/stats-overview';
 import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
@@ -11,6 +11,7 @@ import { EmptyStateComponent } from '../empty-state/empty-state';
 import { FabButtonComponent } from '../fab-button/fab-button';
 import { forkJoin } from 'rxjs';
 import { WorkspaceSlideOverComponent } from '../../../workspace/components/workspace-slide-over';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,17 +25,30 @@ import { WorkspaceSlideOverComponent } from '../../../workspace/components/works
     EmptyStateComponent,
     FabButtonComponent,
     WorkspaceSlideOverComponent,
+    ConfirmationDialogComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
   slideOver = viewChild<WorkspaceSlideOverComponent>('slideOver');
+  @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
 
   workspaces = signal<Workspace[]>([]);
   allTasks = signal<Task[]>([]);
   isLoading = signal(true);
   searchTerm = signal('');
+  
+  private authService = inject(AuthService);
+  private workspaceToDelete: Workspace | null = null;
+  
+  confirmationData: ConfirmationDialogData = {
+    title: '',
+    message: '',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    type: 'danger',
+  };
 
   constructor(
     private workspaceService: WorkspaceService,
@@ -115,5 +129,51 @@ export class DashboardComponent implements OnInit {
       inProgressTasks: inProgressTasks,
       totalMembers: workspace.members.length,
     };
+  }
+  
+  isWorkspaceAdmin(workspace: Workspace): boolean {
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return false;
+    }
+    const member = workspace.members?.find((m) => m.userId === currentUser.id);
+    return member?.role === 'admin';
+  }
+  
+  editWorkspace(workspace: Workspace) {
+    // TODO: Implement edit functionality
+    console.log('Edit workspace:', workspace);
+  }
+  
+  deleteWorkspace(workspace: Workspace) {
+    this.workspaceToDelete = workspace;
+    this.confirmationData = {
+      title: 'Delete Workspace',
+      message: `Are you sure you want to delete "${workspace.name}"? This action cannot be undone and will delete all associated tasks.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger',
+    };
+
+    this.confirmationDialog.open();
+  }
+  
+  onDeleteConfirmed() {
+    if (this.workspaceToDelete) {
+      this.workspaceService.delete(this.workspaceToDelete.id).subscribe({
+        next: () => {
+          this.loadWorkspaces();
+          this.workspaceToDelete = null;
+        },
+        error: (error) => {
+          console.error('Failed to delete workspace:', error);
+          this.workspaceToDelete = null;
+        },
+      });
+    }
+  }
+
+  onDeleteCancelled() {
+    this.workspaceToDelete = null;
   }
 }

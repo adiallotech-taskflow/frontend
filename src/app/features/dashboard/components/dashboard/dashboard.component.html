@@ -35,7 +35,10 @@
           @for (workspace of filteredWorkspaces(); track workspace.id) {
             <app-workspace-card
               [workspace]="workspace"
-              [stats]="getWorkspaceStats(workspace)">
+              [stats]="getWorkspaceStats(workspace)"
+              [canEdit]="isWorkspaceAdmin(workspace)"
+              (edit)="editWorkspace($event)"
+              (delete)="deleteWorkspace($event)">
             </app-workspace-card>
           }
         </div>
@@ -53,4 +56,11 @@
     #slideOver
     (workspaceCreated)="onWorkspaceCreated($event)">
   </app-workspace-slide-over>
+  
+  <app-confirmation-dialog
+    #confirmationDialog
+    [data]="confirmationData"
+    (confirmed)="onDeleteConfirmed()"
+    (cancelled)="onDeleteCancelled()">
+  </app-confirmation-dialog>
 </div>
