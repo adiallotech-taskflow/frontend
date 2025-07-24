@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
-import { TeamMockService } from './mock/team-mock.service';
+import { TeamMockService } from './mock';
 import { TeamModel, Task } from '../models';
 import { environment } from '../../../environments/environment';
 
@@ -18,10 +18,10 @@ export class TeamService {
     return !environment.production;
   }
 
-  create(name: string, workspaceId: string): Observable<TeamModel> {
+  create(name: string, description?: string): Observable<TeamModel> {
     const request$ = this.useMockService
-      ? this.mockService.create(name, workspaceId)
-      : this.apiService.post<TeamModel>('/teams', { name, workspaceId });
+      ? this.mockService.create(name, description)
+      : this.apiService.post<TeamModel>('/teams', { name, description });
 
     return request$.pipe(
       catchError((error) => throwError(() => error))
@@ -68,10 +68,20 @@ export class TeamService {
     );
   }
 
-  getByWorkspace(workspaceId: string): Observable<TeamModel[]> {
+  getAllTeams(): Observable<TeamModel[]> {
     const request$ = this.useMockService
-      ? this.mockService.getByWorkspace(workspaceId)
-      : this.apiService.get<TeamModel[]>(`/workspaces/${workspaceId}/teams`);
+      ? this.mockService.getAllTeams()
+      : this.apiService.get<TeamModel[]>(`/teams`);
+
+    return request$.pipe(
+      catchError((error) => throwError(() => error))
+    );
+  }
+
+  getTeamById(teamId: string): Observable<TeamModel> {
+    const request$ = this.useMockService
+      ? this.mockService.getTeamById(teamId)
+      : this.apiService.get<TeamModel>(`/teams/${teamId}`);
 
     return request$.pipe(
       catchError((error) => throwError(() => error))

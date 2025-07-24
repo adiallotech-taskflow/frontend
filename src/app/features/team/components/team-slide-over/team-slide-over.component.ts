@@ -1,8 +1,8 @@
 import { Component, signal, output, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TeamModel, Workspace, User } from '../../../../core/models';
-import { TeamService, WorkspaceService, UserService, AuthService } from '../../../../core/services';
+import { TeamModel, User } from '../../../../core/models';
+import { TeamService, UserService, AuthService } from '../../../../core/services';
 
 @Component({
   selector: 'app-team-slide-over',
@@ -14,7 +14,6 @@ import { TeamService, WorkspaceService, UserService, AuthService } from '../../.
 export class TeamSlideOverComponent implements OnInit {
   private fb = inject(FormBuilder);
   private teamService = inject(TeamService);
-  private workspaceService = inject(WorkspaceService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
 
@@ -23,9 +22,7 @@ export class TeamSlideOverComponent implements OnInit {
   error = signal<string | null>(null);
   form: FormGroup;
 
-  workspaces = signal<Workspace[]>([]);
-  workspaceUsers = signal<User[]>([]);
-  loadingWorkspaces = signal(true);
+  allUsers = signal<User[]>([]);
   loadingUsers = signal(false);
 
   teamCreated = output<TeamModel>();
@@ -34,63 +31,29 @@ export class TeamSlideOverComponent implements OnInit {
   constructor() {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
-      workspaceId: ['', Validators.required],
+      description: [''],
       memberIds: [[]],
     });
   }
 
   ngOnInit() {
-    this.loadWorkspaces();
-    
-    // Watch for workspace changes to load users
-    this.form.get('workspaceId')?.valueChanges.subscribe(workspaceId => {
-      if (workspaceId) {
-        this.loadWorkspaceUsers(workspaceId);
-      } else {
-        this.workspaceUsers.set([]);
-      }
-    });
+    this.loadAllUsers();
   }
 
-  loadWorkspaces() {
-    this.loadingWorkspaces.set(true);
-    this.workspaceService.list().subscribe({
-      next: (workspaces) => {
-        this.workspaces.set(workspaces);
-        this.loadingWorkspaces.set(false);
-      },
-      error: () => {
-        this.error.set('Failed to load workspaces');
-        this.loadingWorkspaces.set(false);
-      },
-    });
-  }
-
-  loadWorkspaceUsers(workspaceId: string) {
+  loadAllUsers() {
     this.loadingUsers.set(true);
     
-    // Get all users
     this.userService.getUsers().subscribe({
-      next: (allUsers) => {
-        const workspace = this.workspaces().find(w => w.id === workspaceId);
+      next: (users) => {
+        // Filter out current user as they will be automatically added as leader
+        const currentUser = this.authService.getCurrentUser();
+        const filteredUsers = users.filter(user => user.id !== currentUser?.id);
         
-        if (workspace && workspace.members) {
-          const memberUserIds = workspace.members.map(m => m.userId);
-          const workspaceUsers = allUsers.filter(user => memberUserIds.includes(user.id));
-          
-          // Filter out current user as they will be automatically added as leader
-          const currentUser = this.authService.getCurrentUser();
-          const filteredUsers = workspaceUsers.filter(user => user.id !== currentUser?.id);
-          
-          this.workspaceUsers.set(filteredUsers);
-        } else {
-          this.workspaceUsers.set([]);
-        }
-        
+        this.allUsers.set(filteredUsers);
         this.loadingUsers.set(false);
       },
       error: () => {
-        this.error.set('Failed to load workspace users');
+        this.error.set('Failed to load users');
         this.loadingUsers.set(false);
       },
     });
@@ -100,7 +63,6 @@ export class TeamSlideOverComponent implements OnInit {
     this.isOpen.set(true);
     this.form.reset();
     this.error.set(null);
-    this.loadWorkspaces();
   }
 
   close() {
@@ -113,9 +75,9 @@ export class TeamSlideOverComponent implements OnInit {
       this.isLoading.set(true);
       this.error.set(null);
 
-      const { name, workspaceId } = this.form.value;
+      const { name, description } = this.form.value;
 
-      this.teamService.create(name.trim(), workspaceId).subscribe({
+      this.teamService.create(name.trim(), description?.trim()).subscribe({
         next: (team: TeamModel) => {
           // Add selected members if any
           const selectedMemberIds = this.form.value.memberIds || [];
@@ -174,18 +136,13 @@ export class TeamSlideOverComponent implements OnInit {
     return this.form.get('name');
   }
 
-  get workspaceControl() {
-    return this.form.get('workspaceId');
+  get descriptionControl() {
+    return this.form.get('description');
   }
 
   get hasNameError() {
     const nameControl = this.nameControl;
     return nameControl?.invalid && nameControl?.touched;
-  }
-
-  get hasWorkspaceError() {
-    const workspaceControl = this.workspaceControl;
-    return workspaceControl?.invalid && workspaceControl?.touched;
   }
 
   get nameErrorMessage() {

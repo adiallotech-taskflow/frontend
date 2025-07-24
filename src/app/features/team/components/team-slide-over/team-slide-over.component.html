@@ -98,33 +98,16 @@
                       </div>
 
                       <div>
-                        <label for="workspace-select" class="block text-sm/6 font-medium text-gray-900">
-                          Workspace
+                        <label for="team-description" class="block text-sm/6 font-medium text-gray-900">
+                          Description <span class="text-gray-500">(optional)</span>
                         </label>
                         <div class="mt-2">
-                          @if (loadingWorkspaces()) {
-                            <div class="flex items-center justify-center py-2">
-                              <svg class="fill-none animate-spin h-5 w-5 text-gray-400" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                            </div>
-                          } @else {
-                            <select
-                              id="workspace-select"
-                              formControlName="workspaceId"
-                              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6"
-                              [class.outline-red-500]="hasWorkspaceError"
-                              [class.focus-visible:outline-red-600]="hasWorkspaceError">
-                              <option value="">Select a workspace</option>
-                              @for (workspace of workspaces(); track workspace.id) {
-                                <option [value]="workspace.id">{{ workspace.name }}</option>
-                              }
-                            </select>
-                            @if (hasWorkspaceError) {
-                              <p class="mt-2 text-sm text-red-600">Please select a workspace</p>
-                            }
-                          }
+                          <textarea
+                            id="team-description"
+                            formControlName="description"
+                            rows="3"
+                            placeholder="What is this team responsible for?"
+                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6"></textarea>
                         </div>
                       </div>
 
@@ -134,39 +117,35 @@
                         </label>
                         <p class="text-sm text-gray-500 mt-1">Select members to add to the team. You will be automatically added as the team leader.</p>
 
-                        @if (form.get('workspaceId')?.value) {
-                          @if (loadingUsers()) {
-                            <div class="flex items-center justify-center py-4">
-                              <svg class="fill-none animate-spin h-5 w-5 text-gray-400" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                            </div>
-                          } @else if (workspaceUsers().length === 0) {
-                            <p class="text-sm text-gray-500 italic mt-3">No other members in this workspace</p>
-                          } @else {
-                            <div class="mt-3 space-y-2 max-h-40 overflow-y-auto">
-                              @for (user of workspaceUsers(); track user.id) {
-                                <label class="relative flex items-start py-2 cursor-pointer hover:bg-gray-50 px-2 rounded">
-                                  <div class="min-w-0 flex-1 text-sm">
-                                    <div class="font-medium text-gray-700">
-                                      {{ user.firstName }} {{ user.lastName }}
-                                    </div>
-                                    <div class="text-gray-500">{{ user.email }}</div>
-                                  </div>
-                                  <div class="ml-3 flex items-center h-5">
-                                    <input
-                                      type="checkbox"
-                                      [checked]="isUserSelected(user.id)"
-                                      (change)="toggleUserSelection(user.id)"
-                                      class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                  </div>
-                                </label>
-                              }
-                            </div>
-                          }
+                        @if (loadingUsers()) {
+                          <div class="flex items-center justify-center py-4">
+                            <svg class="fill-none animate-spin h-5 w-5 text-gray-400" viewBox="0 0 24 24">
+                              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                          </div>
+                        } @else if (allUsers().length === 0) {
+                          <p class="text-sm text-gray-500 italic mt-3">No other users available</p>
                         } @else {
-                          <p class="text-sm text-gray-500 italic mt-3">Select a workspace first</p>
+                          <div class="mt-3 space-y-2 max-h-40 overflow-y-auto">
+                            @for (user of allUsers(); track user.id) {
+                              <label class="relative flex items-start py-2 cursor-pointer hover:bg-gray-50 px-2 rounded">
+                                <div class="min-w-0 flex-1 text-sm">
+                                  <div class="font-medium text-gray-700">
+                                    {{ user.firstName }} {{ user.lastName }}
+                                  </div>
+                                  <div class="text-gray-500">{{ user.email }}</div>
+                                </div>
+                                <div class="ml-3 flex items-center h-5">
+                                  <input
+                                    type="checkbox"
+                                    [checked]="isUserSelected(user.id)"
+                                    (change)="toggleUserSelection(user.id)"
+                                    class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                </div>
+                              </label>
+                            }
+                          </div>
                         }
                       </div>
                     </div>

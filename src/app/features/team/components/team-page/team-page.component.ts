@@ -1,10 +1,7 @@
 import { Component, OnInit, signal, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { TeamService, AuthService } from '../../../../core/services';
-import { TeamModel } from '../../../../core/models';
-import { forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { TeamService, AuthService, UserService } from '../../../../core/services';
+import { TeamModel, User } from '../../../../core/models';
 import { TeamSlideOverComponent } from '../team-slide-over';
 
 @Component({
@@ -17,12 +14,12 @@ import { TeamSlideOverComponent } from '../team-slide-over';
 export class TeamPageComponent implements OnInit {
   private teamService = inject(TeamService);
   private authService = inject(AuthService);
-  private router = inject(Router);
+  private userService = inject(UserService);
 
   teams$ = signal<TeamModel[]>([]);
+  users$ = signal<User[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
-  teamTaskCounts = signal<Record<string, number>>({});
 
   @ViewChild(TeamSlideOverComponent) slideOver!: TeamSlideOverComponent;
 
@@ -41,36 +38,39 @@ export class TeamPageComponent implements OnInit {
       return;
     }
 
-    this.teamService.getMyTeams(currentUser.id).subscribe({
-      next: (teams) => {
-        this.teams$.set(teams);
-        this.loadTaskCounts(teams);
-        this.loading.set(false);
+    // Load users first
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        this.users$.set(users);
+
+        // Then load teams
+        this.teamService.getMyTeams(currentUser.id).subscribe({
+          next: (teams) => {
+            this.teams$.set(teams);
+            this.loading.set(false);
+          },
+          error: () => {
+            this.error.set('Failed to load teams. Please try again.');
+            this.loading.set(false);
+          },
+        });
       },
       error: () => {
-        this.error.set('Failed to load teams. Please try again.');
+        this.error.set('Failed to load users. Please try again.');
         this.loading.set(false);
       },
     });
   }
 
-  private loadTaskCounts(teams: TeamModel[]) {
-    const taskCountRequests = teams.map(team =>
-      this.teamService.getTeamTasks(team.teamId).pipe(
-        map(tasks => ({ teamId: team.teamId, count: tasks.length })),
-        catchError(() => of({ teamId: team.teamId, count: 0 }))
-      )
-    );
+  getTeamMembers(memberIds: string[]): User[] {
+    const users = this.users$();
+    return memberIds
+      .map(id => users.find(user => user.id === id))
+      .filter((user): user is User => user !== undefined);
+  }
 
-    if (taskCountRequests.length === 0) return;
-
-    forkJoin(taskCountRequests).subscribe(counts => {
-      const countMap = counts.reduce((acc, { teamId, count }) => {
-        acc[teamId] = count;
-        return acc;
-      }, {} as Record<string, number>);
-      this.teamTaskCounts.set(countMap);
-    });
+  getTeamLeader(leaderId: string): User | undefined {
+    return this.users$().find(user => user.id === leaderId);
   }
 
   isLeader(team: TeamModel): boolean {
@@ -78,8 +78,20 @@ export class TeamPageComponent implements OnInit {
     return currentUser ? team.leaderId === currentUser.id : false;
   }
 
-  getTaskCount(teamId: string): number {
-    return this.teamTaskCounts()[teamId] || 0;
+  getUserInitials(user: User): string {
+    if (!user.firstName && !user.lastName) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    const firstInitial = user.firstName?.charAt(0) || '';
+    const lastInitial = user.lastName?.charAt(0) || '';
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+
+  getUserDisplayName(user: User): string {
+    if (user.firstName || user.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return user.email;
   }
 
   openCreateDialog() {
@@ -90,8 +102,9 @@ export class TeamPageComponent implements OnInit {
     this.loadTeams();
   }
 
-  navigateToTeamTasks(teamId: string) {
-    this.router.navigate(['/tasks'], { queryParams: { teamId } });
+  navigateToTeamDetails(teamId: string) {
+    // TODO: Navigate to team details page when created
+    console.log('Navigate to team details:', teamId);
   }
 
   deleteTeam(teamId: string) {

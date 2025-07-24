@@ -24,31 +24,34 @@ export class TeamMockService extends MockBaseService<TeamModel> {
       {
         teamId: 'team-1',
         name: 'Frontend Team',
-        workspaceId: 'workspace-1',
+        description: 'Responsible for building and maintaining user interfaces',
         leaderId: currentUserId,
         memberIds: [currentUserId, 'user-2', 'user-3'],
         createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000).toISOString(),
       },
       {
         teamId: 'team-2',
         name: 'Backend Team',
-        workspaceId: 'workspace-1',
+        description: 'Manages server-side development and API architecture',
         leaderId: 'user-2',
         memberIds: ['user-2', currentUserId, 'user-4'],
         createdAt: new Date(now.getTime() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       },
       {
         teamId: 'team-3',
         name: 'Design Team',
-        workspaceId: 'workspace-2',
+        description: 'Creates user experience and visual design',
         leaderId: 'user-3',
         memberIds: ['user-3', 'user-4', currentUserId],
         createdAt: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
       },
     ];
   }
 
-  create(name: string, workspaceId: string): Observable<TeamModel> {
+  create(name: string, description?: string): Observable<TeamModel> {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
       return throwError(() => new Error('User must be authenticated to create a team'));
@@ -56,10 +59,11 @@ export class TeamMockService extends MockBaseService<TeamModel> {
 
     const newTeam: Omit<TeamModel, 'teamId'> = {
       name,
-      workspaceId,
+      description,
       leaderId: currentUser.id,
       memberIds: [currentUser.id],
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     return this.simulateError<TeamModel>().pipe(
@@ -106,12 +110,11 @@ export class TeamMockService extends MockBaseService<TeamModel> {
     );
   }
 
-  getByWorkspace(workspaceId: string): Observable<TeamModel[]> {
+  getAllTeams(): Observable<TeamModel[]> {
     return this.simulateError<TeamModel[]>().pipe(
       switchMap(() => this.getAllFromMockData()),
       map((result) => {
-        const teams = Array.isArray(result) ? result : result.items;
-        return teams.filter((team: TeamModel) => team.workspaceId === workspaceId);
+        return Array.isArray(result) ? result : result.items;
       })
     );
   }
