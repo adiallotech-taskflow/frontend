@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core/models';
-import { WorkspaceService } from '../../../../core/services';
+import { WorkspaceService, AuthService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';
 
@@ -47,14 +47,28 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     };
   });
 
+  // Computed property for workspace users
+  workspaceUsers = computed(() => {
+    return this.membersWithUsers()
+      .map(m => m.user)
+      .filter((user): user is User => user !== undefined);
+  });
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private workspaceService: WorkspaceService,
-    private taskService: TaskMockService
+    private taskService: TaskMockService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
+    // Initialize current user
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.currentUser.set(user);
+    }
+    
     this.loadWorkspace();
   }
 

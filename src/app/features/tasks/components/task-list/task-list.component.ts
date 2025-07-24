@@ -8,7 +8,7 @@ import { SearchFilterComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
-import { TaskService, WorkspaceService } from '../../../../core/services';
+import { TaskService, WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import {
   Task,
   User,
@@ -136,10 +136,25 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   constructor(
     private taskService: TaskService,
-    private workspaceService: WorkspaceService
+    private workspaceService: WorkspaceService,
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
+    // Set current user if not provided
+    if (!this.currentUserId) {
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser) {
+        this.currentUserId = currentUser.id;
+      }
+    }
+    
+    // Load users if not provided
+    if (!this.users || this.users.length === 0) {
+      this.loadAllUsers();
+    }
+    
     this.loadTasks();
     if (this.workspaceId) {
       this.loadWorkspace();
@@ -165,6 +180,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('Error loading workspace:', error);
+        },
+      });
+  }
+
+  private loadAllUsers() {
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users: User[]) => {
+          this.users = users;
+        },
+        error: (error: any) => {
+          console.error('Error loading users:', error);
         },
       });
   }
