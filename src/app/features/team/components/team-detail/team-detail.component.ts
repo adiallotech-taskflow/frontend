@@ -4,12 +4,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TeamService, UserService, AuthService, NotificationService } from '../../../../core/services';
 import { TeamModel, User, ConfirmationDialogData } from '../../../../core/models';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
-import {AddMemberSlideOverComponent} from '../add-member-slide-over/add-member-slide-over.component';
+import { AddMemberSlideOverComponent } from '../add-member-slide-over/add-member-slide-over.component';
+import { EditTeamSlideOverComponent } from '../edit-team-slide-over/edit-team-slide-over.component';
 
 @Component({
   selector: 'app-team-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, ConfirmationDialogComponent, AddMemberSlideOverComponent],
+  imports: [CommonModule, RouterLink, ConfirmationDialogComponent, AddMemberSlideOverComponent, EditTeamSlideOverComponent],
   templateUrl: './team-detail.component.html',
   styleUrl: './team-detail.component.css',
 })
@@ -39,6 +40,7 @@ export class TeamDetailComponent implements OnInit {
 
   @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
   @ViewChild('addMemberSlideOver') addMemberSlideOver!: AddMemberSlideOverComponent;
+  @ViewChild('editTeamSlideOver') editTeamSlideOver!: EditTeamSlideOverComponent;
 
   memberToRemove: User | null = null;
   teamIdToDelete: string | null = null;
@@ -101,6 +103,25 @@ export class TeamDetailComponent implements OnInit {
 
   openAddMemberModal() {
     this.addMemberSlideOver.open();
+  }
+
+  openEditTeamModal() {
+    this.editTeamSlideOver.open();
+  }
+
+  onTeamUpdated(updates: { name: string; description?: string }) {
+    const team = this.team();
+    if (!team) return;
+
+    this.teamService.updateTeam(team.teamId, updates).subscribe({
+      next: (updatedTeam) => {
+        this.team.set(updatedTeam);
+        this.notificationService.success('Team updated', 'Team information has been updated successfully');
+      },
+      error: (error) => {
+        this.notificationService.error('Failed to update team', error.message || 'Please try again');
+      },
+    });
   }
 
   onMembersAdded(userIds: string[]) {
