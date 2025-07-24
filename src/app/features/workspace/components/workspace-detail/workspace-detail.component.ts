@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { CommonModule, TitleCasePipe, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -8,11 +8,27 @@ import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core
 import { WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';
+import { WorkspaceHeaderComponent } from '../workspace-header/workspace-header.component';
+import { WorkspaceTabsComponent, WorkspaceTab } from '../workspace-tabs/workspace-tabs.component';
+import { WorkspaceOverviewComponent } from '../workspace-overview/workspace-overview.component';
+import { WorkspaceMembersComponent } from '../workspace-members/workspace-members.component';
+import { WorkspaceLoadingComponent } from '../workspace-loading/workspace-loading.component';
+import { WorkspaceErrorComponent } from '../workspace-error/workspace-error.component';
 
 @Component({
   selector: 'app-workspace-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskListComponent, TitleCasePipe, DatePipe],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TaskListComponent,
+    WorkspaceHeaderComponent,
+    WorkspaceTabsComponent,
+    WorkspaceOverviewComponent,
+    WorkspaceMembersComponent,
+    WorkspaceLoadingComponent,
+    WorkspaceErrorComponent
+  ],
   templateUrl: './workspace-detail.component.html',
   styleUrls: ['./workspace-detail.component.css'],
 })
@@ -20,7 +36,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   workspace = signal<Workspace | null>(null);
-  activeTab = signal<'overview' | 'tasks' | 'members'>('overview');
+  activeTab = signal<WorkspaceTab>('overview');
   isLoading = signal(true);
   hasError = signal(false);
   errorMessage = signal('');
@@ -161,7 +177,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  setActiveTab(tab: 'overview' | 'tasks' | 'members') {
+  setActiveTab(tab: WorkspaceTab) {
     this.activeTab.set(tab);
   }
 
@@ -169,19 +185,4 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     this.loadWorkspace();
   }
 
-  getUserInitial(user?: User | null): string {
-    if (!user || !user.firstName) {
-      return 'U';
-    }
-    return user.firstName.charAt(0).toUpperCase();
-  }
-
-  getUserFullName(user?: User | null): string {
-    if (!user) {
-      return 'Unknown User';
-    }
-    const firstName = user.firstName || '';
-    const lastName = user.lastName || '';
-    return `${firstName} ${lastName}`.trim() || 'Unknown User';
-  }
 }

@@ -1,0 +1,51 @@
+<div class="space-y-6">
+  @if (membersWithUsers() && membersWithUsers().length > 0) {
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <ul class="divide-y divide-gray-200">
+        @for (member of membersWithUsers(); track member.userId) {
+          <li class="px-4 py-4 sm:px-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  @if (member.user?.avatar) {
+                    <img [src]="member.user!.avatar!" [alt]="getUserFullName(member.user)" class="h-10 w-10 rounded-full object-cover">
+                  } @else {
+                    <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center">
+                      <span class="text-sm font-medium text-white">
+                        {{ getUserInitial(member.user) }}
+                      </span>
+                    </div>
+                  }
+                </div>
+
+                <div class="ml-4">
+                  <div class="flex items-center">
+                    <p class="text-sm font-medium text-gray-900">{{ getUserFullName(member.user) }}</p>
+                    @if (member.userId === workspace().ownerId) {
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Owner
+                      </span>
+                    } @else {
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {{ member.role | titlecase }}
+                      </span>
+                    }
+                  </div>
+                  <p class="text-sm text-gray-500">{{ member.user?.email }}</p>
+                </div>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  } @else {
+    <div class="text-center py-12 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+      <svg class="mx-auto h-12 w-12 text-gray-400 mb-4 fill-none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No members yet</h3>
+      <p class="text-gray-500">Start by inviting team members to collaborate.</p>
+    </div>
+  }
+</div>

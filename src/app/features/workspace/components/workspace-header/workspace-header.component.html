@@ -1,0 +1,22 @@
+<div class="mb-8">
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">{{ workspace().name }}</h1>
+      @if (workspace().description) {
+        <p class="text-gray-500 mt-1">{{ workspace().description }}</p>
+      }
+    </div>
+    @if (canEdit()) {
+      <div class="flex space-x-3">
+        <button
+          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          Edit
+        </button>
+        <button
+          class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+          Delete
+        </button>
+      </div>
+    }
+  </div>
+</div>
