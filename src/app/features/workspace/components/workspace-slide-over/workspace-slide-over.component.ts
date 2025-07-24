@@ -16,8 +16,11 @@ export class WorkspaceSlideOverComponent {
   isLoading = signal(false);
   error = signal<string | null>(null);
   form: FormGroup;
+  mode = signal<'create' | 'edit'>('create');
+  workspaceToEdit = signal<Workspace | null>(null);
 
   workspaceCreated = output<Workspace>();
+  workspaceUpdated = output<Workspace>();
   closed = output<void>();
 
   constructor(
@@ -30,10 +33,22 @@ export class WorkspaceSlideOverComponent {
     });
   }
 
-  open() {
+  open(workspace?: Workspace) {
     this.isOpen.set(true);
-    this.form.reset();
     this.error.set(null);
+    
+    if (workspace) {
+      this.mode.set('edit');
+      this.workspaceToEdit.set(workspace);
+      this.form.patchValue({
+        name: workspace.name,
+        description: workspace.description || ''
+      });
+    } else {
+      this.mode.set('create');
+      this.workspaceToEdit.set(null);
+      this.form.reset();
+    }
   }
 
   close() {
@@ -51,17 +66,31 @@ export class WorkspaceSlideOverComponent {
         description: this.form.value.description?.trim() || undefined,
       };
 
-      this.workspaceService.create(workspaceData).subscribe({
-        next: (workspace: Workspace) => {
-          this.isLoading.set(false);
-          this.workspaceCreated.emit(workspace);
-          this.close();
-        },
-        error: (error) => {
-          this.isLoading.set(false);
-          this.error.set(error.message || 'An error occurred while creating the workspace');
-        },
-      });
+      if (this.mode() === 'edit' && this.workspaceToEdit()) {
+        this.workspaceService.update(this.workspaceToEdit()!.id, workspaceData).subscribe({
+          next: (workspace: Workspace) => {
+            this.isLoading.set(false);
+            this.workspaceUpdated.emit(workspace);
+            this.close();
+          },
+          error: (error) => {
+            this.isLoading.set(false);
+            this.error.set(error.message || 'An error occurred while updating the workspace');
+          },
+        });
+      } else {
+        this.workspaceService.create(workspaceData).subscribe({
+          next: (workspace: Workspace) => {
+            this.isLoading.set(false);
+            this.workspaceCreated.emit(workspace);
+            this.close();
+          },
+          error: (error) => {
+            this.isLoading.set(false);
+            this.error.set(error.message || 'An error occurred while creating the workspace');
+          },
+        });
+      }
     } else {
       this.form.markAllAsTouched();
     }
@@ -93,5 +122,20 @@ export class WorkspaceSlideOverComponent {
 
   clearError() {
     this.error.set(null);
+  }
+  
+  get isEditMode() {
+    return this.mode() === 'edit';
+  }
+  
+  get dialogTitle() {
+    return this.isEditMode ? 'Edit Workspace' : 'Create New Workspace';
+  }
+  
+  get submitButtonText() {
+    if (this.isLoading()) {
+      return this.isEditMode ? 'Updating...' : 'Creating...';
+    }
+    return this.isEditMode ? 'Update Workspace' : 'Create Workspace';
   }
 }

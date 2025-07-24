@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Workspace } from '../../../../core/models';
 
@@ -12,4 +12,15 @@ import { Workspace } from '../../../../core/models';
 export class WorkspaceHeaderComponent {
   workspace = input.required<Workspace>();
   canEdit = input<boolean>(false);
+  
+  edit = output<void>();
+  delete = output<void>();
+  
+  onEdit() {
+    this.edit.emit();
+  }
+  
+  onDelete() {
+    this.delete.emit();
+  }
 }

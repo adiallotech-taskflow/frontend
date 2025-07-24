@@ -30,7 +30,7 @@
                 <div class="bg-indigo-700 px-4 py-6 sm:px-6">
                   <div class="flex items-center justify-between">
                     <h2 id="slide-over-title" class="text-base font-semibold text-white">
-                      New Workspace
+                      {{ dialogTitle }}
                     </h2>
                     <div class="ml-3 flex h-7 items-center">
                       <button
@@ -47,7 +47,7 @@
                   </div>
                   <div class="mt-1">
                     <p class="text-sm text-indigo-300">
-                      Fill in the information below to create your new workspace.
+                      {{ isEditMode ? 'Update the workspace information below.' : 'Fill in the information below to create your new workspace.' }}
                     </p>
                   </div>
                 </div>
@@ -126,40 +126,42 @@
                       </div>
 
 
-                      <fieldset>
-                        <legend class="text-sm/6 font-medium text-gray-900">Privacy</legend>
-                        <div class="mt-2 space-y-4">
-                          <div class="relative flex items-start">
-                            <div class="absolute flex h-6 items-center">
-                              <input
-                                id="privacy-private"
-                                type="radio"
-                                name="privacy"
-                                value="private"
-                                checked
-                                class="relative size-4 appearance-none rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                      @if (!isEditMode) {
+                        <fieldset>
+                          <legend class="text-sm/6 font-medium text-gray-900">Privacy</legend>
+                          <div class="mt-2 space-y-4">
+                            <div class="relative flex items-start">
+                              <div class="absolute flex h-6 items-center">
+                                <input
+                                  id="privacy-private"
+                                  type="radio"
+                                  name="privacy"
+                                  value="private"
+                                  checked
+                                  class="relative size-4 appearance-none rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                              </div>
+                              <div class="pl-7 text-sm/6">
+                                <label for="privacy-private" class="font-medium text-gray-900">Private</label>
+                                <p class="text-gray-500">Only invited members can access this workspace.</p>
+                              </div>
                             </div>
-                            <div class="pl-7 text-sm/6">
-                              <label for="privacy-private" class="font-medium text-gray-900">Private</label>
-                              <p class="text-gray-500">Only invited members can access this workspace.</p>
+                            <div class="relative flex items-start">
+                              <div class="absolute flex h-6 items-center">
+                                <input
+                                  id="privacy-team"
+                                  type="radio"
+                                  name="privacy"
+                                  value="team"
+                                  class="relative size-4 appearance-none rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
+                              </div>
+                              <div class="pl-7 text-sm/6">
+                                <label for="privacy-team" class="font-medium text-gray-900">Team</label>
+                                <p class="text-gray-500">All members of your organization can join.</p>
+                              </div>
                             </div>
                           </div>
-                          <div class="relative flex items-start">
-                            <div class="absolute flex h-6 items-center">
-                              <input
-                                id="privacy-team"
-                                type="radio"
-                                name="privacy"
-                                value="team"
-                                class="relative size-4 appearance-none rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" />
-                            </div>
-                            <div class="pl-7 text-sm/6">
-                              <label for="privacy-team" class="font-medium text-gray-900">Team</label>
-                              <p class="text-gray-500">All members of your organization can join.</p>
-                            </div>
-                          </div>
-                        </div>
-                      </fieldset>
+                        </fieldset>
+                      }
                     </div>
 
 
@@ -169,7 +171,7 @@
                           <svg viewBox="0 0 20 20" class="fill-current size-5 text-indigo-500" aria-hidden="true">
                             <path d="M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM8.94 6.94a.75.75 0 1 1-1.061-1.061 3 3 0 1 1 2.871 5.026v.345a.75.75 0 0 1-1.5 0v-.5c0-.72.57-1.172 1.081-1.287A1.5 1.5 0 1 0 8.94 6.94ZM10 15a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" fill-rule="evenodd" />
                           </svg>
-                          <span class="ml-2">You can invite members after creation</span>
+                          <span class="ml-2">{{ isEditMode ? 'Changes will be saved immediately' : 'You can invite members after creation' }}</span>
                         </div>
                       </div>
                     </div>
@@ -184,7 +186,7 @@
                   (click)="close()"
                   [disabled]="isLoading()"
                   class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                  Annuler
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -195,9 +197,9 @@
                       <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                       <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Creating...
+                    {{ isEditMode ? 'Updating...' : 'Creating...' }}
                   } @else {
-                    Create workspace
+                    {{ submitButtonText }}
                   }
                 </button>
               </div>

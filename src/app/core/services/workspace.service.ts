@@ -5,7 +5,6 @@ import { WorkspaceMockService } from './mock';
 import {
   Workspace,
   WorkspaceMember,
-  WorkspaceStats,
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
   InviteMemberRequest,
@@ -74,7 +73,11 @@ export class WorkspaceService {
   }
 
   update(workspaceId: string, updateData: UpdateWorkspaceRequest): Observable<Workspace> {
-    return this.apiService.put<Workspace>(`/workspaces/${workspaceId}`, updateData).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.updateWorkspace(workspaceId, updateData)
+      : this.apiService.put<Workspace>(`/workspaces/${workspaceId}`, updateData);
+
+    return request$.pipe(
       tap((updatedWorkspace) => {
         const currentWorkspaces = this.workspacesSubject.value;
         const index = currentWorkspaces.findIndex((w) => w.id === workspaceId);
@@ -141,12 +144,6 @@ export class WorkspaceService {
       }),
       catchError((error) => throwError(() => error))
     );
-  }
-
-  getMembers(workspaceId: string): Observable<WorkspaceMember[]> {
-    return this.apiService
-      .get<WorkspaceMember[]>(`/workspaces/${workspaceId}/members`)
-      .pipe(catchError((error) => throwError(() => error)));
   }
 
   removeMember(workspaceId: string, userId: string): Observable<void> {
@@ -218,30 +215,4 @@ export class WorkspaceService {
     );
   }
 
-  getStats(workspaceId: string): Observable<WorkspaceStats> {
-    return this.apiService
-      .get<WorkspaceStats>(`/workspaces/${workspaceId}/stats`)
-      .pipe(catchError((error) => throwError(() => error)));
-  }
-
-  setCurrentWorkspace(workspace: Workspace | null): void {
-    this.currentWorkspaceSubject.next(workspace);
-  }
-
-  getCurrentWorkspace(): Workspace | null {
-    return this.currentWorkspaceSubject.value;
-  }
-
-  refreshWorkspaces(): Observable<Workspace[]> {
-    return this.list();
-  }
-
-  getCachedWorkspaces(): Workspace[] {
-    return this.workspacesSubject.value;
-  }
-
-  clearCache(): void {
-    this.workspacesSubject.next([]);
-    this.currentWorkspaceSubject.next(null);
-  }
 }

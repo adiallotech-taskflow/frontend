@@ -13,7 +13,9 @@
   <div class="min-h-full">
     <app-workspace-header
       [workspace]="workspace()!"
-      [canEdit]="canEdit() || false">
+      [canEdit]="canEdit() || false"
+      (edit)="editWorkspace()"
+      (delete)="deleteWorkspace()">
     </app-workspace-header>
 
     <div class="bg-white shadow rounded-lg">
@@ -54,3 +56,15 @@
     </div>
   </div>
 }
+
+<app-confirmation-dialog
+  #confirmationDialog
+  [data]="confirmationData"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="onDeleteCancelled()">
+</app-confirmation-dialog>
+
+<app-workspace-slide-over
+  #workspaceSlideOver
+  (workspaceUpdated)="onWorkspaceUpdated($event)">
+</app-workspace-slide-over>

@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core/models';
+import { Workspace, User, Task, WorkspaceMemberWithUser, ConfirmationDialogData } from '../../../../core/models';
 import { WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';
@@ -14,6 +14,8 @@ import { WorkspaceOverviewComponent } from '../workspace-overview/workspace-over
 import { WorkspaceMembersComponent } from '../workspace-members/workspace-members.component';
 import { WorkspaceLoadingComponent } from '../workspace-loading/workspace-loading.component';
 import { WorkspaceErrorComponent } from '../workspace-error/workspace-error.component';
+import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { WorkspaceSlideOverComponent } from '../workspace-slide-over';
 
 @Component({
   selector: 'app-workspace-detail',
@@ -27,19 +29,31 @@ import { WorkspaceErrorComponent } from '../workspace-error/workspace-error.comp
     WorkspaceOverviewComponent,
     WorkspaceMembersComponent,
     WorkspaceLoadingComponent,
-    WorkspaceErrorComponent
+    WorkspaceErrorComponent,
+    ConfirmationDialogComponent,
+    WorkspaceSlideOverComponent
   ],
   templateUrl: './workspace-detail.component.html',
   styleUrls: ['./workspace-detail.component.css'],
 })
 export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
+  @ViewChild('workspaceSlideOver') workspaceSlideOver!: WorkspaceSlideOverComponent;
 
   workspace = signal<Workspace | null>(null);
   activeTab = signal<WorkspaceTab>('overview');
   isLoading = signal(true);
   hasError = signal(false);
   errorMessage = signal('');
+
+  confirmationData: ConfirmationDialogData = {
+    title: '',
+    message: '',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    type: 'danger',
+  };
 
   currentUser = signal<User | null>(null);
 
@@ -223,6 +237,54 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
           },
         });
     }
+  }
+
+  editWorkspace() {
+    const workspace = this.workspace();
+    if (workspace) {
+      this.workspaceSlideOver.open(workspace);
+    }
+  }
+
+  onWorkspaceUpdated(updatedWorkspace: Workspace) {
+    this.workspace.set(updatedWorkspace);
+    // Refresh member details with the updated workspace
+    this.loadMembersWithUserDetails(updatedWorkspace);
+  }
+
+  deleteWorkspace() {
+    const workspace = this.workspace();
+    if (!workspace) return;
+
+    this.confirmationData = {
+      title: 'Delete Workspace',
+      message: `Are you sure you want to delete "${workspace.name}"? This action cannot be undone and will delete all associated tasks.`,
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
+      type: 'danger',
+    };
+
+    this.confirmationDialog.open();
+  }
+
+  onDeleteConfirmed() {
+    const workspace = this.workspace();
+    if (workspace) {
+      this.workspaceService.delete(workspace.id).subscribe({
+        next: () => {
+          this.router.navigate(['/workspaces']);
+        },
+        error: (error) => {
+          console.error('Failed to delete workspace:', error);
+          this.hasError.set(true);
+          this.errorMessage.set('Failed to delete workspace. Please try again.');
+        },
+      });
+    }
+  }
+
+  onDeleteCancelled() {
+    // Nothing to do, dialog will close automatically
   }
 
 }
