@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
+import { AuthMockService } from './auth-mock.service';
 import {
   Workspace,
   WorkspaceMember,
@@ -17,6 +18,7 @@ import {
 })
 export class WorkspaceMockService extends MockBaseService<Workspace> {
   protected override storageKey = 'taskflow_mock_workspaces';
+  private authService = inject(AuthMockService);
 
   protected override defaultData: Workspace[] = this.generateDefaultWorkspaces();
 
@@ -31,15 +33,18 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
   }
 
   createWorkspace(workspaceData: CreateWorkspaceRequest): Observable<Workspace> {
-    const currentUser = 'current-user-id';
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser) {
+      return throwError(() => new Error('User must be authenticated to create a workspace'));
+    }
 
     const newWorkspace: Omit<Workspace, 'id'> = {
       name: workspaceData.name,
       description: workspaceData.description,
-      ownerId: currentUser,
+      ownerId: currentUser.id,
       members: [
         {
-          userId: currentUser,
+          userId: currentUser.id,
           role: 'admin',
           joinedAt: new Date(),
         },
@@ -170,7 +175,9 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
   }
 
   private generateDefaultWorkspaces(): Workspace[] {
-    const currentUser = 'current-user-id';
+    // Note: Using a default user ID for initial mock data
+    // Real user ID will be used when creating new workspaces
+    const defaultUserId = 'user-1';
     const now = new Date();
 
     return [
@@ -178,9 +185,9 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
         id: 'workspace-1',
         name: 'Marketing Campaign',
         description: 'Q1 2024 marketing initiatives and campaigns',
-        ownerId: currentUser,
+        ownerId: defaultUserId,
         members: [
-          { userId: currentUser, role: 'admin', joinedAt: now },
+          { userId: defaultUserId, role: 'admin', joinedAt: now },
           { userId: 'user-2', role: 'member', joinedAt: now },
           { userId: 'user-3', role: 'member', joinedAt: now },
         ],
@@ -191,9 +198,9 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
         id: 'workspace-2',
         name: 'Product Development',
         description: 'New feature development and bug fixes',
-        ownerId: currentUser,
+        ownerId: defaultUserId,
         members: [
-          { userId: currentUser, role: 'admin', joinedAt: now },
+          { userId: defaultUserId, role: 'admin', joinedAt: now },
           { userId: 'user-4', role: 'member', joinedAt: now },
           { userId: 'user-5', role: 'viewer', joinedAt: now },
         ],
@@ -207,7 +214,7 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
         ownerId: 'user-2',
         members: [
           { userId: 'user-2', role: 'admin', joinedAt: now },
-          { userId: currentUser, role: 'member', joinedAt: now },
+          { userId: defaultUserId, role: 'member', joinedAt: now },
           { userId: 'user-6', role: 'member', joinedAt: now },
         ],
         createdAt: new Date('2024-01-20'),

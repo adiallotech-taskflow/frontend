@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core/models';
-import { WorkspaceService, AuthService } from '../../../../core/services';
+import { WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';
 
@@ -59,7 +59,8 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private workspaceService: WorkspaceService,
     private taskService: TaskMockService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -68,7 +69,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     if (user) {
       this.currentUser.set(user);
     }
-    
+
     this.loadWorkspace();
   }
 
@@ -117,20 +118,33 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadMembersWithUserDetails(workspace: Workspace) {
-    const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => ({
-      ...member,
-      user: {
-        id: member.userId,
-        email: `user${member.userId.slice(-1)}@example.com`,
-        firstName: `User`,
-        lastName: member.userId.slice(-1),
-        role: member.role,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    }));
+    // First, get all users
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (allUsers) => {
+          // Map workspace members to include user details
+          const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => {
+            const user = allUsers.find(u => u.id === member.userId);
+            return {
+              ...member,
+              user: user // This will be undefined if user not found, which is handled by workspaceUsers computed
+            };
+          });
 
-    this.membersWithUsers.set(membersWithUsers);
+          this.membersWithUsers.set(membersWithUsers);
+        },
+        error: (error) => {
+          console.error('Error loading users:', error);
+          // Set members without user details as fallback
+          const membersWithoutUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => ({
+            ...member,
+            user: undefined
+          }));
+          this.membersWithUsers.set(membersWithoutUsers);
+        },
+      });
   }
 
   private loadWorkspaceTasks(workspaceId: string) {
@@ -153,5 +167,21 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
 
   reloadWorkspace() {
     this.loadWorkspace();
+  }
+
+  getUserInitial(user?: User | null): string {
+    if (!user || !user.firstName) {
+      return 'U';
+    }
+    return user.firstName.charAt(0).toUpperCase();
+  }
+
+  getUserFullName(user?: User | null): string {
+    if (!user) {
+      return 'Unknown User';
+    }
+    const firstName = user.firstName || '';
+    const lastName = user.lastName || '';
+    return `${firstName} ${lastName}`.trim() || 'Unknown User';
   }
 }

@@ -169,7 +169,7 @@
 
 
         @if (activeTab() === 'tasks') {
-          <app-task-list 
+          <app-task-list
             [workspaceId]="workspace()!.id"
             [users]="workspaceUsers()"
             [currentUserId]="currentUser()?.id">
@@ -189,11 +189,11 @@
 
                           <div class="flex-shrink-0 h-10 w-10">
                             @if (member.user?.avatar) {
-                              <img [src]="member.user!.avatar!" [alt]="(member.user!.firstName || '') + ' ' + (member.user!.lastName || '')" class="h-10 w-10 rounded-full object-cover">
+                              <img [src]="member.user!.avatar!" [alt]="getUserFullName(member.user)" class="h-10 w-10 rounded-full object-cover">
                             } @else {
                               <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center">
                                 <span class="text-sm font-medium text-white">
-                                  {{ (member.user?.firstName?.charAt(0) || 'U').toUpperCase() }}
+                                  {{ getUserInitial(member.user) }}
                                 </span>
                               </div>
                             }
@@ -202,7 +202,7 @@
 
                           <div class="ml-4">
                             <div class="flex items-center">
-                              <p class="text-sm font-medium text-gray-900">{{ member.user?.firstName }} {{ member.user?.lastName }}</p>
+                              <p class="text-sm font-medium text-gray-900">{{ getUserFullName(member.user) }}</p>
                               @if (member.userId === workspace()!.ownerId) {
                                 <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
                                   Owner
