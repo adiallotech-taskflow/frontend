@@ -6,6 +6,7 @@ export interface TaskFilterOptions {
   priority: Task['priority'][];
   thisWeek: boolean;
   overdue: boolean;
+  teamIds: string[];
 }
 
 export interface FilterOption {

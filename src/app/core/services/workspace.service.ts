@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, map, tap, catchError, throwError } from 'rxjs';
 import { ApiService } from './api.service';
-import { WorkspaceMockService } from './mock/workspace-mock.service';
+import { WorkspaceMockService } from './mock';
 import {
   Workspace,
   WorkspaceMember,
@@ -18,9 +18,6 @@ import { environment } from '../../../environments/environment';
 export class WorkspaceService {
   private workspacesSubject = new BehaviorSubject<Workspace[]>([]);
   private currentWorkspaceSubject = new BehaviorSubject<Workspace | null>(null);
-
-  public workspaces$ = this.workspacesSubject.asObservable();
-  public currentWorkspace$ = this.currentWorkspaceSubject.asObservable();
 
   constructor(
     private apiService: ApiService,
@@ -113,7 +110,11 @@ export class WorkspaceService {
   }
 
   inviteMember(workspaceId: string, inviteData: InviteMemberRequest): Observable<WorkspaceMember> {
-    return this.apiService.post<WorkspaceMember>(`/workspaces/${workspaceId}/members`, inviteData).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.inviteMember(workspaceId, inviteData)
+      : this.apiService.post<WorkspaceMember>(`/workspaces/${workspaceId}/members`, inviteData);
+
+    return request$.pipe(
       tap((newMember) => {
         const currentWorkspaces = this.workspacesSubject.value;
         const workspaceIndex = currentWorkspaces.findIndex((w) => w.id === workspaceId);
@@ -145,7 +146,11 @@ export class WorkspaceService {
   }
 
   removeMember(workspaceId: string, userId: string): Observable<void> {
-    return this.apiService.delete<void>(`/workspaces/${workspaceId}/members/${userId}`).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.removeMember(workspaceId, userId).pipe(map(() => undefined))
+      : this.apiService.delete<void>(`/workspaces/${workspaceId}/members/${userId}`);
+
+    return request$.pipe(
       tap(() => {
         const currentWorkspaces = this.workspacesSubject.value;
         const workspaceIndex = currentWorkspaces.findIndex((w) => w.id === workspaceId);
@@ -175,7 +180,11 @@ export class WorkspaceService {
     userId: string,
     role: 'admin' | 'member' | 'viewer'
   ): Observable<WorkspaceMember> {
-    return this.apiService.patch<WorkspaceMember>(`/workspaces/${workspaceId}/members/${userId}`, { role }).pipe(
+    const request$ = this.useMockService
+      ? this.mockService.updateMemberRole(workspaceId, userId, role)
+      : this.apiService.patch<WorkspaceMember>(`/workspaces/${workspaceId}/members/${userId}`, { role });
+
+    return request$.pipe(
       tap((updatedMember) => {
         const currentWorkspaces = this.workspacesSubject.value;
         const workspaceIndex = currentWorkspaces.findIndex((w) => w.id === workspaceId);

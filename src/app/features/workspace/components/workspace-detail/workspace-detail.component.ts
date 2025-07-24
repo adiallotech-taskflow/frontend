@@ -1,18 +1,34 @@
 import { Component, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { CommonModule, TitleCasePipe, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { Workspace, User, Task, WorkspaceMemberWithUser } from '../../../../core/models';
-import { WorkspaceService } from '../../../../core/services';
+import { WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import { TaskListComponent } from '../../../tasks/components/task-list/task-list.component';
 import { TaskMockService } from '../../../../core/services';
+import { WorkspaceHeaderComponent } from '../workspace-header/workspace-header.component';
+import { WorkspaceTabsComponent, WorkspaceTab } from '../workspace-tabs/workspace-tabs.component';
+import { WorkspaceOverviewComponent } from '../workspace-overview/workspace-overview.component';
+import { WorkspaceMembersComponent } from '../workspace-members/workspace-members.component';
+import { WorkspaceLoadingComponent } from '../workspace-loading/workspace-loading.component';
+import { WorkspaceErrorComponent } from '../workspace-error/workspace-error.component';
 
 @Component({
   selector: 'app-workspace-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskListComponent, TitleCasePipe, DatePipe],
+  imports: [
+    CommonModule,
+    RouterModule,
+    TaskListComponent,
+    WorkspaceHeaderComponent,
+    WorkspaceTabsComponent,
+    WorkspaceOverviewComponent,
+    WorkspaceMembersComponent,
+    WorkspaceLoadingComponent,
+    WorkspaceErrorComponent
+  ],
   templateUrl: './workspace-detail.component.html',
   styleUrls: ['./workspace-detail.component.css'],
 })
@@ -20,7 +36,7 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   workspace = signal<Workspace | null>(null);
-  activeTab = signal<'overview' | 'tasks' | 'members'>('overview');
+  activeTab = signal<WorkspaceTab>('overview');
   isLoading = signal(true);
   hasError = signal(false);
   errorMessage = signal('');
@@ -47,14 +63,29 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
     };
   });
 
+  // Computed property for workspace users
+  workspaceUsers = computed(() => {
+    return this.membersWithUsers()
+      .map(m => m.user)
+      .filter((user): user is User => user !== undefined);
+  });
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private workspaceService: WorkspaceService,
-    private taskService: TaskMockService
+    private taskService: TaskMockService,
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
+    // Initialize current user
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.currentUser.set(user);
+    }
+
     this.loadWorkspace();
   }
 
@@ -103,20 +134,33 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
   }
 
   private loadMembersWithUserDetails(workspace: Workspace) {
-    const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => ({
-      ...member,
-      user: {
-        id: member.userId,
-        email: `user${member.userId.slice(-1)}@example.com`,
-        firstName: `User`,
-        lastName: member.userId.slice(-1),
-        role: member.role,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    }));
+    // First, get all users
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (allUsers) => {
+          // Map workspace members to include user details
+          const membersWithUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => {
+            const user = allUsers.find(u => u.id === member.userId);
+            return {
+              ...member,
+              user: user // This will be undefined if user not found, which is handled by workspaceUsers computed
+            };
+          });
 
-    this.membersWithUsers.set(membersWithUsers);
+          this.membersWithUsers.set(membersWithUsers);
+        },
+        error: (error) => {
+          console.error('Error loading users:', error);
+          // Set members without user details as fallback
+          const membersWithoutUsers: WorkspaceMemberWithUser[] = workspace.members.map((member) => ({
+            ...member,
+            user: undefined
+          }));
+          this.membersWithUsers.set(membersWithoutUsers);
+        },
+      });
   }
 
   private loadWorkspaceTasks(workspaceId: string) {
@@ -133,11 +177,52 @@ export class WorkspaceDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  setActiveTab(tab: 'overview' | 'tasks' | 'members') {
+  setActiveTab(tab: WorkspaceTab) {
     this.activeTab.set(tab);
   }
 
   reloadWorkspace() {
     this.loadWorkspace();
   }
+
+  onMembersAdded() {
+    // Refresh the workspace to get updated member list
+    this.refreshWorkspaceData();
+  }
+
+  onMemberRemoved() {
+    // Refresh the workspace to get updated member list
+    this.refreshWorkspaceData();
+  }
+
+  onMemberRoleChanged(event: { userId: string; role: 'admin' | 'member' | 'viewer' }) {
+    // Update the member role in the local state
+    const members = this.membersWithUsers();
+    const updatedMembers = members.map(member => {
+      if (member.userId === event.userId) {
+        return { ...member, role: event.role };
+      }
+      return member;
+    });
+    this.membersWithUsers.set(updatedMembers);
+  }
+
+  private refreshWorkspaceData() {
+    const workspaceId = this.workspace()?.id;
+    if (workspaceId) {
+      this.workspaceService
+        .getById(workspaceId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (workspace) => {
+            this.workspace.set(workspace);
+            this.loadMembersWithUserDetails(workspace);
+          },
+          error: (error) => {
+            console.error('Error refreshing workspace:', error);
+          },
+        });
+    }
+  }
+
 }

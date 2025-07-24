@@ -9,6 +9,7 @@ export interface Task {
   priority: TaskPriority;
   assigneeId?: string;
   workspaceId: string;
+  teamId?: string;
   dueDate?: Date;
   createdAt: Date;
   updatedAt: Date;

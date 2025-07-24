@@ -1,0 +1,155 @@
+<div class="min-h-full">
+  @if (loading()) {
+    <div class="animate-pulse">
+      <div class="bg-white shadow-sm border-b border-gray-200 rounded-lg overflow-hidden">
+        <div class="px-6 py-4">
+          <div class="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+          <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+        </div>
+      </div>
+      <div class="mt-8 bg-white shadow rounded-lg p-6">
+        <div class="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
+        <div class="space-y-3">
+          @for (item of [1,2,3]; track item) {
+            <div class="flex items-center space-x-3">
+              <div class="h-10 w-10 bg-gray-200 rounded-full"></div>
+              <div class="flex-1">
+                <div class="h-4 bg-gray-200 rounded w-1/4 mb-1"></div>
+                <div class="h-3 bg-gray-200 rounded w-1/3"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (error() && !loading()) {
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+      <p class="text-red-600">{{ error() }}</p>
+      <a routerLink="/teams" class="mt-2 text-red-600 underline hover:no-underline">
+        Back to teams
+      </a>
+    </div>
+  }
+
+  @if (team() && !loading()) {
+    <div class="bg-white shadow-sm border-b border-gray-200 rounded-lg overflow-hidden">
+      <div class="px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center space-x-3">
+              <h1 class="text-2xl font-bold text-gray-900">{{ team()!.name }}</h1>
+              @if (isCurrentUserLeader()) {
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset bg-purple-50 text-purple-700 ring-purple-600/20">
+                  Leader
+                </span>
+              }
+            </div>
+            @if (team()!.description) {
+              <p class="mt-1 text-sm text-gray-500">{{ team()!.description }}</p>
+            }
+            <div class="mt-2 flex items-center space-x-4 text-sm text-gray-500">
+              <span>{{ teamMembers().length }} members</span>
+              <span>•</span>
+              <span>Created {{ team()!.createdAt | date:'MMM d, y' }}</span>
+            </div>
+          </div>
+          <div class="flex items-center space-x-3">
+            <a routerLink="/teams" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <svg class="h-4 w-4 mr-1.5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              Back to Teams
+            </a>
+            @if (isCurrentUserLeader()) {
+              <button (click)="openEditTeamModal()" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <svg class="h-4 w-4 mr-1.5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                Edit Team
+              </button>
+              <button (click)="confirmDeleteTeam()" class="inline-flex items-center px-3 py-1.5 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50">
+                <svg class="h-4 w-4 mr-1.5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+                Delete Team
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-white shadow rounded-lg">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-medium text-gray-900">Team Members</h2>
+          @if (canManageMembers()) {
+            <button (click)="openAddMemberModal()" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+              <svg class="h-4 w-4 mr-1.5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+              </svg>
+              Add Member
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="px-6 py-4">
+        @if (teamMembers().length === 0) {
+          <p class="text-gray-500 text-center py-8">No members in this team yet.</p>
+        } @else {
+          <div class="space-y-3">
+            @for (member of teamMembers(); track member.id) {
+              <div class="flex items-center justify-between py-3 px-4 hover:bg-gray-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-sm font-medium text-gray-700">
+                      {{ getUserInitials(member) }}
+                    </div>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-900">
+                      {{ getUserDisplayName(member) }}
+                      @if (member.id === team()!.leaderId) {
+                        <span class="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-purple-100 text-purple-800">
+                          Leader
+                        </span>
+                      }
+                    </p>
+                    <p class="text-sm text-gray-500">{{ member.email }}</p>
+                  </div>
+                </div>
+                @if (canManageMembers() && member.id !== team()!.leaderId) {
+                  <button (click)="confirmRemoveMember(member)" class="text-red-600 hover:text-red-900 text-sm font-medium">
+                    Remove
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<app-add-member-slide-over
+  #addMemberSlideOver
+  [availableUsers]="availableUsers()"
+  (membersAdded)="onMembersAdded($event)">
+</app-add-member-slide-over>
+
+<app-edit-team-slide-over
+  #editTeamSlideOver
+  [team]="team()"
+  (teamUpdated)="onTeamUpdated($event)">
+</app-edit-team-slide-over>
+
+<app-confirmation-dialog
+  #confirmationDialog
+  [data]="confirmationData"
+  (confirmed)="memberToRemove ? onRemoveMemberConfirmed() : onDeleteTeamConfirmed()"
+  (cancelled)="memberToRemove ? onRemoveMemberCancelled() : onDeleteTeamCancelled()">
+</app-confirmation-dialog>

@@ -1,232 +1,54 @@
 @if (isLoading()) {
-  <div class="animate-pulse">
-
-    <div class="mb-8">
-      <div class="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-      <div class="h-4 bg-gray-200 rounded w-2/3"></div>
-    </div>
-
-
-    <div class="bg-white shadow rounded-lg p-6">
-      <div class="space-y-4">
-        @for (item of [1, 2, 3, 4]; track item) {
-          <div class="h-4 bg-gray-200 rounded w-full"></div>
-        }
-      </div>
-    </div>
-  </div>
+  <app-workspace-loading></app-workspace-loading>
 }
-
 
 @if (hasError() && !isLoading()) {
-  <div class="text-center py-12 px-4 bg-red-50 rounded-lg border border-red-200">
-    <svg class="mx-auto h-12 w-12 text-red-400 mb-4 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-    </svg>
-    <h3 class="text-lg font-medium text-red-900 mb-2">Error Loading Workspace</h3>
-    <p class="text-red-700 mb-4">{{ errorMessage() }}</p>
-    <button
-      (click)="reloadWorkspace()"
-      class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-      Try Again
-    </button>
-  </div>
+  <app-workspace-error
+    [errorMessage]="errorMessage()"
+    (retry)="reloadWorkspace()">
+  </app-workspace-error>
 }
-
 
 @if (!isLoading() && !hasError() && workspace()) {
   <div class="min-h-full">
-
-    <div class="mb-8">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">{{ workspace()!.name }}</h1>
-          @if (workspace()!.description) {
-            <p class="text-gray-500 mt-1">{{ workspace()!.description }}</p>
-          }
-        </div>
-        @if (canEdit()) {
-          <div class="flex space-x-3">
-            <button
-              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              Edit
-            </button>
-            <button
-              class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
-              Delete
-            </button>
-          </div>
-        }
-      </div>
-    </div>
-
+    <app-workspace-header
+      [workspace]="workspace()!"
+      [canEdit]="canEdit() || false">
+    </app-workspace-header>
 
     <div class="bg-white shadow rounded-lg">
-
-      <div class="border-b border-gray-200">
-        <nav class="-mb-px flex space-x-8 px-6" aria-label="Tabs">
-          <button
-            (click)="setActiveTab('overview')"
-            [class]="activeTab() === 'overview'
-              ? 'border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'">
-            Overview
-          </button>
-          <button
-            (click)="setActiveTab('tasks')"
-            [class]="activeTab() === 'tasks'
-              ? 'border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'">
-            Tasks
-            @if (taskStats().total > 0) {
-              <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium {{ activeTab() === 'tasks' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900' }}">
-                {{ taskStats().total }}
-              </span>
-            }
-          </button>
-          <button
-            (click)="setActiveTab('members')"
-            [class]="activeTab() === 'members'
-              ? 'border-indigo-500 text-indigo-600 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm'">
-            Members
-            @if ((workspace()!.members.length || 0) > 0) {
-              <span class="ml-2 py-0.5 px-2.5 rounded-full text-xs font-medium {{ activeTab() === 'members' ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900' }}">
-                {{ workspace()!.members.length || 0 }}
-              </span>
-            }
-          </button>
-        </nav>
-      </div>
-
+      <app-workspace-tabs
+        [activeTab]="activeTab()"
+        [taskCount]="taskStats().total"
+        [memberCount]="workspace()!.members.length || 0"
+        (tabChange)="setActiveTab($event)">
+      </app-workspace-tabs>
 
       <div class="p-6">
-
-        @if (activeTab() === 'overview') {
-          <div class="space-y-6">
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <svg class="h-5 w-5 text-gray-400 mr-2 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                  </svg>
-                  <span class="text-sm text-gray-500">Total Tasks</span>
-                </div>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">{{ taskStats().total }}</p>
-              </div>
-
-              <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <svg class="h-5 w-5 text-gray-400 mr-2 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-                  </svg>
-                  <span class="text-sm text-gray-500">Members</span>
-                </div>
-                <p class="text-2xl font-semibold text-gray-900 mt-1">{{ workspace()!.members.length || 0 }}</p>
-              </div>
-
-              <div class="bg-gray-50 rounded-lg p-4">
-                <div class="flex items-center">
-                  <svg class="h-5 w-5 text-gray-400 mr-2 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span class="text-sm text-gray-500">Created</span>
-                </div>
-                <p class="text-lg font-medium text-gray-900 mt-1">{{ workspace()!.createdAt | date:'MMM d, y' }}</p>
-              </div>
-            </div>
-
-
-            @if (taskStats().total > 0) {
-              <div>
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Task Progress</h3>
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between">
-                    <span class="text-sm text-gray-600">Completed</span>
-                    <span class="text-sm font-medium text-gray-900">{{ taskStats().done }} / {{ taskStats().total }}</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="bg-green-600 h-2 rounded-full" [style.width.%]="(taskStats().done / taskStats().total) * 100"></div>
-                  </div>
-                </div>
-              </div>
-            }
-
-
-            <div>
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Activity</h3>
-              <div class="text-center py-8 text-gray-400 bg-gray-50 rounded-lg">
-                <svg class="mx-auto h-12 w-12 mb-3 fill-none"  stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <p class="text-sm">Activity tracking coming soon</p>
-              </div>
-            </div>
-          </div>
-        }
-
-
-        @if (activeTab() === 'tasks') {
-          <app-task-list [workspaceId]="workspace()!.id"></app-task-list>
-        }
-
-
-        @if (activeTab() === 'members') {
-          <div class="space-y-6">
-            @if (membersWithUsers() && membersWithUsers().length > 0) {
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <ul class="divide-y divide-gray-200">
-                  @for (member of membersWithUsers(); track member.userId) {
-                    <li class="px-4 py-4 sm:px-6">
-                      <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-
-                          <div class="flex-shrink-0 h-10 w-10">
-                            @if (member.user?.avatar) {
-                              <img [src]="member.user!.avatar!" [alt]="(member.user!.firstName || '') + ' ' + (member.user!.lastName || '')" class="h-10 w-10 rounded-full object-cover">
-                            } @else {
-                              <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center">
-                                <span class="text-sm font-medium text-white">
-                                  {{ (member.user?.firstName?.charAt(0) || 'U').toUpperCase() }}
-                                </span>
-                              </div>
-                            }
-                          </div>
-
-
-                          <div class="ml-4">
-                            <div class="flex items-center">
-                              <p class="text-sm font-medium text-gray-900">{{ member.user?.firstName }} {{ member.user?.lastName }}</p>
-                              @if (member.userId === workspace()!.ownerId) {
-                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                  Owner
-                                </span>
-                              } @else {
-                                <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                  {{ member.role | titlecase }}
-                                </span>
-                              }
-                            </div>
-                            <p class="text-sm text-gray-500">{{ member.user?.email }}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  }
-                </ul>
-              </div>
-            } @else {
-              <div class="text-center py-12 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                <svg class="mx-auto h-12 w-12 text-gray-400 mb-4 fill-none"  viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-                </svg>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">No members yet</h3>
-                <p class="text-gray-500">Start by inviting team members to collaborate.</p>
-              </div>
-            }
-          </div>
+        @switch (activeTab()) {
+          @case ('overview') {
+            <app-workspace-overview
+              [workspace]="workspace()!"
+              [tasks]="tasks()">
+            </app-workspace-overview>
+          }
+          @case ('tasks') {
+            <app-task-list
+              [workspaceId]="workspace()!.id"
+              [users]="workspaceUsers()"
+              [currentUserId]="currentUser()?.id">
+            </app-task-list>
+          }
+          @case ('members') {
+            <app-workspace-members
+              [workspace]="workspace()!"
+              [membersWithUsers]="membersWithUsers()"
+              [canEdit]="canEdit() || false"
+              (membersAdded)="onMembersAdded()"
+              (memberRemoved)="onMemberRemoved()"
+              (memberRoleChanged)="onMemberRoleChanged($event)">
+            </app-workspace-members>
+          }
         }
       </div>
     </div>

@@ -16,10 +16,14 @@ export * from './workspace/workspace-detail';
 export * from './workspace/workspace-service';
 export * from './workspace/workspace-stats';
 
+// Team models
+export * from './team/team.model';
+
 // UI models
 export * from './ui/confirmation-dialog';
 export * from './ui/kanban';
 export * from './ui/navigation.model';
+export * from './ui/filter.model';
 
 // Service & API models
 export * from './service/api';

@@ -1,0 +1,104 @@
+<div class="space-y-6">
+  @if (canEdit()) {
+    <div class="flex justify-end">
+      <button
+        (click)="openAddMemberSlideOver()"
+        type="button"
+        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <svg class="-ml-1 mr-2 h-5 w-5 fill-none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+        Add Members
+      </button>
+    </div>
+  }
+
+  @if (membersWithUsers() && membersWithUsers().length > 0) {
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <ul class="divide-y divide-gray-200">
+        @for (member of membersWithUsers(); track member.userId) {
+          <li class="px-4 py-4 sm:px-6">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                  @if (member.user?.avatar) {
+                    <img [src]="member.user!.avatar!" [alt]="getUserFullName(member.user)" class="h-10 w-10 rounded-full object-cover">
+                  } @else {
+                    <div class="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center">
+                      <span class="text-sm font-medium text-white">
+                        {{ getUserInitial(member.user) }}
+                      </span>
+                    </div>
+                  }
+                </div>
+
+                <div class="ml-4">
+                  <div class="flex items-center">
+                    <p class="text-sm font-medium text-gray-900">{{ getUserFullName(member.user) }}</p>
+                    @if (member.userId === workspace().ownerId) {
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Owner
+                      </span>
+                    } @else {
+                      <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                        {{ member.role | titlecase }}
+                      </span>
+                    }
+                  </div>
+                  <p class="text-sm text-gray-500">{{ member.user?.email }}</p>
+                </div>
+              </div>
+
+              @if (canEdit() && member.userId !== workspace().ownerId && member.userId !== currentUserId()) {
+                <div class="flex items-center space-x-2">
+                  <select
+                    [value]="member.role"
+                    (change)="onRoleChange(member.userId, $any($event.target).value)"
+                    class="text-sm rounded-md border-gray-300 py-1 pl-3 pr-8 focus:border-indigo-500 focus:ring-indigo-500">
+                    <option value="admin">Admin</option>
+                    <option value="member">Member</option>
+                    <option value="viewer">Viewer</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    (click)="removeMember(member)"
+                    class="text-red-600 hover:text-red-900">
+                    <svg class="h-5 w-5 fill-none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  } @else {
+    <div class="text-center py-12 px-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+      <svg class="mx-auto h-12 w-12 text-gray-400 mb-4 fill-none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+      </svg>
+      <h3 class="text-lg font-medium text-gray-900 mb-2">No members yet</h3>
+      <p class="text-gray-500">Start by inviting team members to collaborate.</p>
+    </div>
+  }
+</div>
+
+<app-add-member-slide-over
+  [workspace]="workspace()"
+  (membersAdded)="onMembersAdded($event)">
+</app-add-member-slide-over>
+
+<app-confirmation-dialog
+  #removeConfirmDialog
+  [data]="{
+    title: 'Remove Member',
+    message: 'Are you sure you want to remove ' + getUserFullName(memberToRemove?.user) + ' from this workspace?',
+    confirmText: 'Remove',
+    cancelText: 'Cancel',
+    type: 'danger'
+  }"
+  (confirmed)="confirmRemoveMember()">
+</app-confirmation-dialog>

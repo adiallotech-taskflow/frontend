@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
 import { RouterLink } from '@angular/router';
-import { TaskCardComponent, TaskFiltersComponent } from '../../../../shared';
+import { TaskCardComponent } from '../../../../shared';
+import { SearchFilterComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
-import { TaskService, WorkspaceService } from '../../../../core/services';
+import { TaskService, WorkspaceService, AuthService, UserService } from '../../../../core/services';
 import {
   Task,
   User,
@@ -25,7 +26,7 @@ import {
     CommonModule,
     RouterLink,
     TaskCardComponent,
-    TaskFiltersComponent,
+    SearchFilterComponent,
     TaskSlideOverComponent,
     ConfirmationDialogComponent,
     FabButtonComponent,
@@ -53,140 +54,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @Input() users: User[] = [];
   @Input() currentUserId?: string;
 
-  taskGroups: TaskGroup[] = [];
-  isLoading = true;
-  hasError = false;
-  errorMessage = '';
-  allTasks: Task[] = [];
-  workspace: Workspace | null = null;
-  taskSlideOverMode: TaskSlideOverMode = { type: 'create' };
-  confirmationData: ConfirmationDialogData = {
-    title: '',
-    message: '',
-    confirmText: 'Delete',
-    cancelText: 'Cancel',
-    type: 'danger',
-  };
-
-  currentFilters = signal<TaskFilterOptions>({
-    myTasks: false,
-    status: [],
-    priority: [],
-    thisWeek: false,
-    overdue: false,
-  });
-
-  filteredTasks = computed(() => {
-    let tasks = this.allTasks;
-    const filters = this.currentFilters();
-
-    if (filters.myTasks && this.currentUserId) {
-      tasks = tasks.filter((task) => task.assigneeId === this.currentUserId);
-    }
-
-    if (filters.status.length > 0) {
-      tasks = tasks.filter((task) => filters.status.includes(task.status));
-    }
-
-    if (filters.priority.length > 0) {
-      tasks = tasks.filter((task) => filters.priority.includes(task.priority));
-    }
-
-    if (filters.thisWeek) {
-      const now = new Date();
-      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-      const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
-
-      tasks = tasks.filter((task) => {
-        if (!task.dueDate) {
-          return false;
-        }
-        const dueDate = new Date(task.dueDate);
-        return dueDate >= startOfWeek && dueDate <= endOfWeek;
-      });
-    }
-
-    if (filters.overdue) {
-      const now = new Date();
-      tasks = tasks.filter((task) => {
-        if (!task.dueDate) {
-          return false;
-        }
-        return new Date(task.dueDate) < now && task.status !== 'done';
-      });
-    }
-
-    return tasks;
-  });
-
-  filteredTasksCount = computed(() => this.filteredTasks().length);
-
-  @ViewChild('taskSlideOver') taskSlideOver!: TaskSlideOverComponent;
-  @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
-
-  private taskToDelete: Task | null = null;
-
-  private destroy$ = new Subject<void>();
-
-  constructor(
-    private taskService: TaskService,
-    private workspaceService: WorkspaceService
-  ) {}
-
-  ngOnInit() {
-    this.loadTasks();
-    if (this.workspaceId) {
-      this.loadWorkspace();
-    }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  loadWorkspace() {
-    if (!this.workspaceId) {
-      return;
-    }
-
-    this.workspaceService
-      .getById(this.workspaceId)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (workspace) => {
-          this.workspace = workspace;
-        },
-        error: (error) => {
-          console.error('Error loading workspace:', error);
-        },
-      });
-  }
-
-  loadTasks() {
-    this.isLoading = true;
-    this.hasError = false;
-
-    const taskObservable = this.workspaceId
-      ? this.taskService.list({ workspaceId: this.workspaceId })
-      : this.taskService.list();
-
-    taskObservable.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (tasks: Task[]) => {
-        this.allTasks = tasks;
-        this.groupTasksByStatus();
-        this.isLoading = false;
-      },
-      error: (error) => {
-        this.hasError = true;
-        this.errorMessage = 'Failed to load tasks. Please try again.';
-        this.isLoading = false;
-        console.error('Error loading tasks:', error);
-      },
-    });
-  }
-
-  private groupTasksByStatus() {
+  taskGroups = computed(() => {
     const groups: TaskGroup[] = [
       {
         status: 'todo',
@@ -242,11 +110,181 @@ export class TaskListComponent implements OnInit, OnDestroy {
       });
     });
 
-    this.taskGroups = groups;
+    return groups;
+  });
+  isLoading = true;
+  hasError = false;
+  errorMessage = '';
+  allTasks = signal<Task[]>([]);
+  workspace: Workspace | null = null;
+  taskSlideOverMode: TaskSlideOverMode = { type: 'create' };
+  confirmationData: ConfirmationDialogData = {
+    title: '',
+    message: '',
+    confirmText: 'Delete',
+    cancelText: 'Cancel',
+    type: 'danger',
+  };
+
+  currentFilters = signal<TaskFilterOptions>({
+    myTasks: false,
+    status: [],
+    priority: [],
+    thisWeek: false,
+    overdue: false,
+    teamIds: [],
+  });
+
+  filteredTasks = computed(() => {
+    let tasks = this.allTasks();
+    const filters = this.currentFilters();
+
+    if (filters.myTasks && this.currentUserId) {
+      tasks = tasks.filter((task) => task.assigneeId === this.currentUserId);
+    }
+
+    if (filters.status.length > 0) {
+      tasks = tasks.filter((task) => filters.status.includes(task.status));
+    }
+
+    if (filters.priority.length > 0) {
+      tasks = tasks.filter((task) => filters.priority.includes(task.priority));
+    }
+
+    if (filters.teamIds.length > 0) {
+      tasks = tasks.filter((task) => task.teamId && filters.teamIds.includes(task.teamId));
+    }
+
+    if (filters.thisWeek) {
+      const now = new Date();
+      const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+      const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
+
+      tasks = tasks.filter((task) => {
+        if (!task.dueDate) {
+          return false;
+        }
+        const dueDate = new Date(task.dueDate);
+        return dueDate >= startOfWeek && dueDate <= endOfWeek;
+      });
+    }
+
+    if (filters.overdue) {
+      const now = new Date();
+      tasks = tasks.filter((task) => {
+        if (!task.dueDate) {
+          return false;
+        }
+        return new Date(task.dueDate) < now && task.status !== 'done';
+      });
+    }
+
+    return tasks;
+  });
+
+  filteredTasksCount = computed(() => this.filteredTasks().length);
+
+  get taskGroupsList(): TaskGroup[] {
+    return this.taskGroups();
   }
 
+  @ViewChild('taskSlideOver') taskSlideOver!: TaskSlideOverComponent;
+  @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
+
+  private taskToDelete: Task | null = null;
+  isRefreshing = signal(false);
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private taskService: TaskService,
+    private workspaceService: WorkspaceService,
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
+
+  ngOnInit() {
+    // Set current user if not provided
+    if (!this.currentUserId) {
+      const currentUser = this.authService.getCurrentUser();
+      if (currentUser) {
+        this.currentUserId = currentUser.id;
+      }
+    }
+    
+    // Load users if not provided
+    if (!this.users || this.users.length === 0) {
+      this.loadAllUsers();
+    }
+    
+    this.loadTasks();
+    if (this.workspaceId) {
+      this.loadWorkspace();
+    }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  loadWorkspace() {
+    if (!this.workspaceId) {
+      return;
+    }
+
+    this.workspaceService
+      .getById(this.workspaceId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (workspace) => {
+          this.workspace = workspace;
+        },
+        error: (error) => {
+          console.error('Error loading workspace:', error);
+        },
+      });
+  }
+
+  private loadAllUsers() {
+    this.userService
+      .getUsers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (users: User[]) => {
+          this.users = users;
+        },
+        error: (error: any) => {
+          console.error('Error loading users:', error);
+        },
+      });
+  }
+
+  loadTasks() {
+    this.isLoading = true;
+    this.hasError = false;
+
+    const taskObservable = this.workspaceId
+      ? this.taskService.list({ workspaceId: this.workspaceId })
+      : this.taskService.list();
+
+    taskObservable.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (tasks: Task[]) => {
+        this.allTasks.set(tasks);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.hasError = true;
+        this.errorMessage = 'Failed to load tasks. Please try again.';
+        this.isLoading = false;
+        console.error('Error loading tasks:', error);
+      },
+    });
+  }
+
+
   get isEmpty(): boolean {
-    return !this.isLoading && this.allTasks.length === 0;
+    return !this.isLoading && this.allTasks().length === 0;
   }
 
   get totalTaskCount(): number {
@@ -274,13 +312,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onTaskCreated(task: Task) {
-    this.allTasks = [...this.allTasks, task];
-    this.groupTasksByStatus();
+    this.allTasks.update(tasks => [...tasks, task]);
   }
 
   onTaskUpdated(updatedTask: Task) {
-    this.allTasks = this.allTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
-    this.groupTasksByStatus();
+    this.allTasks.update(tasks => tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
   }
 
   getAssignedUser(assigneeId?: string): User | undefined {
@@ -317,15 +353,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onDeleteConfirmed() {
     if (this.taskToDelete) {
+      this.isRefreshing.set(true);
       this.taskService.delete(this.taskToDelete.id).subscribe({
         next: () => {
-          this.allTasks = this.allTasks.filter((t) => t.id !== this.taskToDelete!.id);
-          this.groupTasksByStatus();
+          this.allTasks.update(tasks => tasks.filter((t) => t.id !== this.taskToDelete!.id));
           this.taskToDelete = null;
+          // Simulate a small delay to show the loading state
+          setTimeout(() => {
+            this.isRefreshing.set(false);
+          }, 300);
         },
         error: (error) => {
           console.error('Error deleting task:', error);
           this.taskToDelete = null;
+          this.isRefreshing.set(false);
         },
       });
     }
@@ -337,6 +378,5 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onFiltersChanged(filters: TaskFilterOptions) {
     this.currentFilters.set(filters);
-    this.groupTasksByStatus();
   }
 }

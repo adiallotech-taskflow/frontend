@@ -1,0 +1,75 @@
+<div class="relative">
+  <div class="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 shadow-sm transition-colors hover:border-gray-400 focus-within:border-indigo-600 focus-within:ring-1 focus-within:ring-indigo-600">
+    <!-- Search Icon -->
+    <svg class="h-5 w-5 text-gray-400 fill-current" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+    </svg>
+    
+    <!-- Filter Tags -->
+    <div class="flex flex-wrap items-center gap-2">
+      @for (tag of filterTags(); track tag.type + tag.value) {
+        <span [ngClass]="getTagColorClasses(tag.color || 'gray')" class="inline-flex items-center gap-x-0.5 rounded-md px-2 py-1 text-xs font-medium">
+          {{ tag.label }}
+          <button type="button" (click)="removeTag(tag)" class="group relative -mr-1 size-3.5 rounded-sm">
+            <span class="sr-only">Remove {{ tag.label }} filter</span>
+            <svg viewBox="0 0 14 14" [ngClass]="getTagStrokeClasses(tag.color || 'gray')" class="size-3.5">
+              <path d="M4 4l6 6m0-6l-6 6" stroke-width="2" />
+            </svg>
+            <span class="absolute -inset-1"></span>
+          </button>
+        </span>
+      }
+      
+      <!-- Search Input -->
+      <input 
+        #searchInput
+        type="text"
+        [(ngModel)]="searchValue"
+        (keydown)="onInputKeydown($event)"
+        (focus)="onInputFocus()"
+        (blur)="onInputBlur()"
+        [placeholder]="filterTags().length === 0 ? 'Search tasks... Try &quot;status:done&quot; or &quot;priority:high&quot;' : 'Add filter...'"
+        class="flex-1 border-0 bg-transparent p-0 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0">
+    </div>
+    
+    <!-- Clear All Button -->
+    @if (filterTags().length > 0) {
+      <button type="button" (click)="clearAllFilters()" class="ml-auto text-sm text-gray-500 hover:text-gray-700">
+        Clear all
+      </button>
+    }
+    
+    <!-- Results Count -->
+    @if (filterTags().length > 0) {
+      <div class="ml-2 text-sm text-gray-500">
+        {{ resultsCount }} {{ resultsCount === 1 ? 'result' : 'results' }}
+      </div>
+    }
+  </div>
+  
+  <!-- Suggestions Dropdown -->
+  @if (showSuggestions && filteredSuggestions().length > 0) {
+    <div class="absolute left-0 right-0 z-10 mt-1 max-h-60 overflow-auto rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
+      @for (suggestion of filteredSuggestions(); track suggestion.value; let i = $index) {
+        <button
+          type="button"
+          (click)="selectSuggestion(suggestion)"
+          [class.bg-gray-100]="i === selectedSuggestionIndex"
+          class="flex w-full items-center justify-between px-4 py-2 text-left text-sm hover:bg-gray-100">
+          <div>
+            <span class="font-medium text-gray-900">{{ suggestion.label }}</span>
+            @if (suggestion.hint) {
+              <span class="ml-2 text-gray-500">{{ suggestion.hint }}</span>
+            }
+          </div>
+          <code class="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">{{ suggestion.value }}</code>
+        </button>
+      }
+    </div>
+  }
+</div>
+
+<!-- Help Text -->
+<div class="mt-2 text-xs text-gray-500">
+  <p>Filter by: <code class="rounded bg-gray-100 px-1">status:todo</code>, <code class="rounded bg-gray-100 px-1">priority:high</code>, <code class="rounded bg-gray-100 px-1">assignee:me</code>, <code class="rounded bg-gray-100 px-1">team:frontend</code>, <code class="rounded bg-gray-100 px-1">overdue</code></p>
+</div>

@@ -1,7 +1,7 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, signal, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NavigationItem, Team } from '../../../core/models';
+import { NavigationItem, Team, TeamModel } from '../../../core/models';
 import { MockDevToolsComponent } from '../../../core/services';
 import { environment } from '../../../../environments/environment';
 
@@ -13,11 +13,20 @@ import { environment } from '../../../../environments/environment';
 export class NavigationMenuComponent {
   @Input() navigationItems: NavigationItem[] = [];
   @Input() teams: Team[] = [];
+  @Input() userTeams: TeamModel[] = [];
+  @Input() isTeamLeader: (team: TeamModel) => boolean = () => false;
+
+  @Output() teamClick = new EventEmitter<string>();
 
   showDevTools = signal(!environment.production);
   showMockPanel = signal(false);
 
   toggleMockPanel() {
     this.showMockPanel.set(!this.showMockPanel());
+  }
+
+  onTeamClick(teamId: string, event: Event) {
+    event.preventDefault();
+    this.teamClick.emit(teamId);
   }
 }

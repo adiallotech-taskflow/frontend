@@ -13,11 +13,19 @@
           </button>
         </div>
 
-        <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
-          <div class="flex h-16 shrink-0 items-center">
+        <div class="flex flex-col h-full bg-white">
+          <div class="flex h-16 shrink-0 items-center px-6">
             <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" class="h-8 w-auto" />
           </div>
-          <app-navigation-menu [navigationItems]="navigationItems" [teams]="teams"></app-navigation-menu>
+          <div class="flex-1 px-6">
+            <app-navigation-menu 
+              [navigationItems]="navigationItems" 
+              [teams]="teams"
+              [userTeams]="userTeams"
+              [isTeamLeader]="isTeamLeader"
+              (teamClick)="navigateToTeamTasks($event)">
+            </app-navigation-menu>
+          </div>
         </div>
       </div>
     </div>

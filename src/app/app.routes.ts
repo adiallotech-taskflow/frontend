@@ -26,6 +26,18 @@ export const routes: Routes = [
         path: 'board',
         loadChildren: () => import('./features/kanban/kanban.routes').then((r) => r.kanbanRoutes),
       },
+      {
+        path: 'calendar',
+        loadChildren: () => import('./features/calendar/calendar.routes').then((r) => r.CALENDAR_ROUTES),
+      },
+      {
+        path: 'teams',
+        loadChildren: () => import('./features/team/team.routes').then((r) => r.TEAM_ROUTES),
+      },
+      {
+        path: 'analytics',
+        loadChildren: () => import('./features/analytics/analytics.routes').then((r) => r.ANALYTICS_ROUTES),
+      },
     ],
   },
   {

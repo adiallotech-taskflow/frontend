@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
+import { MOCK_USERS } from './mock-users.data';
 import { User, RegisterRequest, AuthResponse, AuthSession } from '../../models';
 
 @Injectable({
@@ -18,38 +19,7 @@ export class AuthMockService extends MockBaseService<User> {
 
   protected override storageKey = 'taskflow_users';
 
-  protected override defaultData: User[] = [
-    {
-      id: 'admin-user-id',
-      email: 'admin@test.com',
-      firstName: 'Admin',
-      lastName: 'User',
-      avatar: undefined,
-      role: 'admin',
-      createdAt: new Date('2024-01-01'),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'regular-user-id',
-      email: 'user@test.com',
-      firstName: 'Regular',
-      lastName: 'User',
-      avatar: undefined,
-      role: 'member',
-      createdAt: new Date('2024-01-02'),
-      updatedAt: new Date(),
-    },
-    {
-      id: 'demo-user-id',
-      email: 'demo@test.com',
-      firstName: 'Demo',
-      lastName: 'User',
-      avatar: undefined,
-      role: 'viewer',
-      createdAt: new Date('2024-01-03'),
-      updatedAt: new Date(),
-    },
-  ];
+  protected override defaultData: User[] = MOCK_USERS;
 
   constructor() {
     super();
