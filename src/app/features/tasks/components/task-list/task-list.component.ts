@@ -54,11 +54,68 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @Input() users: User[] = [];
   @Input() currentUserId?: string;
 
-  taskGroups: TaskGroup[] = [];
+  taskGroups = computed(() => {
+    const groups: TaskGroup[] = [
+      {
+        status: 'todo',
+        label: 'To Do',
+        tasks: [],
+        count: 0,
+        bgColor: 'bg-gray-50',
+        textColor: 'text-gray-700',
+      },
+      {
+        status: 'in-progress',
+        label: 'In Progress',
+        tasks: [],
+        count: 0,
+        bgColor: 'bg-blue-50',
+        textColor: 'text-blue-700',
+      },
+      {
+        status: 'done',
+        label: 'Done',
+        tasks: [],
+        count: 0,
+        bgColor: 'bg-green-50',
+        textColor: 'text-green-700',
+      },
+    ];
+
+    const tasksToGroup = this.filteredTasks();
+
+    tasksToGroup.forEach((task) => {
+      const group = groups.find((g) => g.status === task.status);
+      if (group) {
+        group.tasks.push(task);
+        group.count++;
+      }
+    });
+
+    groups.forEach((group) => {
+      group.tasks.sort((a, b) => {
+        if (a.priority === 'high' && b.priority !== 'high') {
+          return -1;
+        }
+        if (a.priority !== 'high' && b.priority === 'high') {
+          return 1;
+        }
+        if (a.priority === 'medium' && b.priority === 'low') {
+          return -1;
+        }
+        if (a.priority === 'low' && b.priority === 'medium') {
+          return 1;
+        }
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+    });
+
+    return groups;
+  });
   isLoading = true;
   hasError = false;
   errorMessage = '';
-  allTasks: Task[] = [];
+  allTasks = signal<Task[]>([]);
   workspace: Workspace | null = null;
   taskSlideOverMode: TaskSlideOverMode = { type: 'create' };
   confirmationData: ConfirmationDialogData = {
@@ -79,7 +136,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   });
 
   filteredTasks = computed(() => {
-    let tasks = this.allTasks;
+    let tasks = this.allTasks();
     const filters = this.currentFilters();
 
     if (filters.myTasks && this.currentUserId) {
@@ -127,10 +184,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   filteredTasksCount = computed(() => this.filteredTasks().length);
 
+  get taskGroupsList(): TaskGroup[] {
+    return this.taskGroups();
+  }
+
   @ViewChild('taskSlideOver') taskSlideOver!: TaskSlideOverComponent;
   @ViewChild('confirmationDialog') confirmationDialog!: ConfirmationDialogComponent;
 
   private taskToDelete: Task | null = null;
+  isRefreshing = signal(false);
 
   private destroy$ = new Subject<void>();
 
@@ -208,8 +270,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
     taskObservable.pipe(takeUntil(this.destroy$)).subscribe({
       next: (tasks: Task[]) => {
-        this.allTasks = tasks;
-        this.groupTasksByStatus();
+        this.allTasks.set(tasks);
         this.isLoading = false;
       },
       error: (error) => {
@@ -221,67 +282,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private groupTasksByStatus() {
-    const groups: TaskGroup[] = [
-      {
-        status: 'todo',
-        label: 'To Do',
-        tasks: [],
-        count: 0,
-        bgColor: 'bg-gray-50',
-        textColor: 'text-gray-700',
-      },
-      {
-        status: 'in-progress',
-        label: 'In Progress',
-        tasks: [],
-        count: 0,
-        bgColor: 'bg-blue-50',
-        textColor: 'text-blue-700',
-      },
-      {
-        status: 'done',
-        label: 'Done',
-        tasks: [],
-        count: 0,
-        bgColor: 'bg-green-50',
-        textColor: 'text-green-700',
-      },
-    ];
-
-    const tasksToGroup = this.filteredTasks();
-
-    tasksToGroup.forEach((task) => {
-      const group = groups.find((g) => g.status === task.status);
-      if (group) {
-        group.tasks.push(task);
-        group.count++;
-      }
-    });
-
-    groups.forEach((group) => {
-      group.tasks.sort((a, b) => {
-        if (a.priority === 'high' && b.priority !== 'high') {
-          return -1;
-        }
-        if (a.priority !== 'high' && b.priority === 'high') {
-          return 1;
-        }
-        if (a.priority === 'medium' && b.priority === 'low') {
-          return -1;
-        }
-        if (a.priority === 'low' && b.priority === 'medium') {
-          return 1;
-        }
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      });
-    });
-
-    this.taskGroups = groups;
-  }
 
   get isEmpty(): boolean {
-    return !this.isLoading && this.allTasks.length === 0;
+    return !this.isLoading && this.allTasks().length === 0;
   }
 
   get totalTaskCount(): number {
@@ -309,13 +312,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   onTaskCreated(task: Task) {
-    this.allTasks = [...this.allTasks, task];
-    this.groupTasksByStatus();
+    this.allTasks.update(tasks => [...tasks, task]);
   }
 
   onTaskUpdated(updatedTask: Task) {
-    this.allTasks = this.allTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task));
-    this.groupTasksByStatus();
+    this.allTasks.update(tasks => tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task)));
   }
 
   getAssignedUser(assigneeId?: string): User | undefined {
@@ -352,15 +353,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onDeleteConfirmed() {
     if (this.taskToDelete) {
+      this.isRefreshing.set(true);
       this.taskService.delete(this.taskToDelete.id).subscribe({
         next: () => {
-          this.allTasks = this.allTasks.filter((t) => t.id !== this.taskToDelete!.id);
-          this.groupTasksByStatus();
+          this.allTasks.update(tasks => tasks.filter((t) => t.id !== this.taskToDelete!.id));
           this.taskToDelete = null;
+          // Simulate a small delay to show the loading state
+          setTimeout(() => {
+            this.isRefreshing.set(false);
+          }, 300);
         },
         error: (error) => {
           console.error('Error deleting task:', error);
           this.taskToDelete = null;
+          this.isRefreshing.set(false);
         },
       });
     }
@@ -372,6 +378,5 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   onFiltersChanged(filters: TaskFilterOptions) {
     this.currentFilters.set(filters);
-    this.groupTasksByStatus();
   }
 }
