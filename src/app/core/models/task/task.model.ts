@@ -21,5 +21,6 @@ export interface CreateTaskRequest {
   priority: TaskPriority;
   assigneeId?: string;
   workspaceId: string;
+  teamId?: string;
   dueDate?: Date;
 }

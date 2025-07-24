@@ -182,32 +182,104 @@
 
 
                       <div>
-                        <label for="task-assignee" class="block text-sm/6 font-medium text-gray-900">
-                          Assign to
+                        <label class="block text-sm/6 font-medium text-gray-900 mb-2">
+                          Assignment Type
                         </label>
-                        <div class="mt-2">
-                          <select
-                            id="task-assignee"
-                            formControlName="assigneeId"
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
-                            <option value="">Unassigned</option>
-                            @for (user of users(); track user.id) {
-                              <option [value]="user.id">{{ getUserDisplayName(user) }}</option>
-                            }
-                          </select>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                          <button
+                            type="button"
+                            (click)="setAssignmentType('user')"
+                            class="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                            [class.bg-indigo-600]="assignmentType() === 'user'"
+                            [class.text-white]="assignmentType() === 'user'"
+                            [class.bg-gray-100]="assignmentType() !== 'user'"
+                            [class.text-gray-700]="assignmentType() !== 'user'"
+                            [class.hover:bg-gray-200]="assignmentType() !== 'user'">
+                            <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            Person
+                          </button>
+                          <button
+                            type="button"
+                            (click)="setAssignmentType('team')"
+                            class="flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                            [class.bg-indigo-600]="assignmentType() === 'team'"
+                            [class.text-white]="assignmentType() === 'team'"
+                            [class.bg-gray-100]="assignmentType() !== 'team'"
+                            [class.text-gray-700]="assignmentType() !== 'team'"
+                            [class.hover:bg-gray-200]="assignmentType() !== 'team'">
+                            <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            Team
+                          </button>
                         </div>
 
-                        @if (assigneeControl?.value) {
-                          <div class="mt-2">
-                            @for (user of users(); track user.id) {
-                              @if (user.id === assigneeControl?.value) {
-                                <div class="flex items-center space-x-2">
-                                  <div class="h-6 w-6 flex items-center justify-center rounded-full bg-indigo-600 text-xs font-medium text-white">
-                                    {{ getUserInitials(user) }}
-                                  </div>
-                                  <span class="text-sm text-gray-700">{{ getUserDisplayName(user) }}</span>
-                                </div>
-                              }
+                        @if (assignmentType() === 'user') {
+                          <div>
+                            <label for="task-assignee" class="block text-sm/6 font-medium text-gray-900">
+                              Assign to Person
+                            </label>
+                            <div class="mt-2">
+                              <select
+                                id="task-assignee"
+                                formControlName="assigneeId"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                                <option value="">Select a person</option>
+                                @for (user of users(); track user.id) {
+                                  <option [value]="user.id">{{ getUserDisplayName(user) }}</option>
+                                }
+                              </select>
+                            </div>
+
+                            @if (assigneeControl?.value) {
+                              <div class="mt-2">
+                                @for (user of users(); track user.id) {
+                                  @if (user.id === assigneeControl?.value) {
+                                    <div class="flex items-center space-x-2">
+                                      <div class="h-6 w-6 flex items-center justify-center rounded-full bg-indigo-600 text-xs font-medium text-white">
+                                        {{ getUserInitials(user) }}
+                                      </div>
+                                      <span class="text-sm text-gray-700">{{ getUserDisplayName(user) }}</span>
+                                    </div>
+                                  }
+                                }
+                              </div>
+                            }
+                          </div>
+                        }
+
+                        @if (assignmentType() === 'team') {
+                          <div>
+                            <label for="task-team" class="block text-sm/6 font-medium text-gray-900">
+                              Assign to Team
+                            </label>
+                            <div class="mt-2">
+                              <select
+                                id="task-team"
+                                formControlName="teamId"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm/6">
+                                <option value="">Select a team</option>
+                                @for (team of teams(); track team.teamId) {
+                                  <option [value]="team.teamId">{{ team.name }}</option>
+                                }
+                              </select>
+                            </div>
+
+                            @if (teamControl?.value) {
+                              <div class="mt-2">
+                                @for (team of teams(); track team.teamId) {
+                                  @if (team.teamId === teamControl?.value) {
+                                    <div class="flex items-center space-x-2">
+                                      <span class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400">
+                                        {{ team.name.charAt(0).toUpperCase() }}
+                                      </span>
+                                      <span class="text-sm text-gray-700">{{ team.name }}</span>
+                                    </div>
+                                  }
+                                }
+                              </div>
                             }
                           </div>
                         }

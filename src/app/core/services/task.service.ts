@@ -158,6 +158,10 @@ export class TaskService {
     return this.list({ assigneeId });
   }
 
+  getByTeam(teamId: string): Observable<Task[]> {
+    return this.list({ teamId });
+  }
+
   refreshTasks(filters?: TaskFilters): Observable<Task[]> {
     return this.list(filters);
   }

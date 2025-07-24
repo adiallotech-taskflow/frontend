@@ -41,6 +41,14 @@
           {{ task.priority | titlecase }}
         </span>
 
+        @if (assignedTeam) {
+          <span class="inline-flex items-center gap-x-1.5 rounded-md px-1.5 py-0.5 text-xs font-medium bg-purple-50 text-purple-700">
+            <span class="flex size-3 shrink-0 items-center justify-center rounded-sm border border-purple-200 bg-white text-[0.5rem] font-medium text-purple-600">
+              {{ assignedTeam.name.charAt(0).toUpperCase() }}
+            </span>
+            {{ assignedTeam.name }}
+          </span>
+        }
 
         <div class="flex items-center">
           @if (task.dueDate) {

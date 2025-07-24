@@ -136,6 +136,10 @@ export class TaskMockService extends MockBaseService<Task> {
           tasks = tasks.filter((task) => task.workspaceId === filters.workspaceId);
         }
 
+        if (filters.teamId) {
+          tasks = tasks.filter((task) => task.teamId === filters.teamId);
+        }
+
         if (filters.hasDueDate !== undefined) {
           tasks = tasks.filter((task) =>
             filters.hasDueDate ? task.dueDate !== undefined : task.dueDate === undefined

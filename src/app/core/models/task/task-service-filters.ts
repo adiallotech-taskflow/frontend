@@ -5,6 +5,7 @@ export interface TaskFilters {
   priority?: Task['priority'];
   assigneeId?: string;
   workspaceId?: string;
+  teamId?: string;
   search?: string;
   hasDueDate?: boolean;
   isOverdue?: boolean;

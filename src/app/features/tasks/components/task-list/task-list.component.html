@@ -187,6 +187,7 @@
                 <app-task-card
                   [task]="task"
                   [assignedUser]="getAssignedUser(task.assigneeId)"
+                  [assignedTeam]="getAssignedTeam(task.teamId)"
                   (taskAction)="onTaskAction($event)"
                   class="transform transition-all duration-200 hover:scale-[1.02]">
                 </app-task-card>
@@ -207,6 +208,7 @@
     #taskSlideOver
     [mode]="taskSlideOverMode"
     [users]="users"
+    [teams]="teams"
     (taskCreated)="onTaskCreated($event)"
     (taskUpdated)="onTaskUpdated($event)">
   </app-task-slide-over>

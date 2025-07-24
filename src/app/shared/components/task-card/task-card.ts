@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Task, User } from '../../../core/models';
+import { Task, User, TeamModel } from '../../../core/models';
 
 export type TaskAction = 'edit' | 'delete';
 
@@ -13,6 +13,7 @@ export type TaskAction = 'edit' | 'delete';
 export class TaskCardComponent {
   @Input() task!: Task;
   @Input() assignedUser?: User;
+  @Input() assignedTeam?: TeamModel;
   @Output() taskAction = new EventEmitter<{ action: TaskAction; task: Task }>();
 
   get priorityConfig() {

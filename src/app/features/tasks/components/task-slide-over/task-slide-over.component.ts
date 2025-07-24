@@ -1,8 +1,8 @@
 import { Component, signal, output, input, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TaskService, NotificationService } from '../../../../core/services';
-import { Task, User, TaskSlideOverMode, TaskFormData } from '../../../../core/models';
+import { TaskService, NotificationService, TeamService } from '../../../../core/services';
+import { Task, User, TaskSlideOverMode, TaskFormData, TeamModel } from '../../../../core/models';
 
 @Component({
   selector: 'app-task-slide-over',
@@ -16,9 +16,11 @@ export class TaskSlideOverComponent {
   isLoading = signal(false);
   error = signal<string | null>(null);
   form: FormGroup;
+  assignmentType = signal<'user' | 'team'>('user');
 
   mode = input<TaskSlideOverMode>({ type: 'create' });
   users = input<User[]>([]);
+  teams = input<TeamModel[]>([]);
 
   taskCreated = output<Task>();
   taskUpdated = output<Task>();
@@ -46,7 +48,8 @@ export class TaskSlideOverComponent {
 
   constructor(
     private fb: FormBuilder,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private teamService: TeamService
   ) {
     this.form = this.fb.group({
       title: ['', [Validators.required, Validators.maxLength(100)]],
@@ -54,6 +57,7 @@ export class TaskSlideOverComponent {
       status: ['todo', Validators.required],
       priority: ['medium', Validators.required],
       assigneeId: [''],
+      teamId: [''],
       dueDate: [''],
     });
   }
@@ -77,8 +81,10 @@ export class TaskSlideOverComponent {
           status: 'todo',
           priority: 'medium',
           assigneeId: '',
+          teamId: '',
           dueDate: '',
         });
+        this.assignmentType.set('user');
       } else if (this.mode().type === 'edit' && this.mode().task) {
         this.populateForm(this.mode().task!);
       }
@@ -116,18 +122,28 @@ export class TaskSlideOverComponent {
       status: task.status,
       priority: task.priority,
       assigneeId: task.assigneeId || '',
+      teamId: task.teamId || '',
       dueDate,
     });
+
+    // Set assignment type based on which field has value
+    if (task.teamId) {
+      this.assignmentType.set('team');
+    } else {
+      this.assignmentType.set('user');
+    }
   }
 
   private getFormData(): TaskFormData {
     const formValue = this.form.value;
+    // Only include assigneeId or teamId based on assignment type
     return {
       title: formValue.title.trim(),
       description: formValue.description?.trim() || undefined,
       status: formValue.status,
       priority: formValue.priority,
-      assigneeId: formValue.assigneeId || undefined,
+      assigneeId: this.assignmentType() === 'user' ? (formValue.assigneeId || undefined) : undefined,
+      teamId: this.assignmentType() === 'team' ? (formValue.teamId || undefined) : undefined,
       dueDate: formValue.dueDate || undefined,
     };
   }
@@ -204,6 +220,10 @@ export class TaskSlideOverComponent {
     return this.form.get('assigneeId');
   }
 
+  get teamControl() {
+    return this.form.get('teamId');
+  }
+
   get dueDateControl() {
     return this.form.get('dueDate');
   }
@@ -241,6 +261,16 @@ export class TaskSlideOverComponent {
 
   clearError() {
     this.error.set(null);
+  }
+
+  setAssignmentType(type: 'user' | 'team') {
+    this.assignmentType.set(type);
+    // Clear the other field when switching
+    if (type === 'user') {
+      this.form.patchValue({ teamId: '' });
+    } else {
+      this.form.patchValue({ assigneeId: '' });
+    }
   }
 
   getUserInitials(user: User): string {

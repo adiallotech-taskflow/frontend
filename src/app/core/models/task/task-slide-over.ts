@@ -12,5 +12,6 @@ export interface TaskFormData {
   status: Task['status'];
   priority: Task['priority'];
   assigneeId?: string;
+  teamId?: string;
   dueDate?: string;
 }

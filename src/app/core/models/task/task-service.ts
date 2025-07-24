@@ -5,5 +5,6 @@ export interface UpdateTaskRequest {
   description?: string;
   priority?: TaskPriority;
   assigneeId?: string;
+  teamId?: string;
   dueDate?: Date;
 }

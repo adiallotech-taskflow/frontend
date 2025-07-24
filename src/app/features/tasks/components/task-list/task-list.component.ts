@@ -8,7 +8,7 @@ import { SearchFilterComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FabButtonComponent } from '../../../dashboard/components/fab-button/fab-button';
-import { TaskService, WorkspaceService, AuthService, UserService } from '../../../../core/services';
+import { TaskService, WorkspaceService, AuthService, UserService, TeamService } from '../../../../core/services';
 import {
   Task,
   User,
@@ -17,6 +17,7 @@ import {
   TaskGroup,
   TaskFilterOptions,
   ConfirmationDialogData,
+  TeamModel,
 } from '../../../../core/models';
 
 @Component({
@@ -53,6 +54,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   @Input() workspaceId?: string;
   @Input() users: User[] = [];
   @Input() currentUserId?: string;
+  @Input() teams: TeamModel[] = [];
 
   taskGroups = computed(() => {
     const groups: TaskGroup[] = [
@@ -200,7 +202,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     private taskService: TaskService,
     private workspaceService: WorkspaceService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private teamService: TeamService
   ) {}
 
   ngOnInit() {
@@ -215,6 +218,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
     // Load users if not provided
     if (!this.users || this.users.length === 0) {
       this.loadAllUsers();
+    }
+    
+    // Load teams if not provided
+    if (!this.teams || this.teams.length === 0) {
+      this.loadTeams();
     }
     
     this.loadTasks();
@@ -256,6 +264,20 @@ export class TaskListComponent implements OnInit, OnDestroy {
         },
         error: (error: any) => {
           console.error('Error loading users:', error);
+        },
+      });
+  }
+
+  private loadTeams() {
+    this.teamService
+      .getAllTeams()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (teams) => {
+          this.teams = teams;
+        },
+        error: (error) => {
+          console.error('Error loading teams:', error);
         },
       });
   }
@@ -324,6 +346,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
       return undefined;
     }
     return this.users.find((user) => user.id === assigneeId);
+  }
+
+  getAssignedTeam(teamId?: string): TeamModel | undefined {
+    if (!teamId) {
+      return undefined;
+    }
+    return this.teams.find((team) => team.teamId === teamId);
   }
 
   onTaskAction(event: { action: string; task: Task }) {
