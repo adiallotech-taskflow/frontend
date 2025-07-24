@@ -27,7 +27,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadUserTeams();
-    
+
     // Subscribe to team updates
     this.teamService.teamUpdated$
       .pipe(takeUntil(this.destroy$))
@@ -66,7 +66,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   navigateToTeamTasks(teamId: string) {
-    this.router.navigate(['/tasks'], { queryParams: { teamId } });
+    this.router.navigate(['/tasks'], {queryParams: {teamId}});
   }
 
   toggleMobileSidenav() {

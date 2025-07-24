@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy, ViewChild, signal, computed } from
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { trigger, transition, style, animate, stagger, query } from '@angular/animations';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { TaskCardComponent } from '../../../../shared';
 import { SearchFilterComponent } from '../../../../shared';
 import { TaskSlideOverComponent } from '../task-slide-over/task-slide-over.component';
@@ -203,7 +203,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
     private workspaceService: WorkspaceService,
     private authService: AuthService,
     private userService: UserService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -224,6 +225,16 @@ export class TaskListComponent implements OnInit, OnDestroy {
     if (!this.teams || this.teams.length === 0) {
       this.loadTeams();
     }
+    
+    // Handle teamId query parameter
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      if (params['teamId']) {
+        this.currentFilters.update(filters => ({
+          ...filters,
+          teamIds: [params['teamId']]
+        }));
+      }
+    });
     
     this.loadTasks();
     if (this.workspaceId) {
