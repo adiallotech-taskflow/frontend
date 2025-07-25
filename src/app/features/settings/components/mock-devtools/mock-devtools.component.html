@@ -4,26 +4,26 @@
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Configuration</h3>
-      <button 
+      <button
         (click)="toggleConfigEdit()"
         class="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
         {{ editingConfig() ? 'Save' : 'Edit' }}
       </button>
     </div>
-    
+
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Network Delay</label>
         <div class="flex items-center space-x-2">
-          <input 
-            type="number" 
+          <input
+            type="number"
             [value]="tempConfig.delayMin"
             (input)="tempConfig.delayMin = +$any($event.target).value"
             [disabled]="!editingConfig()"
             class="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-50">
           <span class="text-sm text-gray-500">-</span>
-          <input 
-            type="number" 
+          <input
+            type="number"
             [value]="tempConfig.delayMax"
             (input)="tempConfig.delayMax = +$any($event.target).value"
             [disabled]="!editingConfig()"
@@ -31,17 +31,17 @@
           <span class="text-sm text-gray-500">ms</span>
         </div>
       </div>
-      
+
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Error Rate</label>
         <div class="flex items-center space-x-2">
-          <input 
-            type="number" 
+          <input
+            type="number"
             [value]="tempErrorRate"
             (input)="tempErrorRate = +$any($event.target).value"
             [disabled]="!editingConfig()"
-            min="0" 
-            max="100" 
+            min="0"
+            max="100"
             step="0.1"
             class="w-20 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-50">
           <span class="text-sm text-gray-500">%</span>
@@ -51,8 +51,8 @@
 
     <div class="mt-4">
       <label class="flex items-center space-x-3">
-        <input 
-          type="checkbox" 
+        <input
+          type="checkbox"
           [checked]="tempPersistToLocalStorage"
           (change)="tempPersistToLocalStorage = $any($event.target).checked"
           [disabled]="!editingConfig()"
@@ -63,17 +63,17 @@
     </div>
 
     <div class="mt-4 flex flex-wrap gap-2">
-      <button 
+      <button
         (click)="applyPreset('normal')"
         class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
         Normal
       </button>
-      <button 
+      <button
         (click)="applyPreset('slow')"
         class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
         Slow Network
       </button>
-      <button 
+      <button
         (click)="applyPreset('unstable')"
         class="inline-flex items-center px-3 py-1 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
         Unstable
@@ -84,7 +84,7 @@
   <!-- Statistics Section -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <h3 class="text-lg font-medium text-gray-900 mb-4">Mock Data Statistics</h3>
-    
+
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       <div class="text-center">
         <p class="text-2xl font-semibold text-gray-900">{{ stats()?.['tasks']?.['total'] || 0 }}</p>
@@ -107,50 +107,115 @@
 
   <!-- Actions Section -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-    <h3 class="text-lg font-medium text-gray-900 mb-4">Data Management</h3>
-    
+    <div class="mb-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-medium text-gray-900">Data Management</h3>
+        <div class="group relative">
+        <button class="text-gray-400 hover:text-gray-600">
+          <svg class="w-4 h-4 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </button>
+        <div class="absolute right-0 top-6 w-72 p-4 text-sm bg-gray-50 border border-gray-300 rounded-lg shadow-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 z-20">
+          <p class="font-semibold text-gray-900 mb-3">Quick Guide:</p>
+          <ul class="space-y-2">
+            <li class="flex">
+              <span class="text-red-600 mr-2">•</span>
+              <span><span class="font-semibold text-gray-700">Reset:</span> Clears all data to minimal defaults</span>
+            </li>
+            <li class="flex">
+              <span class="text-green-600 mr-2">•</span>
+              <span><span class="font-semibold text-gray-700">Seed:</span> Loads realistic demo data for testing</span>
+            </li>
+            <li class="flex">
+              <span class="text-blue-600 mr-2">•</span>
+              <span><span class="font-semibold text-gray-700">Export:</span> Copy current data to clipboard</span>
+            </li>
+            <li class="flex">
+              <span class="text-purple-600 mr-2">•</span>
+              <span><span class="font-semibold text-gray-700">Download:</span> Save data as JSON file</span>
+            </li>
+          </ul>
+        </div>
+        </div>
+      </div>
+      <p class="text-sm text-gray-500 mt-1">Manage mock data for development and testing</p>
+    </div>
+
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      <button 
-        (click)="resetData()"
-        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-        <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-        </svg>
-        Reset
-      </button>
-      
-      <button 
-        (click)="seedData()"
-        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-        <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-        </svg>
-        Seed
-      </button>
-      
-      <button 
-        (click)="exportData()"
-        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-        <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-        </svg>
-        Copy
-      </button>
-      
-      <button 
-        (click)="downloadData()"
-        class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-        <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
-        </svg>
-        Download
-      </button>
+      <div class="relative group">
+        <button
+          (click)="resetData()"
+          class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+          <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+          </svg>
+          Reset
+        </button>
+        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs font-medium text-white bg-gray-800 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-lg z-10">
+          Clear all data and restore minimal defaults
+          <svg class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 text-gray-800" viewBox="0 0 8 8">
+            <polygon fill="currentColor" points="4,0 8,8 0,8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="relative group">
+        <button
+          (click)="seedData()"
+          class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+          <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          Seed
+        </button>
+        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs font-medium text-white bg-gray-800 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-lg z-10">
+          Load rich demo dataset (15 users, 50 tasks)
+          <svg class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 text-gray-800" viewBox="0 0 8 8">
+            <polygon fill="currentColor" points="4,0 8,8 0,8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="relative group">
+        <button
+          (click)="exportData()"
+          class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+          </svg>
+          Copy
+        </button>
+        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs font-medium text-white bg-gray-800 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-lg z-10">
+          Export all data to clipboard as JSON
+          <svg class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 text-gray-800" viewBox="0 0 8 8">
+            <polygon fill="currentColor" points="4,0 8,8 0,8"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="relative group">
+        <button
+          (click)="downloadData()"
+          class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+          <svg class="w-4 h-4 mr-2 fill-none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+          </svg>
+          Download
+        </button>
+        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-xs font-medium text-white bg-gray-800 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-lg z-10">
+          Download all data as JSON file
+          <svg class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 w-2 h-2 text-gray-800" viewBox="0 0 8 8">
+            <polygon fill="currentColor" points="4,0 8,8 0,8"/>
+          </svg>
+        </div>
+      </div>
     </div>
 
     <div class="mt-4">
       <label class="block text-sm font-medium text-gray-700 mb-2">Import Data</label>
-      <input 
-        type="file" 
+      <input
+        type="file"
         accept=".json"
         (change)="importData($event)"
         class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
@@ -162,17 +227,17 @@
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-medium text-gray-900">Activity Log</h3>
-      <button 
+      <button
         (click)="clearLogs()"
         class="text-sm text-gray-500 hover:text-gray-700">
         Clear
       </button>
     </div>
-    
+
     <div class="bg-gray-900 rounded-lg p-4 max-h-48 overflow-y-auto">
       @for (log of consoleOutput(); track log.timestamp) {
       <div class="flex items-start space-x-2 text-sm mb-1">
-        <span class="text-gray-400 font-mono text-xs">{{ log.timestamp }}</span>
+        <span class="text-gray-400 font-mono">{{ log.timestamp }}</span>
         <span class="text-green-400 flex-1">{{ log.message }}</span>
       </div>
       }
