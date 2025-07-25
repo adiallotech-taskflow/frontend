@@ -7,16 +7,16 @@
 
 
     <div
-      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out"
-      (click)="close()">
+      class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out">
     </div>
 
-    <div class="fixed inset-0 overflow-hidden">
+    <div class="fixed inset-0 overflow-hidden" (click)="close()">
       <div class="absolute inset-0 overflow-hidden">
         <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
 
           <div
-            class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700">
+            class="pointer-events-auto w-screen max-w-md transform transition ease-in-out duration-500 sm:duration-700"
+            (click)="$event.stopPropagation()">
 
             <form
               [formGroup]="form"

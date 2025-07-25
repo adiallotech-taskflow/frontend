@@ -1,9 +1,9 @@
 @if (isOpen) {
   <div role="dialog" aria-modal="true" class="relative z-50 lg:hidden">
-    <div aria-hidden="true" class="fixed inset-0 bg-gray-900/80" (click)="onClose()"></div>
+    <div aria-hidden="true" class="fixed inset-0 bg-gray-900/80"></div>
 
-    <div class="fixed inset-0 flex">
-      <div class="relative mr-16 flex w-full max-w-xs flex-1">
+    <div class="fixed inset-0 flex" (click)="onClose()">
+      <div class="relative mr-16 flex w-full max-w-xs flex-1" (click)="$event.stopPropagation()">
         <div class="absolute left-full top-0 flex w-16 justify-center pt-5">
           <button type="button" class="-m-2.5 p-2.5" (click)="onClose()">
             <span class="sr-only">Close sidebar</span>
