@@ -134,6 +134,7 @@
       <app-search-filter
         [resultsCount]="filteredTasksCount()"
         [currentUserId]="currentUserId"
+        [initialFilters]="currentFilters()"
         (filtersChanged)="onFiltersChanged($event)">
       </app-search-filter>
     </div>

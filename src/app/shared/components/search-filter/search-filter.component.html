@@ -7,6 +7,16 @@
 
     <!-- Filter Tags -->
     <div class="flex flex-1 flex-wrap items-center gap-2">
+      <!-- Show skeleton loader if loading teams and we have pending team filters -->
+      @if (isLoadingTeams() && pendingFilters && pendingFilters.teamIds && pendingFilters.teamIds.length > 0) {
+        @for (teamId of pendingFilters.teamIds; track teamId) {
+          <span class="inline-flex items-center gap-x-0.5 rounded-md px-2 py-1 text-xs font-medium bg-gray-100 animate-pulse">
+            <span class="h-3 w-20 bg-gray-300 rounded"></span>
+            <span class="size-3.5"></span>
+          </span>
+        }
+      }
+      
       @for (tag of filterTags(); track tag.type + tag.value) {
         <span [ngClass]="getTagColorClasses(tag.color || 'gray')" class="inline-flex items-center gap-x-0.5 rounded-md px-2 py-1 text-xs font-medium">
           {{ tag.label }}

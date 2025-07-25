@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Workspace, WorkspaceStats, DashboardStats, Task, ConfirmationDialogData } from '../../../../core/models';
 import { WorkspaceService, TaskMockService, AuthService } from '../../../../core/services';
-import { SearchBarComponent } from '../search-bar/search-bar';
 import { StatsOverviewComponent } from '../stats-overview/stats-overview';
 import { WorkspaceCardComponent } from '../workspace-card/workspace-card';
 import { WorkspaceSkeletonComponent } from '../workspace-skeleton/workspace-skeleton';
@@ -18,7 +17,6 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
   imports: [
     CommonModule,
     FormsModule,
-    SearchBarComponent,
     StatsOverviewComponent,
     WorkspaceCardComponent,
     WorkspaceSkeletonComponent,
@@ -38,10 +36,10 @@ export class DashboardComponent implements OnInit {
   allTasks = signal<Task[]>([]);
   isLoading = signal(true);
   searchTerm = signal('');
-  
+
   private authService = inject(AuthService);
   private workspaceToDelete: Workspace | null = null;
-  
+
   confirmationData: ConfirmationDialogData = {
     title: '',
     message: '',
@@ -75,7 +73,7 @@ export class DashboardComponent implements OnInit {
     };
   });
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadData();
   }
 
@@ -116,10 +114,10 @@ export class DashboardComponent implements OnInit {
     const currentWorkspaces = this.workspaces();
     this.workspaces.set([...currentWorkspaces, workspace]);
   }
-  
+
   onWorkspaceUpdated(updatedWorkspace: Workspace) {
     const currentWorkspaces = this.workspaces();
-    const updatedWorkspaces = currentWorkspaces.map(w => 
+    const updatedWorkspaces = currentWorkspaces.map(w =>
       w.id === updatedWorkspace.id ? updatedWorkspace : w
     );
     this.workspaces.set(updatedWorkspaces);
@@ -138,7 +136,7 @@ export class DashboardComponent implements OnInit {
       totalMembers: workspace.members.length,
     };
   }
-  
+
   isWorkspaceAdmin(workspace: Workspace): boolean {
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser) {
@@ -147,11 +145,11 @@ export class DashboardComponent implements OnInit {
     const member = workspace.members?.find((m) => m.userId === currentUser.id);
     return member?.role === 'admin';
   }
-  
+
   editWorkspace(workspace: Workspace) {
     this.slideOver()?.open(workspace);
   }
-  
+
   deleteWorkspace(workspace: Workspace) {
     this.workspaceToDelete = workspace;
     this.confirmationData = {
@@ -164,7 +162,7 @@ export class DashboardComponent implements OnInit {
 
     this.confirmationDialog.open();
   }
-  
+
   onDeleteConfirmed() {
     if (this.workspaceToDelete) {
       this.workspaceService.delete(this.workspaceToDelete.id).subscribe({

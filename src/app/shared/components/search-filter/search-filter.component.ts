@@ -26,16 +26,24 @@ import { AuthService } from '../../../core/services';
 export class SearchFilterComponent implements OnInit {
   @Input() resultsCount: number = 0;
   @Input() currentUserId?: string;
+  @Input() set initialFilters(filters: TaskFilterOptions | null) {
+    if (filters) {
+      this.pendingFilters = filters;
+      this.applyInitialFilters(filters);
+    }
+  }
   @Output() filtersChanged = new EventEmitter<TaskFilterOptions>();
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   private teamService = inject(TeamService);
   private authService = inject(AuthService);
+  pendingFilters: TaskFilterOptions | null = null;
 
   searchValue = '';
   showSuggestions = false;
   selectedSuggestionIndex = -1;
+  isLoadingTeams = signal(false);
 
   filterTags = signal<FilterTag[]>([]);
   teams = signal<TeamModel[]>([]);
@@ -86,9 +94,84 @@ export class SearchFilterComponent implements OnInit {
     this.loadUserTeams();
   }
 
+  private applyInitialFilters(filters: TaskFilterOptions) {
+    const tags: FilterTag[] = [];
+
+    // Add team filters
+    if (filters.teamIds && filters.teamIds.length > 0) {
+      filters.teamIds.forEach(teamId => {
+        const team = this.teams().find(t => t.teamId === teamId);
+        if (team) {
+          tags.push({
+            type: 'team',
+            value: team.teamId,
+            label: team.name,
+            color: 'indigo',
+          });
+        }
+      });
+    }
+
+    // Add status filters
+    if (filters.status && filters.status.length > 0) {
+      filters.status.forEach(status => {
+        tags.push({
+          type: 'status',
+          value: status,
+          label: this.formatStatusLabel(status),
+          color: this.getStatusColor(status),
+        });
+      });
+    }
+
+    // Add priority filters
+    if (filters.priority && filters.priority.length > 0) {
+      filters.priority.forEach(priority => {
+        tags.push({
+          type: 'priority',
+          value: priority,
+          label: this.formatPriorityLabel(priority),
+          color: this.getPriorityColor(priority),
+        });
+      });
+    }
+
+    // Add assignee filter
+    if (filters.myTasks) {
+      tags.push({
+        type: 'assignee',
+        value: 'me',
+        label: 'My Tasks',
+        color: 'green',
+      });
+    }
+
+    // Add time filters
+    if (filters.thisWeek) {
+      tags.push({
+        type: 'time',
+        value: 'thisweek',
+        label: 'This Week',
+        color: 'purple',
+      });
+    }
+
+    if (filters.overdue) {
+      tags.push({
+        type: 'time',
+        value: 'overdue',
+        label: 'Overdue',
+        color: 'red',
+      });
+    }
+
+    this.filterTags.set(tags);
+  }
+
   private loadUserTeams() {
     const currentUser = this.authService.getCurrentUser();
     if (currentUser) {
+      this.isLoadingTeams.set(true);
       this.teamService.getMyTeams(currentUser.id).subscribe({
         next: (teams) => {
           this.teams.set(teams);
@@ -100,6 +183,16 @@ export class SearchFilterComponent implements OnInit {
             hint: `Show tasks from ${team.name}`,
           }));
           this.allSuggestions = [...this.allSuggestions, ...teamSuggestions];
+          
+          // Re-apply pending filters now that teams are loaded
+          if (this.pendingFilters) {
+            this.applyInitialFilters(this.pendingFilters);
+            this.pendingFilters = null;
+          }
+          this.isLoadingTeams.set(false);
+        },
+        error: () => {
+          this.isLoadingTeams.set(false);
         }
       });
     }
