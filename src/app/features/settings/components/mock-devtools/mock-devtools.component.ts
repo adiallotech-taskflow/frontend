@@ -1,10 +1,10 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MockConfigService } from './mock.config';
-import { MockUtilsService } from './mock.utils';
-import { environment } from '../../../../environments/environment';
-import { MockConfig } from '../../models';
+import { MockConfigService } from '../../../../core/services/mock/mock.config';
+import { MockUtilsService } from '../../../../core/services/mock/mock.utils';
+import { environment } from '../../../../../environments/environment';
+import { MockConfig } from '../../../../core/models';
 
 @Component({
   selector: 'app-mock-devtools',
@@ -21,6 +21,7 @@ export class MockDevToolsComponent implements OnInit {
 
   tempConfig = { delayMin: 300, delayMax: 800 };
   tempErrorRate = 0;
+  tempPersistToLocalStorage = true;
 
   constructor(
     private configService: MockConfigService,
@@ -38,18 +39,31 @@ export class MockDevToolsComponent implements OnInit {
     this.currentConfig.set(config);
     this.tempConfig = { delayMin: config.delayMin, delayMax: config.delayMax };
     this.tempErrorRate = config.errorRate * 100;
+    this.tempPersistToLocalStorage = config.persistToLocalStorage;
     this.refreshStats();
   }
 
   toggleConfigEdit() {
     if (this.isEditingConfig()) {
       // Save config
+      const oldConfig = this.currentConfig();
       const newConfig: MockConfig = {
-        ...this.currentConfig(),
+        ...oldConfig,
         delayMin: this.tempConfig.delayMin,
         delayMax: this.tempConfig.delayMax,
-        errorRate: this.tempErrorRate / 100
+        errorRate: this.tempErrorRate / 100,
+        persistToLocalStorage: this.tempPersistToLocalStorage
       };
+      
+      // Check if persistToLocalStorage changed
+      if (oldConfig.persistToLocalStorage !== newConfig.persistToLocalStorage) {
+        if (newConfig.persistToLocalStorage) {
+          this.addLog('localStorage persistence enabled');
+        } else {
+          this.addLog('localStorage persistence disabled - data cleared');
+        }
+      }
+      
       this.configService.updateConfig(newConfig);
       this.currentConfig.set(newConfig);
       this.addLog('Configuration updated');

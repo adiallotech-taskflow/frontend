@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MockDevToolsComponent } from '../../../../core/services';
+import { MockDevToolsComponent } from '../mock-devtools/mock-devtools.component';
 import { environment } from '../../../../../environments/environment';
 
 @Component({

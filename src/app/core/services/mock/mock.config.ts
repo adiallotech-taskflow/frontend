@@ -51,14 +51,12 @@ export class MockConfigService {
   }
 
   private loadConfig(): MockConfig {
-    if (!DEFAULT_MOCK_CONFIG.persistToLocalStorage) {
-      return { ...DEFAULT_MOCK_CONFIG };
-    }
-
     try {
       const stored = localStorage.getItem('taskflow_mock_config');
       if (stored) {
         const parsed = JSON.parse(stored);
+        // If the stored config has persistToLocalStorage disabled, 
+        // we should still load it but not persist future changes
         return { ...DEFAULT_MOCK_CONFIG, ...parsed };
       }
     } catch (error) {
@@ -69,14 +67,21 @@ export class MockConfigService {
   }
 
   private saveConfig(): void {
-    if (!this.config.persistToLocalStorage) {
-      return;
-    }
-
     try {
+      if (!this.config.persistToLocalStorage) {
+        // If persistence is disabled, remove the config from localStorage
+        localStorage.removeItem('taskflow_mock_config');
+        // Also clear mock data from localStorage
+        const keysToRemove = Object.keys(localStorage).filter(key => 
+          key.startsWith('taskflow_mock_')
+        );
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        return;
+      }
+
       localStorage.setItem('taskflow_mock_config', JSON.stringify(this.config));
     } catch (error) {
-      console.warn('[Mock] Failed to save config to localStorage:', error);
+      console.warn('[Mock] Failed to save/clear config in localStorage:', error);
     }
   }
 }

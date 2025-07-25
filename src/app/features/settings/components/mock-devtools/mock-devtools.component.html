@@ -49,6 +49,19 @@
       </div>
     </div>
 
+    <div class="mt-4">
+      <label class="flex items-center space-x-3">
+        <input 
+          type="checkbox" 
+          [checked]="tempPersistToLocalStorage"
+          (change)="tempPersistToLocalStorage = $any($event.target).checked"
+          [disabled]="!editingConfig()"
+          class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded disabled:opacity-50">
+        <span class="text-sm font-medium text-gray-700">Persist data to localStorage</span>
+      </label>
+      <p class="mt-1 text-xs text-gray-500 ml-7">Keep mock data between page reloads</p>
+    </div>
+
     <div class="mt-4 flex flex-wrap gap-2">
       <button 
         (click)="applyPreset('normal')"
