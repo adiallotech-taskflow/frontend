@@ -9,7 +9,7 @@
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
       <!-- Command palette -->
-      <div class="mx-auto max-w-xl transform overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5 transition-all">
+      <div class="mx-auto max-w-3xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black/5 transition-all">
         <div class="grid grid-cols-1">
           <input
             type="text"
@@ -27,7 +27,7 @@
 
         @if (isSearching()) {
           <!-- Loading state -->
-          <div class="border-t border-gray-100 px-6 py-14 text-center text-sm sm:px-14">
+          <div class="px-6 py-14 text-center text-sm sm:px-14">
             <div class="mx-auto h-12 w-12 text-gray-400">
               <svg class="fill-none animate-spin h-12 w-12" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -37,110 +37,224 @@
             <p class="mt-4 font-semibold text-gray-900">Searching...</p>
           </div>
         } @else if (!searchQuery()) {
-          <!-- Default state -->
-          <div class="border-t border-gray-100 px-6 py-14 text-center text-sm sm:px-14">
-            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="fill-none mx-auto size-6 text-gray-400">
-              <path d="m6.115 5.19.319 1.913A6 6 0 0 0 8.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 0 0 2.288-4.042 1.087 1.087 0 0 0-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 0 1-.98-.314l-.295-.295a1.125 1.125 0 0 1 0-1.591l.13-.132a1.125 1.125 0 0 1 1.3-.21l.603.302a.809.809 0 0 0 1.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 0 0 1.528-1.732l.146-.292M6.115 5.19A9 9 0 1 0 17.18 4.64M6.115 5.19A8.965 8.965 0 0 1 12 3c1.929 0 3.716.607 5.18 1.64" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <p class="mt-4 font-semibold text-gray-900">Search for workspaces and tasks</p>
-            <p class="mt-2 text-gray-500">Quickly access workspaces and tasks by running a global search.</p>
-            <p class="mt-4 text-xs text-gray-400">Press <kbd class="font-sans">⌘K</kbd> to open anytime</p>
+          <!-- Default state with recent searches -->
+          <div class="flex transform-gpu divide-x divide-gray-100">
+            <div class="max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4">
+              <h2 class="mb-4 mt-2 text-xs font-semibold text-gray-500">Quick actions</h2>
+              <ul class="-mx-2 text-sm text-gray-700">
+                <li class="group flex cursor-pointer select-none items-center rounded-md p-2 hover:bg-gray-100">
+                  <svg class="size-6 flex-none text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  <span class="ml-3 flex-auto">Create new workspace</span>
+                </li>
+                <li class="group flex cursor-pointer select-none items-center rounded-md p-2 hover:bg-gray-100">
+                  <svg class="size-6 flex-none text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="ml-3 flex-auto">Create new task</span>
+                </li>
+              </ul>
+              <p class="mt-8 text-xs text-center text-gray-400">Press <kbd class="font-sans">⌘K</kbd> to open anytime</p>
+            </div>
           </div>
         } @else if (hasResults()) {
-          <!-- Results -->
-          <ul id="options" role="listbox" class="max-h-80 scroll-pb-2 scroll-pt-11 space-y-2 overflow-y-auto pb-2">
-            @if (searchResults().workspaces.length > 0) {
-              <li>
-                <h2 class="bg-gray-100 px-4 py-2.5 text-xs font-semibold text-gray-900">Workspaces</h2>
-                <ul class="mt-2 text-sm text-gray-800">
+          <!-- Results with preview panel -->
+          <div class="flex transform-gpu divide-x divide-gray-100">
+            <div class="max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4 sm:h-96">
+              @if (searchResults().workspaces.length > 0) {
+                <h2 class="mb-4 mt-2 text-xs font-semibold text-gray-500">Workspaces</h2>
+                <ul class="-mx-2 text-sm text-gray-700">
                   @for (workspace of searchResults().workspaces; track workspace.id; let i = $index) {
                     <li
                       role="option"
                       tabindex="-1"
-                      (click)="navigateToResult({ type: 'workspace', item: workspace })"
-                      [class.bg-indigo-600]="isSelected('workspace', i)"
-                      [class.text-white]="isSelected('workspace', i)"
+                      (click)="selectResult({ type: 'workspace', item: workspace })"
+                      [class.bg-gray-100]="isSelected('workspace', i)"
+                      [class.text-gray-900]="isSelected('workspace', i)"
                       [class.outline-none]="isSelected('workspace', i)"
-                      class="cursor-pointer select-none px-4 py-2 hover:bg-gray-100">
-                      <div class="flex items-center justify-between">
-                        <div>
-                          <p class="font-medium">{{ workspace.name }}</p>
-                          @if (workspace.description) {
-                            <p [class.text-indigo-200]="isSelected('workspace', i)" [class.text-gray-500]="!isSelected('workspace', i)" class="text-sm">
-                              {{ workspace.description }}
-                            </p>
-                          }
-                        </div>
-                        <svg class="fill-none h-5 w-5 flex-shrink-0" [class.text-white]="isSelected('workspace', i)" [class.text-gray-400]="!isSelected('workspace', i)" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                        </svg>
+                      class="group flex cursor-pointer select-none items-center rounded-md p-2">
+                      <div class="flex size-6 flex-none items-center justify-center rounded-lg bg-indigo-500">
+                        <span class="text-xs font-medium text-white">{{ workspace.name.charAt(0).toUpperCase() }}</span>
                       </div>
+                      <span class="ml-3 flex-auto truncate">{{ workspace.name }}</span>
+                      <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                           [class.hidden]="!isSelected('workspace', i)"
+                           class="ml-3 size-5 flex-none text-gray-400">
+                        <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                      </svg>
                     </li>
                   }
                 </ul>
-              </li>
-            }
+              }
 
-            @if (searchResults().tasks.length > 0) {
-              <li>
-                <h2 class="bg-gray-100 px-4 py-2.5 text-xs font-semibold text-gray-900">Tasks</h2>
-                <ul class="mt-2 text-sm text-gray-800">
+              @if (searchResults().tasks.length > 0) {
+                <h2 [class.mt-6]="searchResults().workspaces.length > 0" class="mb-4 mt-2 text-xs font-semibold text-gray-500">Tasks</h2>
+                <ul class="-mx-2 text-sm text-gray-700">
                   @for (task of searchResults().tasks; track task.id; let i = $index) {
                     <li
                       role="option"
                       tabindex="-1"
-                      (click)="navigateToResult({ type: 'task', item: task })"
-                      [class.bg-indigo-600]="isSelected('task', i)"
-                      [class.text-white]="isSelected('task', i)"
+                      (click)="selectResult({ type: 'task', item: task })"
+                      [class.bg-gray-100]="isSelected('task', i)"
+                      [class.text-gray-900]="isSelected('task', i)"
                       [class.outline-none]="isSelected('task', i)"
-                      class="cursor-pointer select-none px-4 py-2 hover:bg-gray-100">
-                      <div class="flex items-center justify-between">
-                        <div class="min-w-0 flex-1">
-                          <p class="font-medium truncate">{{ task.title }}</p>
-                          <div class="mt-1 flex items-center space-x-2">
-                            @switch (task.status) {
-                              @case ('todo') {
-                                <span [class.bg-gray-100]="isSelected('task', i)" [class.text-gray-700]="isSelected('task', i)" [class.bg-gray-200]="!isSelected('task', i)" [class.text-gray-600]="!isSelected('task', i)" class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
-                                  To Do
-                                </span>
-                              }
-                              @case ('in-progress') {
-                                <span [class.bg-blue-100]="isSelected('task', i)" [class.text-blue-700]="isSelected('task', i)" [class.bg-blue-200]="!isSelected('task', i)" [class.text-blue-600]="!isSelected('task', i)" class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
-                                  In Progress
-                                </span>
-                              }
-                              @case ('done') {
-                                <span [class.bg-green-100]="isSelected('task', i)" [class.text-green-700]="isSelected('task', i)" [class.bg-green-200]="!isSelected('task', i)" [class.text-green-600]="!isSelected('task', i)" class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium">
-                                  Done
-                                </span>
-                              }
-                            }
-                            @switch (task.priority) {
-                              @case ('high') {
-                                <span [class.text-red-300]="isSelected('task', i)" [class.text-red-600]="!isSelected('task', i)" class="text-xs">High Priority</span>
-                              }
-                              @case ('medium') {
-                                <span [class.text-yellow-300]="isSelected('task', i)" [class.text-yellow-600]="!isSelected('task', i)" class="text-xs">Medium Priority</span>
-                              }
-                              @case ('low') {
-                                <span [class.text-green-300]="isSelected('task', i)" [class.text-green-600]="!isSelected('task', i)" class="text-xs">Low Priority</span>
-                              }
-                            }
-                          </div>
-                        </div>
-                        <svg class="fill-none h-5 w-5 flex-shrink-0 ml-2" [class.text-white]="isSelected('task', i)" [class.text-gray-400]="!isSelected('task', i)" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
+                      class="group flex cursor-pointer select-none items-center rounded-md p-2">
+                      <div class="flex size-6 flex-none items-center justify-center">
+                        @switch (task.status) {
+                          @case ('todo') {
+                            <svg class="size-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                            </svg>
+                          }
+                          @case ('in-progress') {
+                            <svg class="size-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          }
+                          @case ('done') {
+                            <svg class="size-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          }
+                        }
                       </div>
+                      <span class="ml-3 flex-auto truncate">{{ task.title }}</span>
+                      <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"
+                           [class.hidden]="!isSelected('task', i)"
+                           class="ml-3 size-5 flex-none text-gray-400">
+                        <path d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
+                      </svg>
                     </li>
                   }
                 </ul>
-              </li>
+              }
+            </div>
+
+            <!-- Preview Panel -->
+            @if (selectedItem()) {
+              <div class="hidden h-96 w-1/2 flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
+                @if (selectedItem()!.type === 'workspace') {
+                  <div class="flex-none p-6 text-center">
+                    <div class="mx-auto size-16 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600 p-1">
+                      <div class="flex h-full w-full items-center justify-center rounded-full bg-white">
+                        <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                      </div>
+                    </div>
+                    <h2 class="mt-3 font-semibold text-gray-900">{{ getSelectedWorkspace()!.name }}</h2>
+                    <p class="text-sm/6 text-gray-500">Workspace · {{ getSelectedWorkspace()!.members.length }} members</p>
+                  </div>
+                  <div class="flex flex-auto flex-col justify-between p-6">
+                    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 text-sm text-gray-700">
+                      <dt class="col-end-1 font-semibold text-gray-900">Description</dt>
+                      <dd>{{ getSelectedWorkspace()!.description || 'No description available' }}</dd>
+                      <dt class="col-end-1 font-semibold text-gray-900">Owner</dt>
+                      <dd>{{ getWorkspaceOwnerName() }}</dd>
+                      <dt class="col-end-1 font-semibold text-gray-900">Created</dt>
+                      <dd>{{ getSelectedWorkspace()!.createdAt | date:'mediumDate' }}</dd>
+                      <dt class="col-end-1 font-semibold text-gray-900">Members</dt>
+                      <dd>
+                        <div class="flex -space-x-2">
+                          @for (member of getSelectedWorkspace()!.members.slice(0, 5); track member.userId) {
+                            <div class="inline-block h-6 w-6 rounded-full bg-gray-300 ring-2 ring-white flex items-center justify-center text-xs font-medium text-gray-600">
+                              {{ getMemberInitials(member.userId) }}
+                            </div>
+                          }
+                          @if (getSelectedWorkspace()!.members.length > 5) {
+                            <div class="inline-block h-6 w-6 rounded-full bg-gray-100 ring-2 ring-white flex items-center justify-center text-xs font-medium text-gray-500">
+                              +{{ getSelectedWorkspace()!.members.length - 5 }}
+                            </div>
+                          }
+                        </div>
+                      </dd>
+                    </dl>
+                    <button type="button"
+                            (click)="navigateToResult(selectedItem()!)"
+                            class="mt-6 w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      Open workspace
+                    </button>
+                  </div>
+                } @else {
+                  <div class="flex-none p-6 text-center">
+                    <div class="mx-auto size-16 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 p-1">
+                      <div class="flex h-full w-full items-center justify-center rounded-full bg-white">
+                        @switch (getSelectedTask()!.status) {
+                          @case ('todo') {
+                            <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                          }
+                          @case ('in-progress') {
+                            <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          }
+                          @case ('done') {
+                            <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          }
+                        }
+                      </div>
+                    </div>
+                    <h2 class="mt-3 font-semibold text-gray-900 line-clamp-2">{{ getSelectedTask()!.title }}</h2>
+                    <p class="text-sm/6 text-gray-500">
+                      Task ·
+                      @switch (getSelectedTask()!.priority) {
+                        @case ('high') {
+                          <span class="text-red-600">High priority</span>
+                        }
+                        @case ('medium') {
+                          <span class="text-yellow-600">Medium priority</span>
+                        }
+                        @case ('low') {
+                          <span class="text-green-600">Low priority</span>
+                        }
+                      }
+                    </p>
+                  </div>
+                  <div class="flex flex-auto flex-col justify-between p-6">
+                    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 text-sm text-gray-700">
+                      <dt class="col-end-1 font-semibold text-gray-900">Description</dt>
+                      <dd class="text-gray-500">{{ getSelectedTask()!.description || 'No description available' }}</dd>
+                      <dt class="col-end-1 font-semibold text-gray-900">Status</dt>
+                      <dd>
+                        <span [class]="getTaskStatusClasses()">
+                          @switch (getSelectedTask()!.status) {
+                            @case ('todo') { To Do }
+                            @case ('in-progress') { In Progress }
+                            @case ('done') { Done }
+                          }
+                        </span>
+                      </dd>
+                      @if (getSelectedTask()!.assigneeId) {
+                        <dt class="col-end-1 font-semibold text-gray-900">Assigned to</dt>
+                        <dd>{{ getAssigneeName() }}</dd>
+                      }
+                      @if (getSelectedTask()!.teamId) {
+                        <dt class="col-end-1 font-semibold text-gray-900">Team</dt>
+                        <dd>{{ getTeamName() }}</dd>
+                      }
+                      @if (getSelectedTask()!.dueDate) {
+                        <dt class="col-end-1 font-semibold text-gray-900">Due date</dt>
+                        <dd [class.text-red-600]="isOverdue()">{{ getSelectedTask()!.dueDate | date:'mediumDate' }}</dd>
+                      }
+                    </dl>
+                    <button type="button"
+                            (click)="navigateToResult(selectedItem()!)"
+                            class="mt-6 w-full rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                      View task details
+                    </button>
+                  </div>
+                }
+              </div>
             }
-          </ul>
+          </div>
         } @else {
           <!-- Empty state -->
-          <div class="border-t border-gray-100 px-6 py-14 text-center text-sm sm:px-14">
+          <div class="px-6 py-14 text-center text-sm sm:px-14">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true" class="fill-none mx-auto size-6 text-gray-400">
               <path d="M15.182 16.318A4.486 4.486 0 0 0 12.016 15a4.486 4.486 0 0 0-3.198 1.318M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" stroke-linecap="round" stroke-linejoin="round" />
             </svg>

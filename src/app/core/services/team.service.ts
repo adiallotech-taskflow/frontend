@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, throwError, Subject, tap } from 'rxjs';
+import { Observable, catchError, throwError, Subject, tap, BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
 import { TeamMockService } from './mock';
-import { TeamModel, Task } from '../models';
+import { TeamModel } from '../models';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -11,6 +11,7 @@ import { environment } from '../../../environments/environment';
 export class TeamService {
   private teamUpdated = new Subject<void>();
   teamUpdated$ = this.teamUpdated.asObservable();
+  private teamsSubject = new BehaviorSubject<TeamModel[]>([]);
 
   constructor(
     private apiService: ApiService,
@@ -64,24 +65,19 @@ export class TeamService {
     );
   }
 
-  getTeamTasks(teamId: string): Observable<Task[]> {
-    const request$ = this.useMockService
-      ? this.mockService.getTeamTasks(teamId)
-      : this.apiService.get<Task[]>(`/teams/${teamId}/tasks`);
-
-    return request$.pipe(
-      catchError((error) => throwError(() => error))
-    );
-  }
-
   getAllTeams(): Observable<TeamModel[]> {
     const request$ = this.useMockService
       ? this.mockService.getAllTeams()
       : this.apiService.get<TeamModel[]>(`/teams`);
 
     return request$.pipe(
+      tap(teams => this.teamsSubject.next(teams)),
       catchError((error) => throwError(() => error))
     );
+  }
+
+  getCachedTeams(): TeamModel[] {
+    return this.teamsSubject.value;
   }
 
   getTeamById(teamId: string): Observable<TeamModel> {
