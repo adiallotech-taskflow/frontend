@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { MockConfigService } from './mock.config';
 import { TaskMockService } from './task-mock.service';
+import { WorkspaceMockService } from './workspace-mock.service';
+import { TeamMockService } from './team-mock.service';
+import { AuthMockService } from './auth-mock.service';
+import { MockDataGenerator } from './mock-data.generator';
 import { MockConfig } from '../../models';
 
 @Injectable({
@@ -9,15 +13,37 @@ import { MockConfig } from '../../models';
 export class MockUtilsService {
   constructor(
     private configService: MockConfigService,
-    private taskMockService: TaskMockService
+    private taskMockService: TaskMockService,
+    private workspaceMockService: WorkspaceMockService,
+    private teamMockService: TeamMockService,
+    private authMockService: AuthMockService
   ) {}
 
   resetAllMockData(): void {
     this.taskMockService.resetMockData();
+    this.workspaceMockService.resetMockData();
+    this.teamMockService.resetMockData();
+    this.authMockService.resetMockData();
   }
 
   seedWithDemoData(): void {
-    this.taskMockService.loadRealisticDemoData();
+    // Generate cohesive demo data for all services
+    const demoData = MockDataGenerator.generateCohesiveDataset({
+      userCount: 15,
+      workspaceCount: 5,
+      taskCount: 50
+    });
+
+    // Load data into each service
+    this.authMockService.loadTestData(demoData.users);
+    this.workspaceMockService.loadTestData(demoData.workspaces);
+    this.taskMockService.loadTestData(demoData.tasks);
+
+    // Teams will use their own demo data generation
+    // (teams are not part of the cohesive dataset yet)
+    this.teamMockService.resetMockData();
+
+    console.log('[MockUtils] Demo data loaded for all services');
   }
 
   exportMockData(): string {
@@ -26,6 +52,9 @@ export class MockUtilsService {
       config: this.configService.getConfig(),
       data: {
         tasks: this.taskMockService.getStoredData() || [],
+        workspaces: this.workspaceMockService.getStoredData() || [],
+        teams: this.teamMockService.getStoredData() || [],
+        users: this.authMockService.getStoredData() || []
       },
     };
 
@@ -42,6 +71,18 @@ export class MockUtilsService {
 
       if (importData.data.tasks) {
         this.taskMockService.loadTestData(importData.data.tasks);
+      }
+
+      if (importData.data.workspaces) {
+        this.workspaceMockService.loadTestData(importData.data.workspaces);
+      }
+
+      if (importData.data.teams) {
+        this.teamMockService.loadTestData(importData.data.teams);
+      }
+
+      if (importData.data.users) {
+        this.authMockService.loadTestData(importData.data.users);
       }
 
       if (importData.config) {
@@ -76,6 +117,15 @@ export class MockUtilsService {
         byStatus: this.getTaskStatusStats(),
         byPriority: this.getTaskPriorityStats(),
       },
+      workspaces: {
+        total: (this.workspaceMockService.getStoredData() || []).length,
+      },
+      teams: {
+        total: (this.teamMockService.getStoredData() || []).length,
+      },
+      users: {
+        total: (this.authMockService.getStoredData() || []).length,
+      }
     };
   }
 

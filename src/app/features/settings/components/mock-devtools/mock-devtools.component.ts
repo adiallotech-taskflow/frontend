@@ -1,8 +1,7 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MockConfigService } from '../../../../core/services/mock/mock.config';
-import { MockUtilsService } from '../../../../core/services/mock/mock.utils';
+import { MockConfigService, MockUtilsService } from '../../../../core/services';
 import { environment } from '../../../../../environments/environment';
 import { MockConfig } from '../../../../core/models';
 
@@ -54,7 +53,7 @@ export class MockDevToolsComponent implements OnInit {
         errorRate: this.tempErrorRate / 100,
         persistToLocalStorage: this.tempPersistToLocalStorage
       };
-      
+
       // Check if persistToLocalStorage changed
       if (oldConfig.persistToLocalStorage !== newConfig.persistToLocalStorage) {
         if (newConfig.persistToLocalStorage) {
@@ -63,7 +62,7 @@ export class MockDevToolsComponent implements OnInit {
           this.addLog('localStorage persistence disabled - data cleared');
         }
       }
-      
+
       this.configService.updateConfig(newConfig);
       this.currentConfig.set(newConfig);
       this.addLog('Configuration updated');
