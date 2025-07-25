@@ -74,6 +74,10 @@ export class TaskCardComponent {
 
   get userInitials(): string {
     if (!this.assignedUser) {
+      // If assigned to team, show team initial
+      if (this.assignedTeam) {
+        return this.assignedTeam.name.charAt(0).toUpperCase();
+      }
       return '?';
     }
     return `${this.assignedUser.firstName.charAt(0)}${this.assignedUser.lastName.charAt(0)}`.toUpperCase();
@@ -81,9 +85,17 @@ export class TaskCardComponent {
 
   get userName(): string {
     if (!this.assignedUser) {
+      // If assigned to team, show team name
+      if (this.assignedTeam) {
+        return this.assignedTeam.name;
+      }
       return 'Unassigned';
     }
     return `${this.assignedUser.firstName} ${this.assignedUser.lastName}`;
+  }
+
+  get isTeamAssignment(): boolean {
+    return !this.assignedUser && !!this.assignedTeam;
   }
 
   get isOverdue(): boolean {
