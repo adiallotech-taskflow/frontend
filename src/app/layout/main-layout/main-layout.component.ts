@@ -1,17 +1,18 @@
-import { Component, signal, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, signal, OnInit, inject, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { MobileSidebarComponent } from '../components/mobile-sidebar/mobile-sidebar.component';
 import { DesktopSidebarComponent } from '../components/desktop-sidebar/desktop-sidebar.component';
 import { TopNavigationComponent } from '../components/top-navigation/top-navigation.component';
 import { NotificationComponent } from '../../shared/components/notification/notification.component';
+import { CommandPaletteComponent } from '../../shared';
 import { NavigationItem, Team, TeamModel } from '../../core/models';
 import { TeamService, AuthService } from '../../core/services';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-main-layout',
-  imports: [CommonModule, RouterOutlet, MobileSidebarComponent, DesktopSidebarComponent, TopNavigationComponent, NotificationComponent],
+  imports: [CommonModule, RouterOutlet, MobileSidebarComponent, DesktopSidebarComponent, TopNavigationComponent, NotificationComponent, CommandPaletteComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })
@@ -20,6 +21,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
+
+  @ViewChild(CommandPaletteComponent) commandPalette!: CommandPaletteComponent;
 
   isMobileSidenavOpen = signal(false);
   isUserMenuOpen = signal(false);
@@ -79,6 +82,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   toggleUserMenu() {
     this.isUserMenuOpen.update((value) => !value);
+  }
+
+  openCommandPalette() {
+    this.commandPalette?.open();
   }
 
   navigationItems: NavigationItem[] = [

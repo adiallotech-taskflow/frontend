@@ -215,4 +215,15 @@ export class WorkspaceService {
     );
   }
 
+  search(query: string): Observable<Workspace[]> {
+    const request$ = this.useMockService
+      ? this.mockService.searchWorkspaces(query)
+      : this.apiService.get<Workspace[]>(`/workspaces/search?q=${encodeURIComponent(query)}`);
+
+    return request$.pipe(
+      map((result) => (Array.isArray(result) ? result : (result as any).items || [])),
+      catchError((error) => throwError(() => error))
+    );
+  }
+
 }

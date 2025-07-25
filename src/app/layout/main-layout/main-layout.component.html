@@ -21,7 +21,8 @@
     <app-top-navigation 
       [isUserMenuOpen]="isUserMenuOpen()"
       (toggleMobileSidenav)="toggleMobileSidenav()"
-      (toggleUserMenu)="toggleUserMenu()">
+      (toggleUserMenu)="toggleUserMenu()"
+      (openCommandPalette)="openCommandPalette()">
     </app-top-navigation>
 
     <main class="py-10">
@@ -32,4 +33,5 @@
   </div>
   
   <app-notification></app-notification>
+  <app-command-palette></app-command-palette>
 </div>

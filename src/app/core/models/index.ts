@@ -29,3 +29,6 @@ export * from './ui/filter.model';
 export * from './service/api';
 export * from './service/dashboard.model';
 export * from './service/mock';
+
+// Search models
+export * from './search-result.model';

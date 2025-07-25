@@ -16,8 +16,8 @@ export class TopNavigationComponent {
   @Input() isUserMenuOpen = false;
   @Output() toggleMobileSidenav = new EventEmitter<void>();
   @Output() toggleUserMenu = new EventEmitter<void>();
+  @Output() openCommandPalette = new EventEmitter<void>();
 
-  currentUser$ = this.authService.currentUser$;
   isAuthenticated$ = this.authService.isAuthenticated$;
 
   userName = computed(() => {
@@ -40,6 +40,10 @@ export class TopNavigationComponent {
 
   onToggleUserMenu() {
     this.toggleUserMenu.emit();
+  }
+
+  onOpenCommandPalette() {
+    this.openCommandPalette.emit();
   }
 
   onLogout() {

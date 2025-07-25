@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, throwError, of } from 'rxjs';
+import { switchMap, map } from 'rxjs/operators';
 import { MockBaseService } from './mock-base.service';
 import { AuthMockService } from './auth-mock.service';
 import { UserService } from '../user.service';
 import {
   Workspace,
   WorkspaceMember,
-  WorkspaceStats,
   PaginationResult,
   CreateWorkspaceRequest,
   UpdateWorkspaceRequest,
@@ -80,23 +79,23 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
             return this.userService.getUsers().pipe(
               switchMap((users) => {
                 const user = users.find(u => u.email === inviteData.email);
-                
+
                 if (!user) {
                   return throwError(() => new Error('User not found'));
                 }
-                
+
                 // Check if user is already a member
                 const isAlreadyMember = workspace.members.some(m => m.userId === user.id);
                 if (isAlreadyMember) {
                   return throwError(() => new Error('User is already a member of this workspace'));
                 }
-                
+
                 const newMember: WorkspaceMember = {
                   userId: user.id,
                   role: inviteData.role,
                   joinedAt: new Date(),
                 };
-                
+
                 const updatedMembers = [...workspace.members, newMember];
                 return this.updateInMockData(workspaceId, {
                   members: updatedMembers,
@@ -105,16 +104,6 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
               })
             );
           })
-        );
-      })
-    );
-  }
-
-  getWorkspaceMembers(workspaceId: string): Observable<WorkspaceMember[]> {
-    return this.simulateError<WorkspaceMember[]>().pipe(
-      switchMap(() => {
-        return this.getByIdFromMockData(workspaceId).pipe(
-          switchMap((workspace) => this.simulateDelay().pipe(switchMap(() => [workspace.members])))
         );
       })
     );
@@ -164,32 +153,25 @@ export class WorkspaceMockService extends MockBaseService<Workspace> {
     );
   }
 
-  getWorkspaceStats(workspaceId: string): Observable<WorkspaceStats> {
-    return this.simulateError<WorkspaceStats>().pipe(
+  searchWorkspaces(query: string): Observable<Workspace[]> {
+    return this.simulateError<Workspace[]>().pipe(
       switchMap(() => {
-        return this.getByIdFromMockData(workspaceId).pipe(
-          switchMap((workspace) => {
-            const stats: WorkspaceStats = {
-              totalTasks: Math.floor(Math.random() * 20) + 5,
-              completedTasks: Math.floor(Math.random() * 10) + 2,
-              inProgressTasks: Math.floor(Math.random() * 8) + 1,
-              totalMembers: workspace.members.length,
-            };
+        const searchQuery = query.toLowerCase().trim();
+        if (!searchQuery) {
+          return of([]);
+        }
 
-            return this.simulateDelay().pipe(switchMap(() => [stats]));
-          })
+        return this.getAllFromMockData().pipe(
+          map((data) => {
+            const workspaces = Array.isArray(data) ? data : (data as any).items || [];
+            return workspaces.filter((workspace: Workspace) =>
+              workspace.name.toLowerCase().includes(searchQuery) ||
+              (workspace.description && workspace.description.toLowerCase().includes(searchQuery))
+            );
+          }),
+          switchMap(results => this.simulateDelay().pipe(map(() => results)))
         );
       })
-    );
-  }
-
-  searchWorkspaces(
-    searchTerm: string,
-    page?: number,
-    limit?: number
-  ): Observable<Workspace[] | PaginationResult<Workspace>> {
-    return this.simulateError<Workspace[] | PaginationResult<Workspace>>().pipe(
-      switchMap(() => this.searchInMockData(searchTerm, ['name', 'description'], page, limit))
     );
   }
 
