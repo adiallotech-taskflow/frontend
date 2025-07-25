@@ -36,28 +36,6 @@
             </div>
             <p class="mt-4 font-semibold text-gray-900">Searching...</p>
           </div>
-        } @else if (!searchQuery()) {
-          <!-- Default state with recent searches -->
-          <div class="flex transform-gpu divide-x divide-gray-100">
-            <div class="max-h-96 min-w-0 flex-auto scroll-py-4 overflow-y-auto px-6 py-4">
-              <h2 class="mb-4 mt-2 text-xs font-semibold text-gray-500">Quick actions</h2>
-              <ul class="-mx-2 text-sm text-gray-700">
-                <li class="group flex cursor-pointer select-none items-center rounded-md p-2 hover:bg-gray-100">
-                  <svg class="size-6 flex-none text-gray-400 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  <span class="ml-3 flex-auto">Create new workspace</span>
-                </li>
-                <li class="group flex cursor-pointer select-none items-center rounded-md p-2 hover:bg-gray-100">
-                  <svg class="size-6 flex-none text-gray-400 fill-none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span class="ml-3 flex-auto">Create new task</span>
-                </li>
-              </ul>
-              <p class="mt-8 text-xs text-center text-gray-400">Press <kbd class="font-sans">⌘K</kbd> to open anytime</p>
-            </div>
-          </div>
         } @else if (hasResults()) {
           <!-- Results with preview panel -->
           <div class="flex transform-gpu divide-x divide-gray-100">

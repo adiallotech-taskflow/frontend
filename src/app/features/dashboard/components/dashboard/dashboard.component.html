@@ -1,16 +1,15 @@
 <div class="min-h-full">
-  
+
   <div class="mb-8">
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-      <app-search-bar (searchChange)="onSearchChange($event)"></app-search-bar>
     </div>
 
-    
+
     <app-stats-overview [stats]="totalStats()"></app-stats-overview>
   </div>
 
-  
+
   <div class="mb-8">
     <h2 class="text-xl font-semibold text-gray-900 mb-6">Your Workspaces</h2>
 
@@ -46,18 +45,18 @@
     }
   </div>
 
-  
+
   @if (!isLoading() && workspaces().length > 0) {
     <app-fab-button (click)="createWorkspace()"></app-fab-button>
   }
 
-  
-  <app-workspace-slide-over 
+
+  <app-workspace-slide-over
     #slideOver
     (workspaceCreated)="onWorkspaceCreated($event)"
     (workspaceUpdated)="onWorkspaceUpdated($event)">
   </app-workspace-slide-over>
-  
+
   <app-confirmation-dialog
     #confirmationDialog
     [data]="confirmationData"
