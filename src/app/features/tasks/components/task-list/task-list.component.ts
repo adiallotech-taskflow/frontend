@@ -215,27 +215,32 @@ export class TaskListComponent implements OnInit, OnDestroy {
         this.currentUserId = currentUser.id;
       }
     }
-    
+
     // Load users if not provided
     if (!this.users || this.users.length === 0) {
       this.loadAllUsers();
     }
-    
+
     // Load teams if not provided
     if (!this.teams || this.teams.length === 0) {
       this.loadTeams();
     }
-    
-    // Handle teamId query parameter
+
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      // Handle teamId parameter
       if (params['teamId']) {
         this.currentFilters.update(filters => ({
           ...filters,
           teamIds: [params['teamId']]
         }));
       }
+
+      // Handle edit parameter - open slide-over to edit task
+      if (params['edit']) {
+        this.openEditTaskSlideOver(params['edit']);
+      }
     });
-    
+
     this.loadTasks();
     if (this.workspaceId) {
       this.loadWorkspace();
@@ -336,12 +341,39 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.taskSlideOver.open();
   }
 
-  openEditTaskSlideOver(task: Task) {
-    this.taskSlideOverMode = {
-      type: 'edit',
-      task: task,
-    };
-    this.taskSlideOver.open();
+  openEditTaskSlideOver(taskOrId: Task | string) {
+    // If it's a string ID, we need to find the task first
+    if (typeof taskOrId === 'string') {
+      const task = this.allTasks().find(t => t.id === taskOrId);
+      if (task) {
+        this.taskSlideOverMode = {
+          type: 'edit',
+          task: task,
+        };
+        this.taskSlideOver.open();
+      } else {
+        // If task not found in current list, try to load it
+        this.taskService.getById(taskOrId).subscribe({
+          next: (task) => {
+            this.taskSlideOverMode = {
+              type: 'edit',
+              task: task,
+            };
+            this.taskSlideOver.open();
+          },
+          error: (error) => {
+            console.error('Error loading task:', error);
+          }
+        });
+      }
+    } else {
+      // It's already a Task object
+      this.taskSlideOverMode = {
+        type: 'edit',
+        task: taskOrId,
+      };
+      this.taskSlideOver.open();
+    }
   }
 
   onTaskCreated(task: Task) {

@@ -206,7 +206,8 @@ export class CommandPaletteComponent implements OnDestroy {
       this.router.navigate(['/workspaces', workspace.id]);
     } else {
       const task = result.item as Task;
-      this.router.navigate(['/tasks', task.id]);
+      // Navigate to tasks page with edit query param to open the slide-over
+      this.router.navigate(['/tasks'], { queryParams: { edit: task.id } });
     }
   }
 
